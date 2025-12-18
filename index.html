@@ -11,11 +11,11 @@
   <script type="importmap">
     {
       "imports": {
-        "three": "https://unpkg.com/three@latest/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@latest/examples/jsm/"
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
       }
     }
-  </script>
+    </script>
 
 <style>
   @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap");
@@ -185,8 +185,17 @@ header {
      You'll need to add padding to the body or the next section.
   */
 }
+/* Hide header during intro */
+body:not(.intro-complete) header {
+  opacity: 0;
+  pointer-events: none;
+}
 
-*/
+body.intro-complete header {
+  opacity: 1;
+  transition: opacity 1s ease 0.5s;
+}
+
 .hero-section {
     /* ... existing styles ... */
     /* Add padding equal to or slightly more than the header's height */
@@ -2348,16 +2357,16 @@ header {
 }
 
 /* Show video after intro completes */
+/* Show video after intro completes */
 body.intro-complete .hero-video-bg {
   opacity: 1;
+  transition: opacity 2s ease 0.5s; /* Delay video fade-in */
 }
 
-/* Hide video when scrolling past hero section */
+/* Only hide video when scrolled PAST hero section */
 body.scroll-active .hero-video-bg {
-  opacity: 0;
-  pointer-events: none;
+  transition: opacity 0.5s ease;
 }
-
 
 
 
@@ -4641,7 +4650,11 @@ img {
            if (bottomLine) bottomLine.classList.add('hide-line');
           animationPhase = 2;
           animationProgress = 0;
-
+          // Ensure hero video starts playing
+          const heroVideo = document.querySelector('.hero-video-bg video');
+          if (heroVideo) {
+            heroVideo.play().catch(e => console.log('Video play prevented:', e));
+          }
           // 2. Hide Button
           introButton.classList.add('hide-btn');
           introButton.classList.remove('show-btn');
@@ -5201,16 +5214,17 @@ img {
 
 
               
-              // Background Control
+              // Background Control - Only hide when hero is completely scrolled past
                 const heroVideoBackground = document.querySelector('.hero-video-bg');
                 const heroSection = document.querySelector('.hero-section');
 
                 if (heroVideoBackground && heroSection) {
                   window.addEventListener('scroll', () => {
                     const heroRect = heroSection.getBoundingClientRect();
-                    const isHeroVisible = heroRect.bottom > 0;
+                    // Only hide when hero section is completely above viewport
+                    const shouldShow = heroRect.bottom > window.innerHeight * 0.2; // Keep visible until 80% scrolled
 
-                    if (isHeroVisible) {
+                    if (shouldShow) {
                       heroVideoBackground.style.opacity = '1';
                     } else {
                       heroVideoBackground.style.opacity = '0';
