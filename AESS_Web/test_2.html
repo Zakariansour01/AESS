@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Profile Showcase (Dark Theme)</title>
+
+    <style>
+        /* Basic Reset and Variables (Updated for Dark Theme) */
+        :root {
+            --primary-color: #4CAF50;
+            /* Changed primary color for contrast (optional) */
+            --secondary-color: #AAAAAA;
+            /* Light gray for secondary text */
+            --background-color: #000000;
+            /* BLACK BACKGROUND */
+            --text-color: #FFFFFF;
+            /* WHITE TEXT */
+            --card-background: #1a1a1a;
+            /* Dark gray for cards */
+            --button-color: #007bff;
+            /* BLUE FOR INTERACTIVE ELEMENTS */
+            --shadow-light: 0 4px 15px rgba(255, 255, 255, 0.1);
+            /* Lighter shadow for dark background */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-color);
+            line-height: 1.6;
+            color: var(--text-color);
+            /* WHITE TEXT */
+        }
+
+        /* Header Styling */
+        .page-header {
+            background-color: var(--button-color);
+            /* Use blue for the header */
+            color: var(--text-color);
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: var(--shadow-light);
+            margin-bottom: 30px;
+        }
+
+        /* Profile Container (Grid/Flex Layout) */
+        #profile-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Individual Profile Card Styling */
+        .profile-card {
+            background-color: var(--card-background);
+            border-radius: 15px;
+            border: 1px solid #333;
+            /* subtle border */
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.5);
+            /* Blue glow on hover */
+            border-color: var(--button-color);
+            /* Blue border on hover */
+        }
+
+      /* Find this block in your <style> section: */
+.profile-image {
+    width: 100%;
+    /* Keep the original width/height for the card shape */
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    /* --- ADDITIONS BELOW --- */
+    border-radius: 50%; /* Makes the image perfectly circular */
+    max-width: 180px; /* Adjust size for a nice circular look inside the card */
+    margin: 20px auto 0 auto; /* Centers the image and adds top margin */
+    border: 3px solid var(--button-color); /* Optional: Add a subtle border */
+}
+
+        .profile-content {
+            padding: 20px;
+        }
+
+        .profile-name {
+            color: var(--button-color);
+            /* BLUE text for primary name */
+            margin-bottom: 5px;
+        }
+
+        .profile-position {
+            color: var(--secondary-color);
+            font-weight: 300;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        .profile-description {
+            font-size: 0.9em;
+            color: var(--text-color);
+            margin-bottom: 15px;
+        }
+
+        /* Optional: Styling for a 'details' section */
+        .profile-details {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #333;
+            color: var(--secondary-color);
+            display: none;
+            /* Initially hidden */
+        }
+
+        .profile-card.active .profile-details {
+            display: block;
+            /* Show details when the card has 'active' class */
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="page-header">
+        <h1>Our Creative Team Profiles</h1>
+    </header>
+
+    <main id="profile-container">
+    </main>
+
+    <script>
+        // Sample data for the profiles
+        const profiles = [
+            {
+                image: 'AESS_IMG/earth.jpg',
+                name: 'Alex Rivera',
+                position: 'Lead UX Designer',
+                description: 'Alex specializes in creating intuitive and beautiful user experiences, bridging the gap between user needs and technical capabilities.',
+                details: 'Expert in Figma, Sketch, and user research methodologies.'
+            },
+            {
+                image: 'https://via.placeholder.com/300/ff4500/ffffff?text=Code',
+                name: 'Maria Chen',
+                position: 'Senior Frontend Developer',
+                description: 'Maria is a coding wizard, focusing on performance and modern JavaScript frameworks like React and Vue.',
+                details: 'Certified in React and a contributor to open-source projects.'
+            },
+            {
+                image: 'https://via.placeholder.com/300/3cb371/ffffff?text=Strategy',
+                name: 'Sam Brooks',
+                position: 'Marketing Strategist',
+                description: 'Sam crafts compelling narratives and data-driven strategies to ensure our products reach the right audience.',
+                details: 'Holds an MBA and extensive experience in digital marketing and analytics.'
+            },
+        ];
+
+        const container = document.getElementById('profile-container');
+
+        // Function to create and append profile cards
+        function createProfileCards() {
+            profiles.forEach(profile => {
+                // Create the main card element
+                const card = document.createElement('div');
+                card.classList.add('profile-card');
+
+                // Populate the card content using template literals
+                card.innerHTML = `
+                    <img src="${profile.image}" alt="${profile.name}" class="profile-image">
+                    <div class="profile-content">
+                        <h2 class="profile-name">${profile.name}</h2>
+                        <h3 class="profile-position">${profile.position}</h3>
+                        <p class="profile-description">${profile.description}</p>
+                        <div class="profile-details">
+                            <p>More Info: ${profile.details}</p>
+                        </div>
+                    </div>
+                `;
+
+                // Add click handler to toggle the 'active' class (for details visibility)
+                card.addEventListener('click', () => {
+                    // Toggle an 'active' class to show/hide more details via CSS
+                    card.classList.toggle('active');
+                });
+
+                // Append the new card to the container
+                container.appendChild(card);
+            });
+        }
+
+        // Initialize the card creation after the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', createProfileCards);
+    </script>
+</body>
+
+</html>

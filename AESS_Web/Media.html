@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AESS-JUST | Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Styling */
+
+        /* Custom Properties */
+        :root {
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --btn-primary: #1100ff67;
+            --glass-bg: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.25);
+            --glass-blur: 15px;
+        }
+
+        /* Global Reset and Body Styling */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            /* New lines for background image */
+            background-image: url('AESS_IMG/Media_Image_1.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center center;
+        }
+
+        /* --------------------
+           Glassmorphism Effect
+           -------------------- */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            /* For Safari support */
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .glass-section {
+            padding: 40px;
+            margin: 40px 10%;
+            /* Apply glass to sections as well */
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* --------------------
+           Header and Navigation
+           -------------------- */
+
+
+        /* --------------------
+           Buttons
+           -------------------- */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 15px;
+            color: var(--text-color);
+            background-color: var(--btn-primary);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: background-color 0.3s, transform 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #000000;
+            transform: translateY(-2px);
+        }
+
+        /* --------------------
+           Media Section
+           -------------------- */
+        #media p {
+            margin: 15px 0 25px;
+            line-height: 1.6;
+        }
+
+        .divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0));
+            margin: 40px 10%;
+        }
+
+
+        /* --------------------
+           Latest Work Grid
+           -------------------- */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px 0;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            /* box-shadow: 0 10px 40px rgba(35, 35, 35, 0.3); */
+            background: linear-gradient(-180deg, #00000063, #002aff2a);
+            /* border: px 0 0 0 solid rgb(89, 0, 255); */
+        }
+
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+            /* Added for smooth image transition on hover */
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .card-content {
+            padding: 15px;
+        }
+
+        .card-content h4 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .card-meta {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-bottom: 10px;
+        }
+
+        .card-meta span {
+            margin-right: 10px;
+        }
+
+        .card-text {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* --------------------
+           Modal Window
+           -------------------- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding-top: 50px;
+        }
+
+        .modal-content {
+            margin: 5% auto;
+            width: 90%;
+            max-width: 1000px;
+            padding: 30px;
+            position: relative;
+            display: flex;
+            gap: 30px;
+        }
+
+        .close-btn {
+            color: var(--text-color);
+            font-size: 30px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: var(--btn-primary);
+            text-decoration: none;
+        }
+
+        /* Image Slider */
+        .image-slider {
+            position: relative;
+            width: 50%;
+            flex-shrink: 0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #modal-main-image {
+            width: 100%;
+            height: 100%;
+            max-height: 450px;
+            object-fit: contain;
+            display: block;
+            border-radius: 10px;
+            /* Added for smooth image transition in modal */
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: white;
+            border: none;
+            padding: 10px;
+            /* border-radius: 20px; */
+            cursor: pointer;
+            font-size: 20px;
+            line-height: 1;
+            transition: background 0.3s;
+        }
+
+        .arrow:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .left-arrow {
+            left: 10px;
+            border-radius: 50px;
+        }
+
+        .right-arrow {
+            right: 10px;
+            border-radius: 50px;
+        }
+
+        /* Modal Details Text */
+        .modal-details {
+            width: 50%;
+        }
+
+        #modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #1500ff77, #00000000);
+            /* border-radius: 5px; */
+            padding: 0.5rem;
+        }
+
+        .modal-details .meta {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        #modal-text {
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        /* Responsiveness for smaller screens */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            header nav a {
+                margin: 10px 10px 0;
+            }
+
+            .glass-section {
+                margin: 20px 5%;
+                padding: 20px;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                flex-direction: column;
+                width: 95%;
+                margin: 10% auto;
+                padding: 20px;
+            }
+
+            .image-slider,
+            .modal-details {
+                width: 100%;
+            }
+
+            #modal-main-image {
+                max-height: 300px;
+            }
+        }
+
+        header {
+            width: 100%;
+            max-height: 150px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header nav {
+            background: rgba(0, 0, 97, 0.3);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 100px;
+            padding: 1.5rem 0.8rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 97, 0.37);
+            max-width: 100%;
+            margin: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-height: 100px;
+        }
+
+        .logo {
+            max-height: 80px;
+            padding-left: 2rem;
+        }
+
+        header ul {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+
+        header ul a {
+            text-decoration: none;
+            color: white;
+            padding: 0 1.5rem;
+            text-transform: uppercase;
+        }
+
+        .small_bar {
+            padding-left: 1.5rem;
+        }
+
+        .small_bar a {
+            padding: 0;
+            width: 37px;
+            height: 37px;
+            display: flex;
+            border-radius: 50%;
+            background-color: rgb(3, 0, 155);
+            backdrop-filter: blur(15px);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .small_bar .bar {
+            position: relative;
+            width: 52%;
+            height: 1.3px;
+            background-color: white;
+            border-radius: 2rem;
+        }
+
+        .small_bar .bar::before,
+        .small_bar .bar::after {
+            content: "";
+            left: 50%;
+            position: absolute;
+            transform: translateX(-50%);
+            width: 50%;
+            height: 100%;
+            background-color: inherit;
+        }
+
+        .small_bar .bar::before {
+            top: -4.5px;
+        }
+
+        .small_bar .bar::after {
+            top: 4.5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <nav>
+            <a href="#">
+                <img src="AESS_IMG/aess.png" alt="AESS Logo" class="logo">
+            </a>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#researchers">Research</a></li>
+                <li><a href="#electronics">Branches</a></li>
+                <li><a href="#media">Media</a></li>
+                <li><a href="#social-media">Social</a></li>
+                <li class="small_bar">
+                    <a href="#">
+                        <div class="bar"></div>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="media" class="glass-section">
+            <h2>Media</h2>
+            <p>The AESS Media Section at Jordan University of Science and Technology creates and shares high-quality
+                visual content that highlights the branch’s events, projects, and achievements. Through photography,
+                videography, and design, we showcase the creativity and innovation of AESS-JUST and help share its
+                impact across campus.</p>
+            <a href="#work" class="btn" style="--btn-color: #1100ff;">NEWS</a>
+        </section>
+
+        <hr class="divider">
+
+        <section id="work" class="glass-section">
+            <h2>Latest Work</h2>
+            <div class="card-grid" id="work-grid">
+            </div>
+        </section>
+
+    </main>
+
+    <div id="work-modal" class="modal">
+        <div class="modal-content glass">
+            <span class="close-btn">&times;</span>
+
+            <div class="image-slider">
+                <img id="modal-main-image" src="" alt="Work Detail Image">
+                <button class="arrow left-arrow" id="prev-image-btn">&#9664;</button>
+                <button class="arrow right-arrow" id="next-image-btn">&#9654;</button>
+            </div>
+
+            <div class="modal-details">
+                <h3 id="modal-title"></h3>
+                <p class="meta">
+                    <span id="modal-date"></span> | <span id="modal-type"></span>
+                </p>
+                <p id="modal-text"></p>
+                <a id="modal-link" href="#" target="_blank" class="btn" style="--btn-color: #1100ff;">See the Formal
+                    Post</a>
+            </div>
+        </div>
+    </div>
+
+
+
+    <footer style="background:#0a0a0a; color:#fff; padding:20px 0; text-align:center; font-family:Arial, sans-serif;">
+
+        <p style="margin: 0 0 10px 0; font-size:14px;">
+            &copy; 2025 AESS JUST. All Rights Reserved. | Built for AESS Society.
+        </p>
+
+        <div style="margin-top:10px;">
+            <a href="https://chat.whatsapp.com/GzfWUsp3DER2PsUczb4qFX?mode=hqrt1" target="_blank"
+                style="color:#fff; margin:0 10px; text-decoration:none;">
+                WhatsApp
+            </a>
+            |
+            <a href="https://www.instagram.com/ieee_aess_just/" target="_blank"
+                style="color:#fff; margin:0 10px; text-decoration:none;">
+                Instagram
+            </a>
+            |
+            <a href="https://www.linkedin.com/company/ieee-aess-just/posts/?feedView=all" target="_blank"
+                style="color:#fff; margin:0 10px; text-decoration:none;">
+                LinkedIn
+            </a>
+        </div>
+
+    </footer>
+
+
+    <script>
+        // JavaScript Functionality
+
+        // Sample Data for Latest Work
+        // IMPORTANT: Update the image URLs here.
+        const workData = [
+            {
+                id: 1,
+                title: "Looking for Volunteers",
+                date: "Nov 21, 2025",
+                type: "Volunteer",
+                shortText: "If you'd like to be part of the largest community focused on astronautics, aeronautics, and electronic systems, join us now via the link in bio or by scanning the QR code..",
+                fullText: `
+            <p><strong>If you'd like to be part of the largest community focused on astronautics, aeronautics, and electronic systems, join us now via the link in bio or by scanning the QR code.
+                </strong></p>
+            <p>We're currently looking for: </p>
+            <p> ---</p>
+            <p> - Program Team Leader & Members </p>
+            <p> - Media Team Leader & Members </p>
+            <p> - Scientific & Projects Team Leaders & Members </p>
+            <p></p>
+        `,
+                images: [
+                    "AESS_IMG/Media/Volunter.jpeg", // Main Image for card and first in slider
+                ],
+                link: "https://www.instagram.com/ieee_aess_just/p/DRUpg47DL2x/"
+            },
+            {
+                id: 2,
+                title: "YOUR TALENT LAUNCHPAD",
+                date: "Nov 27, 2025",
+                type: "Talent",
+                shortText: "Unleash your skills. Inspire the community.",
+                fullText: `
+            <p>
+                <strong>
+                    Unleash your skills. Inspire the community.
+                    If you’re an AESS member with talent in astronautics, aeronautics, or electronic systems, " YOUR TALENT LAUNCHPAD " is your stage.
+                    You speak — we handle the rest.
+                </strong>
+               We’re now calling for:
+            </p>
+            <p> ---</p>
+            <p> 1- AESS members ready to lead a workshop </p>
+            <p> 2- AESS members with skills they want to showcase </p>
+            <p> 3- AESS members excited to inspire others </p>
+            <p> ---</p>
+            <p>To join the program, register through the link below or via the link in our bio.</p>
+            <p>- Every selected workshop presenter will receive an official, documented certificate from AESS.</p>
+            <p>- Exclusive for active AESS members.</p>
+        `,
+                images: [
+                    "AESS_IMG/Media/Talent.png", // Main Image for card and first in slider
+                ],
+                link: "https://www.instagram.com/ieee_aess_just/p/DRhmJe4jOGS/"
+            },
+            {
+                id: 3,
+                title: "From Campus to Cockpit",
+                date: "Nov 28, 2025",
+                type: "Attend a discussion",
+                shortText: "Under the patronage of the Head of the Aeronautical Engineering Department, Dr. Moath Bani Hani...",
+                fullText: `
+            <p>
+                <strong>
+                    Under the patronage of the Head of the Aeronautical Engineering Department, Dr. Moath Bani Hani,
+                    We are pleased to invite you to attend a discussion session titled:
+                    ​"From Campus to Cockpit"
+                </strong>
+              We are hosting our distinguished alumnus, Capt. Eng. Saif Nassar, who returns to campus to share his inspiring success story. He will discuss his confident transition from an engineering student to a Captain Pilot at Royal Jordanian Airlines.
+              ​We are also pleased to host Capt. Eng. Hamza Masoud and Capt. Seif Frewan in this session.
+            </p>
+            <p> ​Join us to gain valuable insights on navigating professional life and shaping your future after graduation.</p>
+            <p> ---</p>
+            <p> ​📍 Location: Salah Al-Din Conference Center</p>
+            <p> 📅 Date: Monday, December 1st </p>
+            <p> 🕑 Time: 11:00 AM – 1:00 PM</p>
+        `,
+                images: [
+                    "AESS_IMG/Media/Session_1.png",
+                    "AESS_IMG/Media/Session_1 (2).png", // Main Image for card and first in slider
+                ],
+                link: "https://www.instagram.com/ieee_aess_just/p/DRkQImWDWED/?img_index=2"
+            },
+            {
+                id: 4,
+                title: "من مقاعد الدراسة إلى قمرة القيادة",
+                date: "Dec 2, 2025",
+                type: "Event",
+                shortText: "تحت رعاية رئيس قسم هندسة الطيران، الدكتور معاذ بني هاني، اختتمت اليوم....",
+                fullText: `
+            <p>
+                <strong>
+                    تحت رعاية رئيس قسم هندسة الطيران، الدكتور معاذ بني هاني، اختتمت اليوم جلسة حوارية متميزة بعنوان "من مقاعد الدراسة إلى قمرة القيادة"، في مدرج الفارابي.
+                    ​سعدنا باستضافة نخبة من الخريجين الذين يمثلون نماذج مشرفة في الحياة العملية:
+                </strong>
+            </p>
+            <p> ---</p>
+            <p>🔹 الكابتن المهندس سيف نصار </p>
+            <p>🔹 الكابتن المهندس حمزة مسعود</p>
+            <p>🔹 الكابتن المهندس سيف فريوان </p>
+            <p> ---</p>
+            <p>تناول المتحدثون خلال الجلسة رحلة انتقالهم من مقاعد الدراسة الأكاديمية إلى العمل كطيارين محترفين، مستعرضين التحديات والفرص في سوق العمل، وكيفية بناء مسار مهني ناجح يجمع بين الخلفية الهندسية والشغف بالطيران</p>
+            <p>نتقدم بجزيل الشكر لضيوفنا الأعزاء على مشاركتهم لخبراتهم القيمة مع طلبة الجامعة، وللدكتور معاذ بني هاني على رعايته ودعمه المستمر لمثل هذه الفعاليات التي تربط مخرجات التعليم بواقع سوق العمل</p>
+        `,
+                images: [
+                    "AESS_IMG/Media/Envent_1_1.png",
+                    "AESS_IMG/Media/Envent_1_2.png",
+                    "AESS_IMG/Media/Envent_1_3.png", // Main Image for card and first in slider
+                ],
+                link: "https://www.instagram.com/ieee_aess_just/p/DRusK8RDLBc/?img_index=3"
+            },
+        ];
+
+        const workGrid = document.getElementById('work-grid');
+        const modal = document.getElementById('work-modal');
+        const closeModalBtn = document.querySelector('.close-btn');
+
+        const modalTitle = document.getElementById('modal-title');
+        const modalDate = document.getElementById('modal-date');
+        const modalType = document.getElementById('modal-type');
+        const modalText = document.getElementById('modal-text');
+        const modalLink = document.getElementById('modal-link');
+        const modalMainImage = document.getElementById('modal-main-image');
+        const prevImageBtn = document.getElementById('prev-image-btn');
+        const nextImageBtn = document.getElementById('next-image-btn');
+
+        let currentImages = []; // Stores images of the currently open work item
+        let currentImageIndex = 0; // Index for the modal image slider
+
+        // --- Timer variables for auto-scrolling ---
+        let autoScrollInterval; // For modal
+        const AUTO_SCROLL_DELAY = 2000; // 2000 milliseconds = 2 seconds
+
+        // --- Object to store card hover timers (NEW) ---
+        const cardTimers = {};
+
+
+        // Helper function to truncate text
+        function truncateText(text, maxWords) {
+            const words = text.split(' ');
+            if (words.length > maxWords) {
+                return words.slice(0, maxWords).join(' ') + '...';
+            }
+            return text;
+        }
+
+        // --- Modal Scroll Logic ---
+
+        // Function to advance the image (for modal)
+        function nextImage() {
+            currentImageIndex = (currentImageIndex + 1) % currentImages.length;
+            updateModalImage();
+        }
+
+        // Function to start the auto-scrolling (for modal)
+        function startAutoScroll() {
+            if (currentImages.length > 1) {
+                stopAutoScroll();
+                autoScrollInterval = setInterval(nextImage, AUTO_SCROLL_DELAY);
+            }
+        }
+
+        // Function to stop the auto-scrolling (for modal)
+        function stopAutoScroll() {
+            clearInterval(autoScrollInterval);
+            autoScrollInterval = null;
+        }
+
+        // --- Card Hover Scroll Logic (NEW) ---
+
+        // Function to advance the image on a specific card
+        function nextCardImage(cardId, cardImageElement) {
+            const workItem = workData.find(item => item.id === cardId);
+            if (!workItem) return;
+
+            // Ensure the item has a temporary index property (i.e., this.cardIndex)
+            if (workItem.cardIndex === undefined) {
+                // Initialize to 1, because the image on the card is already at index 0
+                workItem.cardIndex = 1;
+            } else {
+                // Calculate the next index
+                workItem.cardIndex = (workItem.cardIndex + 1) % workItem.images.length;
+            }
+
+            // Update the image source
+            cardImageElement.src = workItem.images[workItem.cardIndex];
+        }
+
+        // Function to start the hover animation for a card
+        function startCardHoverAnimation(cardId, cardImageElement) {
+            const workItem = workData.find(item => item.id === cardId);
+            // Only start if there's more than one image for the card
+            if (!workItem || workItem.images.length <= 1) return;
+
+            // Clear any existing timer for this card
+            stopCardHoverAnimation(cardId);
+
+            // Immediately change the image to the second one (index 1) to start the animation
+            if (workItem.images.length > 1) {
+                workItem.cardIndex = 0; // Reset index counter
+                nextCardImage(cardId, cardImageElement); // Advance to the first auto-scroll image (index 1)
+            }
+
+            // Start a new interval specific to this card ID
+            cardTimers[cardId] = setInterval(() => {
+                nextCardImage(cardId, cardImageElement);
+            }, AUTO_SCROLL_DELAY);
+        }
+
+        // Function to stop the hover animation for a card
+        function stopCardHoverAnimation(cardId) {
+            // Clear the interval using the ID stored in the map
+            clearInterval(cardTimers[cardId]);
+            delete cardTimers[cardId];
+
+            // Reset the image to the first one (index 0) upon mouse leave
+            const workItem = workData.find(item => item.id === cardId);
+            if (workItem) {
+                workItem.cardIndex = 0; // Reset internal index
+                // Find the specific image element on the page
+                const cardImageElement = document.querySelector(`.card[data-id="${cardId}"] .card-image`);
+                if (cardImageElement) {
+                    cardImageElement.src = workItem.images[0]; // Reset image on page
+                }
+            }
+        }
+
+
+        // Function to open the detail modal
+        function openModal(workId) {
+            // Stop card animation if a card is currently being hovered when clicked
+            stopCardHoverAnimation(workId);
+
+            const workItem = workData.find(item => item.id === workId);
+            if (!workItem) return;
+
+            modalTitle.textContent = workItem.title;
+            modalDate.textContent = workItem.date;
+            modalType.textContent = workItem.type;
+            modalText.innerHTML = workItem.fullText;
+            modalLink.href = workItem.link;
+
+            currentImages = workItem.images;
+            currentImageIndex = 0;
+            updateModalImage();
+
+            startAutoScroll();
+
+            modal.style.display = 'block';
+        }
+
+        // Function to update the image in the slider (for modal)
+        function updateModalImage() {
+            modalMainImage.src = currentImages[currentImageIndex];
+        }
+
+        // Event Listeners for image arrows (for modal)
+        prevImageBtn.addEventListener('click', () => {
+            stopAutoScroll();
+            currentImageIndex = (currentImageIndex - 1 + currentImages.length) % currentImages.length;
+            updateModalImage();
+        });
+
+        nextImageBtn.addEventListener('click', () => {
+            stopAutoScroll();
+            nextImage();
+        });
+
+        // Close modal event listeners
+        closeModalBtn.addEventListener('click', () => {
+            stopAutoScroll();
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                stopAutoScroll();
+                modal.style.display = 'none';
+            }
+        });
+
+        // Function to populate the work grid
+        function populateWorkGrid() {
+            workData.forEach(item => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+
+                // Add a data attribute to easily identify the card for the hover logic
+                card.setAttribute('data-id', item.id);
+
+                // The click event opens the modal for this item
+                card.onclick = () => openModal(item.id);
+
+                card.innerHTML = `
+                    <img src="${item.images[0]}" alt="${item.title} Main Image" class="card-image">
+                    <div class="card-content">
+                        <h4>${item.title}</h4>
+                        <p class="card-meta">
+                            <span>${item.date}</span> | <span>${item.type}</span>
+                        </p>
+                        <p class="card-text">${truncateText(item.shortText, 10)}</p>
+                    </div>
+                `;
+
+                // Attach Hover Listeners
+                const cardImageElement = card.querySelector('.card-image');
+
+                card.addEventListener('mouseenter', () => {
+                    startCardHoverAnimation(item.id, cardImageElement);
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    stopCardHoverAnimation(item.id);
+                });
+
+                workGrid.appendChild(card);
+            });
+        }
+
+        // Initialize the website
+        populateWorkGrid();
+    </script>
+</body>
+
+</html>

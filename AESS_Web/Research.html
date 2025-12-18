@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AESS-JUST | Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Styling */
+
+        /* Custom Properties */
+        :root {
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --btn-primary: #1100ff67;
+            --glass-bg: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.25);
+            --glass-blur: 15px;
+            --slot-bg: rgba(0, 0, 0, 0.3);
+            /* New: Background for the horizontal slot */
+            --slot-hover: #002aff2a;
+            /* New: Hover color for the horizontal slot */
+        }
+
+        /* Global Reset and Body Styling */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+       body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    position: relative; /* Added */
+}
+
+/* Dark overlay on background image */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('AESS_IMG/Reseach_branch.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center center;
+    filter: brightness(0.6); /* Adjust this value: 0.4 = 40% brightness */
+    z-index: -1; /* Keeps background behind content */
+}
+
+        /* --------------------
+           Glassmorphism Effect
+           -------------------- */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            /* For Safari support */
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .glass-section {
+            padding: 40px;
+            margin: 40px 10%;
+            /* Apply glass to sections as well */
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* --------------------
+           Header and Navigation
+           -------------------- */
+
+
+        /* --------------------
+           Buttons
+           -------------------- */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 15px;
+            color: var(--text-color);
+            background-color: var(--btn-primary);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: background-color 0.3s, transform 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #000000;
+            transform: translateY(-2px);
+        }
+
+        /* --------------------
+           Media Section
+           -------------------- */
+        #media p {
+            margin: 15px 0 25px;
+            line-height: 1.6;
+        }
+
+        .divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0));
+            margin: 40px 10%;
+        }
+
+
+        /* --------------------
+           Latest Work / Research Slot Styles
+           -------------------- */
+        .slot-grid {
+            display: flex;
+            flex-direction: column;
+            /* Stack slots vertically */
+            gap: 15px;
+            /* Space between slots */
+            margin-top: 30px;
+        }
+
+        .research-slot {
+            display: flex;
+            /* For the content inside the slot */
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background: var(--slot-bg);
+            border: 1px solid var(--glass-border);
+            border-left: 5px solid rgb(89, 0, 255);
+            /* Left border for accent */
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .research-slot:hover {
+            background: var(--slot-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .slot-details {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .slot-details h4 {
+            /* Main Title */
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .slot-details .researcher-name {
+            /* Researcher Name */
+            font-size: 1.0rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .slot-details .slot-date {
+            /* Date */
+            font-size: 0.85rem;
+            opacity: 0.6;
+        }
+
+        .slot-meta {
+            /* Flex item for the date */
+            flex-shrink: 0;
+            /* Prevents date from shrinking */
+            font-size: 0.9rem;
+            opacity: 0.7;
+            text-align: right;
+        }
+
+        /* --------------------
+           Modal Window (UPDATED)
+           -------------------- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding-top: 50px;
+        }
+
+        .modal-content {
+            margin: 5% auto;
+            width: 90%;
+            max-width: 1000px;
+            padding: 30px;
+            position: relative;
+            /* CHANGE: Stack children vertically */
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .close-btn {
+            color: var(--text-color);
+            font-size: 30px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: var(--btn-primary);
+            text-decoration: none;
+        }
+
+        /* Image Slider (UPDATED WIDTH) */
+        .image-slider {
+            position: relative;
+            width: 100%;
+            /* CHANGE: Full width */
+            flex-shrink: 0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #modal-main-image {
+            width: 100%;
+            height: auto;
+            /* Ensure image scales */
+            max-height: 500px;
+            /* Increased max-height for better view */
+            object-fit: contain;
+            display: block;
+            border-radius: 10px;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            line-height: 1;
+            transition: background 0.3s;
+        }
+
+        .arrow:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .left-arrow {
+            left: 10px;
+            border-radius: 50px;
+        }
+
+        .right-arrow {
+            right: 10px;
+            border-radius: 50px;
+        }
+
+        /* Modal Details Text (UPDATED WIDTH) */
+        .modal-details {
+            width: 100%;
+            /* CHANGE: Full width */
+        }
+
+        #modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #1500ff77, #00000000);
+            padding: 0.5rem;
+        }
+
+        .modal-details .meta {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+            /* Reduced margin */
+        }
+
+        #modal-text {
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        /* Responsiveness for smaller screens */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            header nav a {
+                margin: 10px 10px 0;
+            }
+
+            .glass-section {
+                margin: 20px 5%;
+                padding: 20px;
+            }
+
+            .research-slot {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .slot-meta {
+                text-align: left;
+                margin-top: 10px;
+            }
+
+            .modal-content {
+                /* This is already set to column from the update above, but ensuring consistency */
+                width: 95%;
+                margin: 10% auto;
+                padding: 20px;
+            }
+
+            /* Image slider and details are already 100% width, no change needed here */
+            #modal-main-image {
+                max-height: 300px;
+            }
+        }
+
+        header {
+            width: 100%;
+            max-height: 150px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header nav {
+            background: rgba(0, 0, 97, 0.3);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 100px;
+            padding: 1.5rem 0.8rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 97, 0.37);
+            max-width: 100%;
+            margin: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-height: 100px;
+        }
+
+        .logo {
+            max-height: 80px;
+            padding-left: 2rem;
+        }
+
+        header ul {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+
+        header ul a {
+            text-decoration: none;
+            color: white;
+            padding: 0 1.5rem;
+            text-transform: uppercase;
+        }
+
+        .small_bar {
+            padding-left: 1.5rem;
+        }
+
+        .small_bar a {
+            padding: 0;
+            width: 37px;
+            height: 37px;
+            display: flex;
+            border-radius: 50%;
+            background-color: rgb(3, 0, 155);
+            backdrop-filter: blur(15px);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .small_bar .bar {
+            position: relative;
+            width: 52%;
+            height: 1.3px;
+            background-color: white;
+            border-radius: 2rem;
+        }
+
+        .small_bar .bar::before,
+        .small_bar .bar::after {
+            content: "";
+            left: 50%;
+            position: absolute;
+            transform: translateX(-50%);
+            width: 50%;
+            height: 100%;
+            background-color: inherit;
+        }
+
+        .small_bar .bar::before {
+            top: -4.5px;
+        }
+
+        .small_bar .bar::after {
+            top: 4.5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <nav>
+            <a href="#">
+                <img src="AESS_IMG/aess.png" alt="AESS Logo" class="logo">
+            </a>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#researchers">Research</a></li>
+                <li><a href="#electronics">Branches</a></li>
+                <li><a href="#media">Media</a></li>
+                <li><a href="#social-media">Social</a></li>
+                <li class="small_bar">
+                    <a href="#">
+                        <div class="bar"></div>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="media" class="glass-section">
+            <h2>Research</h2>
+            <p>
+                The AESS Research Section at Jordan University of Science and Technology focuses on exploring advanced
+                topics in
+                aerospace and electronic systems. We support student-led research, provide guidance on academic
+                projects, and help
+                members develop strong scientific and technical skills. Our goal is to inspire innovation, encourage
+                critical thinking,
+                and contribute to impactful research within the AESS and wider IEEE community.
+            </p>
+            <a href="#work" class="btn" style="--btn-color: #1100ff;">Explore Researchs</a>
+        </section>
+
+        <hr class="divider">
+
+        <section id="work" class="glass-section">
+            <h2>Latest Research Projects</h2>
+            <div class="slot-grid" id="work-grid">
+            </div>
+        </section>
+
+    </main>
+
+    <div id="work-modal" class="modal">
+        <div class="modal-content glass">
+            <span class="close-btn">&times;</span>
+
+            <div class="image-slider">
+                <img id="modal-main-image" src="" alt="Work Detail Image">
+                <button class="arrow left-arrow" id="prev-image-btn">&#9664;</button>
+                <button class="arrow right-arrow" id="next-image-btn">&#9654;</button>
+            </div>
+
+            <div class="modal-details">
+                <h3 id="modal-title"></h3>
+                <p class="meta">
+                    <span id="modal-date"></span> | <span id="modal-type"></span>
+                </p>
+                <p class="meta" id="modal-researcher">Researcher: </p>
+                <p id="modal-text"></p>
+                <a id="modal-link" href="#" target="_blank" class="btn" style="--btn-color: #1100ff;">See the Formal
+                    Post</a>
+            </div>
+        </div>
+    </div>
+
+
+
+    <footer style="background:#0a0a0a; color:#fff; padding:20px 0; text-align:center; font-family:Arial, sans-serif;">
+
+        <p style="margin: 0 0 10px 0; font-size:14px;">
+            &copy; 2025 AESS JUST. All Rights Reserved. | Built for AESS Society.
+        </p>
+
+        <div style="margin-top:10px;">
+            <a href="https://chat.whatsapp.com/GzfWUsp3DER2PsUczb4qFX?mode=hqrt1" target="_blank"
+                style="color:#fff; margin:0 10px; text-decoration:none;">
+                WhatsApp
+            </a>
+            |
+            <a href="https://www.instagram.com/ieee_aess_just/" target="_blank"
+                style="color:#fff; margin:0 10px; text-decoration:none;">
+                Instagram
+            </a>
+            |
+            <a href="https://www.linkedin.com/company/ieee-aess-just/posts/?feedView=all" target="_blank"
+                style="color:#fff; margin:0 10px; text-decoration:none;">
+                LinkedIn
+            </a>
+        </div>
+
+    </footer>
+
+
+    <script>
+        // JavaScript Functionality
+
+        // Sample Data for Latest Work (Modified to represent researchers/projects)
+        const workData = [
+            {
+                id: 1,
+                title: "Adaptive Drone Navigation in GPS-Denied Environments",
+                researcherName: "Omar Al-Hadid", // NEW FIELD
+                date: "March 2024",
+                type: "Aviation",
+                shortText: "Developing a robust, AI-driven navigation system for unmanned aerial vehicles in dynamic, non-GPS environments.",
+                fullText: `
+            <p>This research develops an adaptive navigation system for UAVs that operate in areas with weak or unavailable GPS signals. The system uses onboard sensors, visual odometry, and machine learning to update the drone’s path in real time. The work improves mission reliability for search-and-rescue, military reconnaissance, and indoor exploration.</p>
+
+        `,
+                images: [
+                    "AESS_IMG/Research/Adaptive Drone Navigation.jpg", // Main Image for card and first in slider
+                ],
+                link: "#"
+            },
+
+
+
+
+
+        {
+                id: 2,
+                title: "AI-Enhanced Radar Signal Classification for Low-Visibility Conditions",
+                researcherName: "Sara Y. Al-Khateeb", // NEW FIELD
+                date: "July 2024",
+                type: "Aviation",
+                shortText: "Developing a robust, AI-driven navigation system for unmanned aerial vehicles in dynamic, non-GPS environments.",
+                fullText: `
+            <p>The study proposes a lightweight neural network capable of classifying radar signals accurately during heavy fog, dust, or cluttered environments. The model reduces noise and extracts clearer patterns, improving target detection for aviation safety and autonomous systems.</p>
+
+        `,
+                images: [
+                    "AESS_IMG/Research/AI-Enhanced Radar.png", // Main Image for card and first in slider
+                ],
+                link: "#"
+            },
+
+
+            
+            {
+                id: 3,
+                title: "CubeSat Thermal Control Optimization Using Hybrid Simulation Models",
+                researcherName: "Dr. Mahmoud M. Al-Rifai", // NEW FIELD
+                date: "January 2025",
+                type: "Aerospace",
+                shortText: "Developing a robust, AI-driven navigation system for unmanned aerial vehicles in dynamic, non-GPS environments.",
+                fullText: `
+            <p>This project presents a hybrid thermal simulation combining computational models and real sensor data from lab CubeSat prototypes. It predicts heat distribution in orbit with higher accuracy, helping students and engineers design safer and more efficient small satellites.</p>
+
+        `,
+                images: [
+                    "AESS_IMG/Research/cubesate.jpg", // Main Image for card and first in slider
+                ],
+                link: "#"
+            },
+        ];
+
+        const workGrid = document.getElementById('work-grid');
+        const modal = document.getElementById('work-modal');
+        const closeModalBtn = document.querySelector('.close-btn');
+
+        const modalTitle = document.getElementById('modal-title');
+        const modalDate = document.getElementById('modal-date');
+        const modalType = document.getElementById('modal-type');
+        const modalResearcher = document.getElementById('modal-researcher');
+        const modalText = document.getElementById('modal-text');
+        const modalLink = document.getElementById('modal-link');
+        const modalMainImage = document.getElementById('modal-main-image');
+        const prevImageBtn = document.getElementById('prev-image-btn');
+        const nextImageBtn = document.getElementById('next-image-btn');
+
+        let currentImages = []; // Stores images of the currently open work item
+        let currentImageIndex = 0; // Index for the modal image slider
+
+        // --- Timer variables for auto-scrolling ---
+        let autoScrollInterval; // For modal
+        const AUTO_SCROLL_DELAY = 2000; // 2000 milliseconds = 2 seconds
+
+        // --- Modal Scroll Logic ---
+
+        // Function to advance the image (for modal)
+        function nextImage() {
+            currentImageIndex = (currentImageIndex + 1) % currentImages.length;
+            updateModalImage();
+        }
+
+        // Function to start the auto-scrolling (for modal)
+        function startAutoScroll() {
+            if (currentImages.length > 1) {
+                stopAutoScroll();
+                autoScrollInterval = setInterval(nextImage, AUTO_SCROLL_DELAY);
+            }
+        }
+
+        // Function to stop the auto-scrolling (for modal)
+        function stopAutoScroll() {
+            clearInterval(autoScrollInterval);
+            autoScrollInterval = null;
+        }
+
+        // Function to open the detail modal
+        function openModal(workId) {
+            const workItem = workData.find(item => item.id === workId);
+            if (!workItem) return;
+
+            modalTitle.textContent = workItem.title;
+            modalDate.textContent = workItem.date;
+            modalType.textContent = workItem.type;
+            // Populate researcher name in the modal
+            modalResearcher.textContent = `Researcher: ${workItem.researcherName || 'N/A'}`;
+            modalText.innerHTML = workItem.fullText;
+            modalLink.href = workItem.link;
+
+            currentImages = workItem.images;
+            currentImageIndex = 0;
+            updateModalImage();
+
+            startAutoScroll();
+
+            modal.style.display = 'block';
+        }
+
+        // Function to update the image in the slider (for modal)
+        function updateModalImage() {
+            modalMainImage.src = currentImages[currentImageIndex];
+        }
+
+        // Event Listeners for image arrows (for modal)
+        prevImageBtn.addEventListener('click', () => {
+            stopAutoScroll();
+            currentImageIndex = (currentImageIndex - 1 + currentImages.length) % currentImages.length;
+            updateModalImage();
+        });
+
+        nextImageBtn.addEventListener('click', () => {
+            stopAutoScroll();
+            nextImage();
+        });
+
+        // Close modal event listeners
+        closeModalBtn.addEventListener('click', () => {
+            stopAutoScroll();
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                stopAutoScroll();
+                modal.style.display = 'none';
+            }
+        });
+
+        // Function to populate the work grid
+        function populateWorkGrid() {
+            workData.forEach(item => {
+                const slot = document.createElement('div');
+                slot.classList.add('research-slot');
+
+                // The click event opens the modal for this item
+                slot.onclick = () => openModal(item.id);
+
+                // Determine the researcher's name to display
+                const researcherDisplay = item.researcherName ? `<p class="researcher-name">${item.researcherName}</p>` : '';
+
+                slot.innerHTML = `
+                    <div class="slot-details">
+                        <h4>${item.title}</h4>
+                        ${researcherDisplay}
+                        <p class="slot-date">${item.date} | ${item.type}</p>
+                    </div>
+                `;
+
+                workGrid.appendChild(slot);
+            });
+        }
+
+        
+        populateWorkGrid();
+    </script>
+</body>
+
+</html>
