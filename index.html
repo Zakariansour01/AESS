@@ -1,1 +1,5309 @@
-test 2
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+  <link rel="icon" type="image/png" href="Images/NEG.png">
+  <title>AESS - Advanced Systems</title>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@latest/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@latest/examples/jsm/"
+      }
+    }
+  </script>
+
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap");
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
+    /* =========================================
+           1. INTRO & TRANSITION STYLES
+           ========================================= */
+
+    /* Container for the 3D Scene (Black Background) */
+    #intro-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      z-index: 9999;
+      /* Highest priority */
+      transition: opacity 1.5s ease-out, visibility 1.5s;
+    }
+
+    #intro-overlay.fade-out {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* The "ENTER" Glass Button */
+    #introButton {
+
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  top: 70%;  /* Changed from 60% to accommodate borders */
+  left: 50%;
+  transform: translate(-50%, -50%);
+      z-index: 10000;
+      /* Above the overlay */
+      color: white;
+      font-size: 24px;
+      padding: 15px 40px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-family: 'Orbitron', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      transition: all 0.5s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #introButton:hover {
+      background: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+    }
+
+    #introButton.show-btn {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #introButton.hide-btn {
+      opacity: 0;
+      transform: translate(-50%, -20px);
+      pointer-events: none;
+    }
+
+    /* NEW: BORDER TRANSITION EFFECT */
+    #transition-border {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 9998;
+      /* Just below the black overlay, above website */
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(0.8);
+      border-radius: 25px;
+      box-shadow: inset 0 0 0 0px rgba(0, 234, 255, 0);
+    }
+
+    #transition-border.activate-border {
+      animation: expandBorder 1.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    }
+
+    @keyframes expandBorder {
+      0% {
+        opacity: 0;
+        transform: scale(0.5);
+        box-shadow: inset 0 0 50px 10px rgba(0, 234, 255, 0.8),
+          0 0 50px rgba(0, 234, 255, 0.5);
+        border: 2px solid rgba(255, 255, 255, 0.8);
+      }
+
+      10% {
+        opacity: 1;
+      }
+
+      60% {
+        transform: scale(1);
+        box-shadow: inset 0 0 20px 2px rgba(0, 234, 255, 0.5),
+          0 0 30px rgba(0, 234, 255, 0.3);
+        border: 5px solid rgba(255, 255, 255, 0.9);
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 0;
+        box-shadow: inset 0 0 0 0 rgba(0, 234, 255, 0);
+        border: 0px solid rgba(255, 255, 255, 0);
+      }
+    }
+
+    /* =========================================
+           2. MAIN PAGE STYLES
+           ========================================= */
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+   body {
+    font-family: 'Orbitron', Courier, monospace;
+      /* Use Cairo for Arabic text, Orbitron for English/Numbers */
+      font-family: 'Cairo', 'Orbitron', Courier, monospace;
+      background-color: black;
+      overflow: hidden;
+    }
+
+    body.scroll-active {
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    /* NEW: GRID CANVAS STYLES */
+    #gridCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      /* Below video background/content wrapper */
+      pointer-events: none;
+      opacity: 0.8;
+      /* Adjust for intensity */
+    }
+
+
+    /* Header & Nav */
+    /* Header & Nav */
+header {
+  width: 100%;
+  max-height: 100px;
+  position: fixed; /* Changed from relative to fixed */
+  top: 0;          /* Added to stick it to the top */
+  z-index: 1000;   /* Increased to ensure it stays above all content (like the sections) */
+  /* Remove max-height: 150px; if you want the header to strictly define the space
+     but given the complex header nav style, let's keep it for now.
+     A fixed header doesn't take up space in the document flow.
+     You'll need to add padding to the body or the next section.
+  */
+}
+
+*/
+.hero-section {
+    /* ... existing styles ... */
+    /* Add padding equal to or slightly more than the header's height */
+    padding-top: 100px; /* Assuming your header height is around 150px or less */
+    height: calc(100vh - 150px); /* Adjust to fill the remaining viewport height */
+}
+
+    header nav {
+      background: rgba(0, 0, 97, 0.3);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 100px;
+      padding: 1.5rem 0.8rem;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 97, 0.37);
+      max-width: 100%;
+      margin: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-height: 80px;
+    }
+
+    .logo {
+      max-height: 50px;
+      padding-left: 2rem;
+    }
+
+    header ul {
+      display: flex;
+      list-style: none;
+      align-items: center;
+    }
+
+    header ul a {
+      text-decoration: none;
+      color: white;
+      padding: 0 1.5rem;
+      text-transform: uppercase;
+    }
+
+    .small_bar {
+      padding-left: 1.5rem;
+    }
+
+    .small_bar a {
+      padding: 0;
+      width: 37px;
+      height: 37px;
+      display: flex;
+      border-radius: 50%;
+      background-color: rgb(3, 0, 155);
+      backdrop-filter: blur(15px);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .small_bar .bar {
+      position: relative;
+      width: 52%;
+      height: 1.3px;
+      background-color: white;
+      border-radius: 2rem;
+    }
+
+    .small_bar .bar::before,
+    .small_bar .bar::after {
+      content: "";
+      left: 50%;
+      position: absolute;
+      transform: translateX(-50%);
+      width: 50%;
+      height: 100%;
+      background-color: inherit;
+    }
+
+    .small_bar .bar::before {
+      top: -4.5px;
+    }
+
+    .small_bar .bar::after {
+      top: 4.5px;
+    }
+
+    /* Video Background */
+    .video-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .video-background video {
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+    }
+
+    .video-background::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    /* Hero Section */
+.hero-section {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* FIX: Use 100vh to fill the screen */
+  height: 100vh;
+  text-align: center;
+  /* FIX: Add padding-top to create clearance for the fixed header (approx 150px) */
+  padding: 2rem; 
+  padding-top: 150px; 
+  opacity: 0;
+  transform: translateY(30px);
+  /* Delayed animation: waits for border transition to finish */
+  animation: fadeInUp 1s ease-out 0.8s forwards;
+  animation-play-state: paused;
+}
+    body.intro-complete .hero-section {
+      animation-play-state: running;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-title {
+      color: white;
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+      line-height: 1.4;
+      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.8));
+    }
+
+    .hero-title .aess-text {
+      display: inline-block;
+      color: transparent;
+      -webkit-text-stroke: 2px white;
+      animation: fillText 5s ease-in-out 1s forwards;
+    }
+
+    @keyframes fillText {
+      0% {
+        color: transparent;
+      }
+
+      100% {
+        color: white;
+      }
+    }
+
+   .explore-btn {
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-family: 'Orbitron', Courier, monospace;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: white;
+  background-color: rgb(0, 0, 97);
+  border: 2px solid white;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: block; /* changed from inline-block */
+  margin: 0 auto; /* centers the button horizontally */
+  width: fit-content; /* button only as wide as its content */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+}
+
+    .explore-btn:hover {
+      background-color: rgb(3, 0, 155);
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 10px 25px rgba(0, 0, 0, 0.8);
+    }
+
+    /* About Section */
+    .about-section {
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(180deg, rgba(0, 0, 97, 0.8) 0%, rgba(0, 0, 0, 0.9) 100%);
+      padding: 0;
+      min-height: 400vh;
+      display: block;
+    }
+
+    .about-scroll-container {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .aess-letters {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      z-index: 1;
+    }
+
+.aess-letter {
+  font-size: 10rem; /* Changed from 15rem */
+  font-weight: 900;
+  color: white;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateX(-100vw);
+  transition: none;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+  -webkit-text-stroke: 2px white;
+}
+    .aess-letter.visible {
+      opacity: 1;
+    }
+
+    .about-content-wrapper {
+      position: absolute;
+      width: 100%;
+      max-width: 1400px;
+      padding: 0 2rem;
+      opacity: 0;
+      transform: scale(0.8) translateX(-100px);
+      transition: opacity 1s ease 0.5s, transform 1s ease 0.5s;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .about-content-wrapper.visible {
+      opacity: 1;
+      transform: scale(1) translateX(0);
+      pointer-events: auto;
+    }
+
+    .about-stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      color: white;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    .stat-label {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .aess-letters.move-right {
+      justify-content: center;
+      transform: translateX(50px);
+      padding-right: 5%;
+      transition: all 1s ease;
+    }
+
+.aess-letters.move-right .aess-letter {
+  font-size: 5rem; /* Changed from 7.5rem */
+  transition: font-size 1s ease, transform 1s ease;
+}
+
+    .aess-circle {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      transition: all 1s ease;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .aess-circle.visible {
+      width: 800px;
+      height: 800px;
+      border: 3px solid rgba(0, 100, 255, 0.8);
+      box-shadow: 0 0 40px rgba(0, 100, 255, 0.6), inset 0 0 40px rgba(0, 100, 255, 0.2);
+      animation: shockwave 0.6s ease-out, rotatingGlow 4s linear infinite 0.6s;
+    }
+
+    @keyframes rotatingGlow {
+
+      0%,
+      50%,
+      100% {
+        box-shadow: 0 0 40px rgba(0, 100, 255, 0.6);
+      }
+
+      25%,
+      75% {
+        box-shadow: 0 0 150px rgba(0, 100, 255, 0.6);
+      }
+    }
+
+    /* What's AESS Cards */
+.whats-aess-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.whats-aess-main-card {
+  background: rgba(0, 0, 97, 0.6);
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  padding: 2.5rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  
+  /* Animation properties */
+  opacity: 0;
+  transform: translateX(-100px) rotate(-5deg);
+  transition: opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s;
+}
+
+.about-content-wrapper.visible .whats-aess-main-card {
+  opacity: 1;
+  transform: translateX(0) rotate(0deg);
+}
+
+.whats-aess-main-title {
+  color: white;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.whats-aess-main-text {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 1.2rem;
+  text-align: justify;
+}
+
+.whats-aess-bottom-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.whats-aess-card {
+  position: relative;
+  padding: 25px;
+  border-radius: 14px;
+  background: #0f0f0fac;
+  color: white;
+  overflow: hidden;
+  
+  /* Animation properties */
+  opacity: 0;
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.whats-aess-card::before,
+.whats-aess-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 3px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent 0%, transparent 10%, #00eaff 25%, transparent 40%, transparent 100%);
+  background-size: 200% 100%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.whats-aess-card::before {
+  animation: wormMove 3s linear infinite;
+}
+
+.whats-aess-card::after {
+  animation: wormMoveReverse 3s linear infinite;
+  opacity: 0.9;
+}
+
+/* Left card flies in from left */
+.about-content-wrapper.visible .whats-aess-card:nth-child(1) {
+  animation: flyInLeft 0.7s ease 0.4s forwards;
+}
+
+/* Middle card flies in from bottom */
+.about-content-wrapper.visible .whats-aess-card:nth-child(2) {
+  animation: flyInBottom 0.7s ease 0.6s forwards;
+}
+
+/* Right card flies in from right */
+.about-content-wrapper.visible .whats-aess-card:nth-child(3) {
+  animation: flyInRight 0.7s ease 0.8s forwards;
+}
+
+@keyframes wormMove {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 200% 0%;
+  }
+}
+
+@keyframes wormMoveReverse {
+  0% {
+    background-position: 200% 0%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+@keyframes flyInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100px) rotate(-10deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg);
+  }
+}
+
+@keyframes flyInBottom {
+  from {
+    opacity: 0;
+    transform: translateY(100px) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes flyInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px) rotate(10deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg);
+  }
+}
+
+.whats-aess-card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.whats-aess-card-text {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  text-align: justify;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    /* Media Section */
+    .media-section {
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 97, 0.8) 100%);
+      /* padding: 4rem 2rem; */
+      min-height: 100vh;
+    }
+
+    .media-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .media-header {
+      margin-bottom: 3rem;
+    }
+
+    .media-header h2 {
+      color: white;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 0.5rem;
+      text-transform: uppercase;
+      z-index: 10000;
+    }
+
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    .media-card {
+      background: rgba(0, 0, 97, 0.4);
+      border-radius: 17px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      position: relative;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+    }
+   /* ADD THIS - Blurred green overlay */
+.media-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 500px; /* Same as your image height */
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Make sure content stays above the overlay */
+.media-card-content {
+  position: relative;
+  z-index: 2;
+  padding: 0.5rem;
+  color: white;
+  text-align: center;
+  font-size: 1rem;
+
+}
+
+
+    
+   .media-card::after {
+  content: "";
+  position: absolute;
+  /* Shorthand for top: 0; left: 0; right: 0; bottom: 0; */
+  inset: 0;
+  
+  border-radius: 15px;
+
+  /* Padding controls the thickness of the visible border line */
+  padding: 4.5px; 
+
+  /* Extended gradient for smoother animation loop */
+  background: linear-gradient(45deg, #00bfff, #0012b5, #37cdff, #0012b5); 
+  background-size: 300% 100%;
+
+  /* Webkit and standard masking to create the hollow border */
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  pointer-events: none; /* Allows clicks to pass through */
+
+  animation: borderMove 5s linear infinite;
+}
+
+/*
+ * 3. The Keyframe Animation
+ * This moves the large gradient background horizontally (from 0% to 300% of its width).
+ */
+@keyframes borderMove {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    /* Set to 300% to ensure a smooth, continuous loop with the 300% background-size */
+    background-position: 300% 50%;
+  }
+}
+
+    .media-card-image {
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+      display: none;
+    }
+
+    .media-card-content {
+      padding: 0.5rem;
+      color: white;
+      text-align: center;
+      font-size: 1rem;
+    }
+
+    .media-card-title {
+      font-size: 0.7rem;
+      /* font-weight: 500; */
+      margin-bottom: 0.8rem;
+      text-align: center;
+
+      background-color: rgba(83, 83, 83, 0.269); /* Green with 50% opacity */
+  backdrop-filter: blur(5px); /* Blur effect */
+  -webkit-backdrop-filter: blur(5px); /* Safari support */
+  border-radius: 50px;
+  padding: 0.5rem;
+    }
+
+    .media-card-excerpt{
+       background-color: rgba(83, 83, 83, 0.269); /* Green with 50% opacity */
+  backdrop-filter: blur(5px); /* Blur effect */
+  -webkit-backdrop-filter: blur(5px); /* Safari support */
+  border-radius: 5px;
+  padding: 0.4rem;
+  font-size: 0.8rem;
+    }
+
+    .media-card-date {
+      background-color: rgba(83, 83, 83, 0.269); /* Green with 50% opacity */
+  backdrop-filter: blur(5px); /* Blur effect */
+  -webkit-backdrop-filter: blur(5px); /* Safari support */
+      font-size: 0.5rem;
+      margin-bottom: 0.3rem;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-radius: 50px;
+    }
+
+
+
+
+
+
+
+
+
+    /* Section Nav */
+    .section-nav {
+      position: fixed;
+      right: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      background: rgba(0, 0, 97, 0.3);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 20px;
+      padding: 1.5rem 0.8rem;
+    }
+
+    .section-nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .section-nav-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.4);
+      border: 2px solid white;
+      transition: all 0.3s ease;
+    }
+
+    .section-nav-item.active .section-nav-dot {
+      background-color: white;
+      transform: scale(1.3);
+    }
+
+   .section-nav-label {
+    opacity: 0;
+    visibility: hidden;
+    background-color: rgba(0, 0, 97, 0.9);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    margin-right: 1.5rem;
+    position: absolute;
+    right: 100%;
+}
+
+/* 1. Rule for visibility on hover (existing) */
+.section-nav-item:hover .section-nav-label {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 2. New Rule for visibility on the current/active section item */
+.section-nav-item.active .section-nav-label {
+    opacity: 1;
+    visibility: visible;
+}
+
+    /* Researchers */
+    .researchers-section {
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(180deg, rgba(0, 0, 97, 0.8) 0%, rgba(0, 0, 0, 0.9) 100%);
+      padding: 6rem 0rem;
+      min-height: 100vh;
+    }
+
+    .researchers-header {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: white;
+    }
+
+    .researchers-columns {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding: 2rem 0;
+    }
+
+    .researcher-column {
+      width: 20px;
+      min-width: 50px;
+      height: 500px;
+      background: linear-gradient(180deg, rgba(0, 0, 97, 0.6), rgba(3, 0, 155, 0.8));
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .researcher-column-label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-90deg);
+      color: white;
+      white-space: nowrap;
+      text-transform: uppercase;
+    }
+
+    .researcher-column.active {
+      width: 300px;
+      min-width: 200px;
+    }
+
+    .researcher-card {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(15px);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 1.1rem;
+    }
+
+    .researcher-column.active .researcher-card {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .researcher-card-image {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .researcher-card-title {
+      color: white;
+      font-size: 1rem;
+      margin-bottom: 0.6rem;
+      text-align: center;
+    }
+
+    .researcher-card-name {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.9rem;
+      text-align: left;
+    }
+    /* 👇 ADD THESE NEW STYLES */
+.researcher-card-description {
+    color: #00eaff; /* Use a bright, contrasting color for emphasis */
+    font-size: 1rem;
+    text-align: left;
+    line-height: 1.4;
+    margin-top: 0.5rem; /* Add some space above the description */
+    padding: 0 0.5rem;
+    opacity: 0.8;
+}
+
+    .researcher-card-close {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      width: 25px;
+      height: 25px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: white;
+    }
+
+    /* Floating Btn */
+    .floating-research-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 999;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 97, 0.3);
+      backdrop-filter: blur(5px);
+      border-radius: 50%;
+      color: white;
+    }
+
+    /* NEW ELECTRONICS SECTION */
+/* NEW ELECTRONICS SECTION */
+.electronics-section {
+  position: relative;
+  height: 200vh;
+  background: black;
+}
+
+.electronics-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.electronics-content {
+  position: relative;
+  z-index: 10;
+  height: 200vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20vh 6vw;
+}
+
+.glass-box {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255,255,255,0.25);
+  padding: 2.8rem 4rem;
+  border-radius: 20px;
+  font-size: 3rem;
+  color: white;
+  font-weight: 800;
+  text-transform: uppercase;
+  width: fit-content;
+  opacity: 0;
+  transform: translateY(100px);
+  transition: transform 0.6s ease-out, opacity 0.6s ease-out, visibility 0.6s ease-out;
+  visibility: hidden;
+}
+
+.glass-box.fixed {
+  position: fixed;
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.glass-box.hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+#elecTitle.fixed {
+  top: 3vh;
+  left: 20vw;
+}
+
+#elecJoin.fixed {
+  top: 40vh;
+  right: 6vw;
+}
+
+#elecTitle.fixed {
+  position: fixed;
+  top: 15vh;
+  left: 6vw;
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+#elecTitle:not(.fixed) {
+  visibility: hidden;
+}
+
+#elecJoin.fixed {
+  position: fixed;
+  top: 40vh;
+  right: 6vw;
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+#elecJoin:not(.fixed) {
+  visibility: hidden;
+}
+
+
+    /* Aviation Section - Electronics Style */
+/* Aviation Section - Electronics Style */
+.aviation-section {
+  position: relative;
+  height: 200vh;
+  background: black;
+}
+
+.aviation-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.aviation-content {
+  position: relative;
+  z-index: 10;
+  height: 200vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20vh 6vw;
+}
+
+.aviation-title,
+.aviation-join {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255,255,255,0.25);
+  padding: 2.8rem 4rem;
+  border-radius: 20px;
+  font-size: 3rem;
+  color: white;
+  font-weight: 800;
+  text-transform: uppercase;
+  width: fit-content;
+  opacity: 0;
+  transform: translateY(100px);
+  transition: transform 0.6s ease-out, opacity 0.6s ease-out, visibility 0.6s ease-out;
+  visibility: hidden;
+}
+
+.aviation-title.fixed,
+.aviation-join.fixed {
+  position: fixed;
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.aviation-title.hidden,
+.aviation-join.hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.aviation-title.fixed {
+  top: 15vh;
+  left: 6vw;
+}
+
+.aviation-join.fixed {
+  top: 40vh;
+  right: 6vw;
+}
+/* Aerospace Section - Electronics Style */
+.aerospace-section {
+  position: relative;
+  height: 200vh;
+  background: black;
+}
+
+/* Aerospace Section - Electronics Style */
+.aerospace-section {
+  position: relative;
+  height: 200vh;
+  background: black;
+}
+
+.aerospace-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.aerospace-content {
+  position: relative;
+  z-index: 10;
+  height: 200vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20vh 6vw;
+}
+
+.aerospace-title,
+.aerospace-join {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255,255,255,0.25);
+  padding: 2.8rem 4rem;
+  border-radius: 20px;
+  font-size: 3rem;
+  color: white;
+  font-weight: 800;
+  text-transform: uppercase;
+  width: fit-content;
+  opacity: 0;
+  transform: translateY(100px);
+  transition: transform 0.6s ease-out, opacity 0.6s ease-out, visibility 0.6s ease-out;
+  visibility: hidden;
+}
+
+.aerospace-title.fixed,
+.aerospace-join.fixed {
+  position: fixed;
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.aerospace-title.hidden,
+.aerospace-join.hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.aerospace-title.fixed {
+  top: 15vh;
+  left: 6vw;
+}
+
+.aerospace-title:not(.fixed) {
+  visibility: hidden;
+}
+
+.aerospace-join.fixed {
+  position: fixed;
+  top: 40vh;
+  right: 6vw;
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.aerospace-join:not(.fixed) {
+  visibility: hidden;
+}
+
+.aerospace-join {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255,255,255,0.25);
+  padding: 2.8rem 4rem;
+  border-radius: 20px;
+  font-size: 3rem;
+  color: white;
+  font-weight: 800;
+  text-transform: uppercase;
+  width: fit-content;
+  opacity: 0;
+  transform: translateY(100px);
+  transition: transform 0.6s ease-out, opacity 0.6s ease-out;
+}
+
+.aerospace-join.fixed {
+  position: fixed;
+  top: 40vh;
+  right: 6vw;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+
+    /* Explore More Box */
+.explore-box {
+  position: absolute;
+  bottom: 2rem;
+  left: 3rem;
+  width: 300px;
+  padding: 2rem;
+  background: rgba(0, 0, 97, 0.3);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 15px;
+  color: white;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.explore-box::before,
+.explore-box::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 3px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent 0%, transparent 10%, #00eaff 25%, transparent 40%, transparent 100%);
+  background-size: 200% 100%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.explore-box::before {
+  animation: wormMove 3s linear infinite;
+}
+
+.explore-box::after {
+  animation: wormMoveReverse 3s linear infinite;
+  opacity: 0.9;
+}
+
+.explore-box-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.explore-box-details {
+  font-size: 0.9rem;
+  line-height: 1;
+  margin-bottom: 1rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.explore-box-btn {
+  display: inline-block;
+  padding: 0 0.5rem ;
+  margin-bottom: 3px;
+  background: rgba(0, 0, 97, 0.8);
+  border: 2px solid rgba(255, 255, 255, 0.529);
+  border-radius: 50px;
+  color: white;
+  text-decoration: none;
+  font-weight: 5500;
+  z-index: 999;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.explore-box-btn:hover {
+  background: rgb(3, 0, 155);
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(0, 234, 255, 0.5);
+}
+
+/* Card Stack Carousel */
+.latest-events-carousel {
+  width: 100%;
+  height: 160px;
+  position: relative;
+  margin-top: 1.5rem;
+}
+
+.card-stack {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mini-event-card {
+  position: absolute;
+  width: 150px;
+  height: 200px;
+  background: rgba(0, 0, 97, 0.7);
+  backdrop-filter: blur(50px);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  animation: fadeInOut 9s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 3s);
+  opacity: 0;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  10% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  40% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+
+
+.card-stack:hover .mini-event-card {
+  animation-play-state: paused;
+}
+
+.mini-event-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+}
+
+.mini-event-info {
+  padding: 0.6rem;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(5px);
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mini-event-title {
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Responsive adjustment */
+@media (max-width: 968px) {
+  .explore-box {
+    left: 2rem;
+    width: 280px;
+    bottom: 6rem;
+  }
+  
+  .latest-events-carousel {
+    height: 140px;
+  }
+  
+  .mini-event-card {
+    width: 180px;
+    height: 130px;
+  }
+  
+  .mini-event-image {
+    height: 80px;
+  }
+}
+
+
+
+
+
+
+/* NEW: CURVED CAROUSEL STYLES */
+    .curved-carousel-wrapper {
+  position: relative;
+  width: 100%;
+  height: 450px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  perspective: 1800px;
+  perspective-origin: 50% 50%; /* Change these values */
+  margin-top: 3rem;
+}
+
+    .curved-carousel {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transform: rotateY(0deg); /* Initial rotation, controlled by JS */
+      transition: transform 0.8s ease-out; /* Smooth rotation transition */
+    }
+
+    .carousel-card {
+  position: absolute;
+  width: 200px;
+  height: 250px;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%); /* ✅ Center perfectly */
+  transition: all 0.5s ease;
+  transform-origin: 50% 100%;
+}
+
+
+    .carousel-card .media-card-image {
+      height: 50px; /* Adjusted image height */
+    }
+
+    /* Media Query for smaller screens */
+    @media (max-width: 768px) {
+      .curved-carousel-wrapper {
+        height: 350px;
+      }
+      .carousel-card {
+        width: 90%;
+        margin-left: -45%;
+        height: 300px;
+      }
+    }
+
+
+    /* Carousel Navigation Arrows */
+.carousel-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  background: rgba(0, 0, 97, 0.6);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  transition: all 0.3s ease;
+  font-size: 1.5rem;
+  user-select: none;
+}
+
+.carousel-nav-btn:hover {
+  background: rgba(0, 0, 97, 0.9);
+  border-color: rgba(0, 234, 255, 0.8);
+  box-shadow: 0 0 20px rgba(0, 234, 255, 0.5);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-nav-btn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.carousel-nav-left {
+  left: 2rem;
+}
+
+.carousel-nav-right {
+  right: 2rem;
+}
+
+@media (max-width: 768px) {
+  .carousel-nav-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+  
+  .carousel-nav-left {
+    left: 1rem;
+  }
+  
+  .carousel-nav-right {
+    right: 1rem;
+  }
+}
+
+
+/* Animation for collecting cards */
+.researchers-columns {
+  position: relative;
+}
+
+.researchers-columns .researcher-column {
+  opacity: 0;
+  transform: translate(
+    calc(var(--random-x, 0) * 1px),
+    calc(var(--random-y, 0) * 1px)
+  ) rotate(calc(var(--random-rotate, 0) * 1deg)) scale(0.3);
+  transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* When section is in view - collect animation */
+.researchers-columns.animate-entry .researcher-column {
+  opacity: 1;
+  transform: translate(0, 0) rotate(0deg) scale(1);
+}
+
+/* Stagger the animation for each card */
+.researchers-columns.animate-entry .researcher-column:nth-child(1) {
+  transition-delay: 0.1s;
+}
+
+.researchers-columns.animate-entry .researcher-column:nth-child(2) {
+  transition-delay: 0.2s;
+}
+
+.researchers-columns.animate-entry .researcher-column:nth-child(3) {
+  transition-delay: 0.3s;
+}
+/* Add more nth-child rules if you have more columns */
+
+
+
+
+
+/* Vertical Lines Animation */
+#vertical-lines-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10001; /* Above intro overlay */
+  display: flex;
+ justify-content: center;
+  transform: translateY(-100px); /* 👈 ADD THIS */
+  align-items: center;
+  gap: 750px; /* Distance between lines */
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 1.5s ease;
+}
+
+#vertical-lines-container.fade-out-lines {
+  opacity: 0;
+}
+
+.vertical-line {
+  width: 5px; /* Line thickness */
+  height: 0;
+  background-color: #00eaff;
+  box-shadow: 0 0 10px rgba(0, 234, 255, 0.8),
+              0 0 20px rgba(0, 234, 255, 0.5);
+  position: relative;
+  /* Remove the animation from here */
+}
+
+/* New: Separate animation for asymmetric growth */
+.vertical-line::before,
+.vertical-line::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  background: inherit;
+  box-shadow: inherit;
+}
+
+/* Top part - grows slowly */
+.vertical-line::before {
+  bottom: 50%;
+  height: 0;
+  /* animation: growTop 10s linear forwards; <--- REMOVE THIS LINE */
+}
+
+/* Bottom part - grows fast */
+.vertical-line::after {
+  top: 50%;
+  height: 0;
+  /* animation: growBottom 10s linear forwards; <--- REMOVE THIS LINE */
+}
+/* NEW: Class to trigger the vertical line growth animation on button press */
+#vertical-lines-container.start-animation .vertical-line::before {
+  /* Shorten duration (e.g., 1.5s) to match the intro fade-out */
+  animation: growTop 1.5s linear forwards; 
+}
+#vertical-lines-container.start-animation .vertical-line::after {
+  /* Shorten duration (e.g., 1.5s) to match the intro fade-out */
+  animation: growBottom 1.5s linear forwards;
+}
+
+/* Top growth: 2px/s for 10 seconds = 20px total */
+@keyframes growTop {
+  0% {
+    height: 0;
+  }
+  100% {
+    height: 1100px; /* 👈 CHANGE THIS: 2px/s × 10s = 20px */
+  }
+}
+
+/* Bottom growth: 10px/s for 10 seconds = 100px total */
+@keyframes growBottom {
+  0% {
+    height: 0;
+  }
+  100% {
+    height: 1500px; /* 👈 CHANGE THIS: 10px/s × 10s = 100px */
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.container {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- Content Styling --- */
+      
+       
+        /* --- Existing Border Styling (kept the same) --- */
+        .border-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .border-line {
+            position: absolute;
+           background-color: white;
+  box-shadow: 0 0 20px rgba(0, 234, 255, 0.8),
+              0 0 30px rgba(0, 234, 255, 0.4);
+        }
+
+        .border-top {
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            width: 100%;
+            transform-origin: center;
+            animation: shrinkTop 2s ease-out forwards;
+
+        }
+
+        @keyframes shrinkTop {
+            0% {
+                left: -50%;
+                width: 100%;
+            }
+
+            100% {
+                width: 0;
+                left: 0%;
+            }
+        }
+
+
+
+        .border-top_2 {
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            width: 100%;
+            transform-origin: center;
+            animation: shrinkTop_right 2s ease-out forwards;
+        }
+
+        @keyframes shrinkTop_right {
+
+            0% {
+                left: 50%;
+                width: 100%;
+            }
+
+            100% {
+                width: 100%;
+                left: 100%;
+            }
+        }
+
+        .border-left {
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            transform-origin: top;
+            animation: shrinkSides 2s ease-in-out forwards;
+        }
+
+        .border-right {
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 0%;
+            transform-origin: top;
+            animation: shrinkSides 2s ease-in-out forwards;
+        }
+
+
+
+        @keyframes shrinkSides {
+
+            0% {
+                height: 0%;
+            }
+
+            100% {
+                height: 100%;
+            }
+        }
+
+
+
+        .border-bottom {
+            bottom: 0;
+            width: 100%;
+            left: 100%;
+            height: 4px;
+            width: 100%;
+            transform-origin: center;
+            animation: shrinkBottom 1s ease-in-out 1.8s forwards;
+        }
+
+        @keyframes shrinkBottom {
+
+
+            0% {
+                width: 0;
+                left: 0%;
+            }
+
+            100% {
+                left: -50%;
+                width: 100%;
+
+            }
+        }
+
+        .border-bottom_2 {
+            bottom: 0;
+            width: 100%;
+            left: 100%;
+            height: 4px;
+            width: 100%;
+            transform-origin: center;
+            animation: shrinkBottom_2 1s ease-in 1.8s forwards;
+        }
+
+        @keyframes shrinkBottom_2 {
+
+            0% {
+                width: 100%;
+                left: 100%;
+            }
+
+
+            100% {
+                left: 50%;
+                width: 100%;
+            }
+        }
+
+
+
+
+        /* Add this in the INTRO & TRANSITION STYLES section, around line 150 */
+
+/* Line from bottom to button */
+#bottom-to-button-line {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 0;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 234, 255, 0.6),
+              0 0 20px rgba(0, 234, 255, 0.3);
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+#bottom-to-button-line.show-line {
+  opacity: 1;
+  animation: growLineToButton 2s ease-out forwards;
+}
+
+#bottom-to-button-line.hide-line {
+  animation: shrinkLine 0.8s ease-in forwards;
+}
+
+@keyframes growLineToButton {
+  0% {
+    height: 0;
+  }
+  100% {
+    height: calc(35vh - 40px); /* Grows to just below the button */
+  }
+}
+
+@keyframes shrinkLine {
+  0% {
+    height: calc(35vh - 40px);
+    opacity: 1;
+  }
+  100% {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+
+/* Border animation for intro button */
+#introButton {
+  /* ... keep existing styles ... */
+  position: relative;
+  overflow: visible;
+}
+
+#introButton::before {
+  content: '';
+  position: absolute;
+  inset: -3px; /* Creates border offset */
+  border-radius: 50px;
+  padding: 3px;
+  background: linear-gradient(
+    0deg,
+    transparent 0%,
+    transparent 40%,
+    #ffffff 70%,
+    transparent 60%,
+    transparent 100%
+  );
+  background-size: 100% 300%;
+  background-position: 0% 100%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#introButton.show-btn::before {
+  animation: borderSweepUp 2s ease-out reverse;
+}
+
+@keyframes borderSweepUp {
+  0% {
+    background-position: 0% 100%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    background-position: 0% -200%;
+    opacity: 0;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+/* Social Media Section */
+.social-media-section {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 97, 0.8) 100%);
+  padding: 6rem 2rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.social-media-container {
+  max-width: 1200px;
+  width: 100%;
+  text-align: center;
+}
+
+.social-media-header {
+  margin-bottom: 4rem;
+}
+
+.social-media-header h2 {
+  color: white;
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  text-shadow: 0 0 20px rgba(0, 234, 255, 0.5);
+}
+
+.social-media-header p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+}
+
+.social-media-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3rem;
+  margin-top: 3rem;
+}
+
+.social-card {
+  position: relative;
+  background: rgba(0, 0, 97, 0.4);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  transition: all 0.4s ease;
+  cursor: pointer;
+  overflow: hidden;
+  text-decoration: none;
+  display: block;
+}
+
+.social-card::before,
+.social-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 3px;
+  border-radius: inherit;
+  /* background: linear-gradient(90deg, transparent 0%, transparent 10%, #00eaff 25%, transparent 40%, transparent 100%); */
+  background-size: 200% 100%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.social-card:hover::before,
+.social-card:hover::after {
+  opacity: 1;
+}
+
+.social-card::before {
+  animation: wormMove 3s linear infinite;
+}
+
+.social-card::after {
+  animation: wormMoveReverse 3s linear infinite;
+}
+
+.social-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 20px 40px rgba(0, 234, 255, 0.3);
+}
+
+/* Facebook Hover - Blue Background */
+.social-card.facebook:hover {
+  background: rgba(32, 173, 0, 0.8);
+  box-shadow: 0 20px 40px rgba(32, 173, 0, 0.8);
+}
+
+.social-card.facebook:hover::before,
+.social-card.facebook:hover::after {
+  background: linear-gradient(90deg, transparent 0%, transparent 10%, #089f00 25%, transparent 40%, transparent 100%);
+}
+
+/* Instagram Hover - Gradient Background */
+.social-card.instagram:hover {
+  background: linear-gradient(135deg, 
+    rgba(255, 220, 128, 0.8) 0%,
+    rgba(252, 175, 69, 0.8) 25%,
+    rgba(245, 96, 64, 0.8) 50%,
+    rgba(214, 41, 118, 0.8) 75%,
+    rgba(150, 47, 191, 0.8) 100%
+  );
+  box-shadow: 0 20px 40px rgba(214, 41, 118, 0.5);
+  animation: instagramShift 3s ease infinite;
+}
+
+@keyframes instagramShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.social-card.instagram:hover::before,
+.social-card.instagram:hover::after {
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    #fcaf45 15%, 
+    #f56040 25%, 
+    #d6295a 35%, 
+    transparent 50%, 
+    transparent 100%
+  );
+}
+
+/* LinkedIn Hover - Sky Blue Background */
+.social-card.linkedin:hover {
+  background: rgba(0, 119, 181, 0.8);
+  box-shadow: 0 20px 40px rgba(0, 119, 181, 0.5);
+}
+
+.social-card.linkedin:hover::before,
+.social-card.linkedin:hover::after {
+  background: linear-gradient(90deg, transparent 0%, transparent 10%, #0077b5 25%, transparent 40%, transparent 100%);
+}
+
+.social-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.social-card:hover .social-icon {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+}
+
+.social-icon svg {
+  width: 40px;
+  height: 40px;
+  fill: white;
+}
+
+.social-name {
+  color: white;
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+}
+
+.social-handle {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1rem;
+  letter-spacing: 1px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .social-media-cards {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .social-media-header h2 {
+    font-size: 2rem;
+  }
+}
+
+
+
+
+
+.electronics-join{
+  font-size: 1.3rem;
+  width: 55%;
+  height: auto;
+  min-height: 350px;
+  padding: 1rem;
+  overflow: visible;
+}
+
+.aviation-join{
+  font-size: 1.3rem;
+  width: 55%;
+  height: auto;
+  min-height: 350px;
+  padding: 1rem;
+  overflow: visible;
+}
+
+.aerospace-join{
+  font-size: 1.3rem;
+  width: 55%;
+  height: auto;
+  min-height: 350px;
+  padding: 1rem;
+  overflow: visible;
+}
+
+
+
+
+
+
+
+
+
+
+/* Hero Section Video Background */
+.hero-video-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 0; /* Below hero content but above grid canvas */
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.hero-video-bg video {
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+}
+
+.hero-video-bg::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Dark overlay for better text readability */
+}
+
+/* Show video after intro completes */
+body.intro-complete .hero-video-bg {
+  opacity: 1;
+}
+
+/* Hide video when scrolling past hero section */
+body.scroll-active .hero-video-bg {
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*=============== VARIABLES CSS ===============*/
+:root {
+  /*========== Colors ==========*/
+  /*Color mode HSL(hue, saturation, lightness)*/
+  /* 
+      For more colors visit: https://htmlcolorcodes.com/
+      -> Choose any color 
+      -> Copy the color mode (HSL)
+  */
+  --yellow-color: 200;
+  --green-color: 0;
+  --pink-color: 310;
+  --black-color: 300;
+  --red-color: 340;
+  --random-color: 230;
+
+  --white-color: hsl(0, 0%, 100%);
+  --black-color: hsl(0, 0%, 0%);
+
+  /*========== Font and typography ==========*/
+  /*.5rem = 8px | 1rem = 16px ...*/
+  --body-font: "Montserrat Alternates", serif;
+  --biggest-font-size: 2rem;
+  --big-font-size: 1.5rem;
+  --normal-font-size: .938rem;
+  --small-font-size: .813rem;
+
+  /*========== Font weight ==========*/
+  --font-regular: 400;
+  --font-semi-bold: 600;
+  --font-bold: 700;
+}
+
+/*========== Responsive typography ==========*/
+@media screen and (min-width: 1150px) {
+  :root {
+    --biggest-font-size: 3rem;
+    --big-font-size: 2.5rem;
+    --normal-font-size: 1rem;
+    --small-font-size: .875rem;
+  }
+}
+
+/*=============== BASE ===============*/
+
+
+
+a {
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/*=============== REUSABLE CSS CLASSES ===============*/
+.container_team {
+  max-width: 1120px;
+  margin-inline: auto;
+}
+
+.card-yellow {
+  --hue: var(--yellow-color);
+}
+
+
+.card-pink {
+  --hue: var(--pink-color);
+}
+.card-black {
+  --hue: var(--black-color);
+}
+
+.card-red {
+  --hue: var(--red-color);
+}
+.card-other {
+  --hue: var(--random-color);
+}
+
+.card-green .card__clip {
+  background-color: hsl(0, 0%, 50%); /* Dark gray */
+  box-shadow: 0 0 16px 4px hsl(0, 0%, 15%);
+  color: #ffffff;
+}
+.card-green .info__button {
+  background-color: hsl(0, 0%, 50%); /* Dark gray */
+  box-shadow: 0 0 16px 4px hsl(0, 0%, 15%);
+  color: #ffffff;
+}
+
+/*=============== CARD ===============*/
+.card {
+  position: relative;
+  padding-block: 5rem;
+}
+
+.card__bg, 
+.card__blur {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.card__bg {
+  object-fit: cover;
+  object-position: center;
+}
+
+.card__blur {
+  backdrop-filter: blur(24px);
+}
+
+.card__container {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 400px); /* 3 cards in a row */
+  justify-content: center;
+  gap: 2rem;
+}
+
+.card__article {
+  position: relative;
+  border-radius: 2rem;
+  overflow: hidden;
+  /* ADD THESE LINES: */
+  width: 400px;        /* Fixed width */
+  height: 500px;       /* Fixed height */
+  flex-shrink: 0;      /* Prevents shrinking */
+}
+
+.card__img {
+  border-radius: 2rem;
+  transition: transform .4s;
+  /* ADD THESE LINES: */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* Makes images fill the card while maintaining aspect ratio */
+}
+
+.card__shadow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, 
+            hsla(0, 0%, 0%, 0) 70%, 
+            hsl(0, 0%, 0%) 100%);
+}
+
+.card__data {
+  color: var(--white-color);
+  position: absolute;
+  left: 1.5rem;
+  bottom: 2rem;
+}
+
+.card__name {
+  font-size: var(--big-font-size);
+  margin-bottom: .25rem;
+}
+
+.card__profession {
+  display: block;
+  font-size: var(--small-font-size);
+}
+
+.card__clip {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: hsl(var(--hue), 90%, 50%);
+  box-shadow: 0 0 16px 4px hsl(var(--hue), 90%, 50%);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+  color: var(--black-color);
+  z-index: 5;
+  cursor: pointer;
+  transition: transform .4s;
+}
+
+.card__article:hover .card__img {
+  transform: scale(1.1);
+}
+
+/*=============== CARD INFO ===============*/
+.info {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: hsla(0, 0%, 0%, .1);
+  backdrop-filter: blur(12px);
+  padding: 3rem 1.5rem 1.5rem;
+  color: var(--white-color);
+  clip-path: circle(8px at 88% 9%);
+  transition: clip-path .5s ease-in-out;
+}
+
+.info__name {
+  font-size: var(--biggest-font-size);
+  margin-bottom: .5rem;
+}
+
+.info__description {
+  font-size: var(--small-font-size);
+  margin-bottom: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Shows approximately 20 words across 3 lines */
+  -webkit-box-orient: vertical;
+  line-height: 1.5;
+  max-height: 4.5em; /* 3 lines * 1.5 line-height */
+}
+
+.info__button {
+  display: inline-flex;
+  background-color: hsl(var(--hue), 90%, 50%);
+  box-shadow: 0 0 12px hsl(var(--hue), 90%, 50%);
+  padding: .5rem .75rem;
+  border-radius: .5rem;
+  color: var(--black-color);
+  font-size: var(--small-font-size);
+  font-weight: var(--font-semi-bold);
+  transition: box-shadow .4s;
+}
+
+/* .info__button:hover {
+  box-shadow: 0 0 20px hsl(var(--hue), 90%, 50%);
+} */
+
+.info__social {
+  position: absolute;
+  left: 1.5rem;
+  bottom: 1.5rem;
+  display: flex;
+  column-gap: .5rem;
+}
+
+.info__link {
+  background-color: hsl(var(--hue), 90%, 50%);
+  box-shadow: 0 0 12px hsl(var(--hue), 90%, 50%);
+  width: 2rem;
+  height: 2rem;
+  border-radius: .75rem;
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+  color: var(--black-color);
+  transition: transform .4s;
+}
+
+.info__link:hover {
+  transform: translateY(-.25rem);
+}
+
+/* Rotate icon */
+.card__article:hover .card__clip {
+  transform: rotate(-45deg);
+}
+
+/* Clip path animation */
+.info:hover,
+.card__clip:hover ~ .info {
+  clip-path: circle(100%);
+}
+
+
+
+
+
+/* Card Modal Styles */
+.card-modal {
+  display: none;
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.612);
+  backdrop-filter: blur(10px);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.card-modal-content {
+  position: relative;
+  background: linear-gradient(135deg, rgba(0, 0, 97, 0.319), rgba(0, 0, 50, 0.674));
+  margin: 5% auto;
+  padding: 0;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  width: 80%;
+  max-width: 1200px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+  animation: slideDown 0.4s ease;
+  overflow: hidden;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.card-modal-close {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  color: white;
+  font-size: 35px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.card-modal-close:hover {
+  background: rgba(255, 0, 0, 0.8);
+  transform: rotate(90deg);
+}
+
+.card-modal-body {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.card-modal-left {
+  flex: 0 0 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-modal-image {
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.card-modal-right {
+  flex: 1;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.card-modal-name {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: white;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.card-modal-profession {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.card-modal-description {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 2rem;
+}
+
+.card-modal-social {
+  display: flex;
+  gap: 1rem;
+}
+
+.card-modal-social a {
+  width: 45px;
+  height: 45px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.card-modal-social a:hover {
+  background: hsl(var(--hue), 90%, 50%);
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px hsl(var(--hue), 90%, 50%);
+}
+
+/* Responsive Modal */
+@media screen and (max-width: 768px) {
+  .card-modal-content {
+    width: 95%;
+    margin: 10% auto;
+  }
+  
+  .card-modal-body {
+    flex-direction: column;
+  }
+  
+  .card-modal-left {
+    flex: 1;
+  }
+  
+  .card-modal-name {
+    font-size: 2rem;
+  }
+}
+/*=============== BREAKPOINTS ===============*/
+/* For small devices */
+/* @media screen and (max-width: 320px) {
+  .container {
+    margin-inline: 1rem;
+  }
+
+  .card__container {
+    grid-template-columns: 1fr;
+  }
+
+  .info {
+    padding: 1.5rem 1rem;
+  }
+} */
+
+/* For medium devices */
+/* @media screen and (min-width: 768px) {
+  .card__container {
+    grid-template-columns: repeat(2, 260px);
+  }
+} */
+
+/* For large devices */
+/* @media screen and (min-width: 1150px) {
+  .card {
+    height: 100vh;
+    display: grid;
+    place-content: center;
+  }
+  .card__container {
+    grid-template-columns: repeat(3, 340px);
+  }
+  .card__article, 
+  .card__img {
+    border-radius: 3rem;
+  }
+  .card__data {
+    left: 2rem;
+    bottom: 3rem;
+  }
+  .card__profession {
+    font-size: var(--normal-font-size);
+  }
+  .card__clip {
+    top: 1.5rem;
+    right: 1.5rem;
+  }
+
+  .info {
+    padding: 4rem 2rem 2.5rem;
+  }
+  .info__description, 
+  .info__button {
+    font-size: var(--normal-font-size);
+  }
+  .info__description {
+    margin-bottom: 1.5rem;
+  }
+  .info__social {
+    left: 2rem;
+    bottom: 2.5rem;
+    column-gap: .75rem;
+  }
+} */
+
+
+.locked-section {
+  position: relative;
+}
+
+.coming-soon-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.097);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: all; /* Blocks all clicks */
+}
+
+.coming-soon-overlay span {
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  color: #ffffff;
+  /* text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5); */
+  /* background: rgba(255, 255, 255, 0.3); */
+  padding: 30px 60px;
+  border-radius: 15px;
+  /* border: 2px solid rgba(255, 255, 255, 0.4); */
+}
+
+
+/* TIMELINE SECTION */
+.timeline-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  overflow: hidden;
+  padding: 60px 0;
+  margin-top: 20px;
+  opacity: 1;  /* ← CHANGED */
+  transform: translateY(0);  /* ← CHANGED */
+}
+
+.timeline-container.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.timeline-wrapper {
+  display: flex;
+  gap: 30px;
+  animation: scroll 60s linear infinite;
+  will-change: transform;
+}
+.timeline-wrapper:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.timeline-card {
+  flex-shrink: 0;
+  width: 300px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.timeline-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.timeline-card-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.timeline-card-title {
+  padding: 10px;
+  color: white;
+  font-size: 1.3rem;
+  font-weight: 600;
+  text-align: center;
+  background: rgba(0, 44, 94, 0.626);
+}
+
+
+
+.timeline-card-btn {
+  display: block;
+  margin: 15px auto;
+  padding: 10px 30px;
+  background: rgba(0, 0, 97, 0.8);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50px;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.timeline-card-btn:hover {
+  background: rgb(3, 0, 155);
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(0, 234, 255, 0.5);
+}
+
+/* HEAD-ALL GLASSMORPHISM HEADER - FULL WIDTH */
+.HEAD-all {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 0;
+  margin: 2rem 0; /* Changed from 'auto' to '0' for full width */
+  width: 100%; /* Full width */
+  overflow: hidden;
+  
+  /* Full-width glassmorphism background */
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.HEAD-all h2 {
+  position: relative;
+  z-index: 2;
+  font-size: 2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: white;
+  padding: 0.5rem 2rem;
+  
+  /* Inner glass card effect */
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  
+  /* Text glow */
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5),
+               0 0 40px rgba(0, 234, 255, 0.3);
+}
+
+/* Left light effect */
+.HEAD-all::before {
+  content: '';
+  position: absolute;
+  left: 37%; /* Positioned within the full-width container */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(0, 234, 255, 0.5) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(50px);
+  z-index: 1;
+  animation: pulseLeft 3s ease-in-out infinite;
+}
+
+/* Right light effect */
+.HEAD-all::after {
+  content: '';
+  position: absolute;
+  right: 37%; /* Positioned within the full-width container */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(0, 119, 255, 0.5) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(50px);
+  z-index: 1;
+  animation: pulseRight 3s ease-in-out infinite;
+}
+
+/* Pulsing animations */
+@keyframes pulseLeft {
+  0%, 100% {
+    opacity: 0.6;
+    transform: translateY(-50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.2);
+  }
+}
+
+@keyframes pulseRight {
+  0%, 100% {
+    opacity: 0.6;
+    transform: translateY(-50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.2);
+  }
+}
+
+
+/* Timeline Coming Soon Overlay */
+.coming-soon-timeline-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.599);
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  pointer-events: all; /* Blocks all clicks */
+  animation: pulseOverlay 3s ease-in-out infinite;
+}
+
+.coming-soon-text {
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: 8px;
+  color: #ffffff;
+  text-shadow: 
+    0 0 20px rgba(0, 234, 255, 0.8),
+    0 0 40px rgba(0, 234, 255, 0.6),
+    0 0 60px rgba(0, 234, 255, 0.4);
+  background: linear-gradient(
+    45deg,
+    #ffffff,
+    #00eaff,
+    #ffffff,
+    #00eaff
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 3s ease-in-out infinite;
+  padding: 30px 60px;
+  
+  position: relative;
+}
+
+.coming-soon-text::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 15px;
+  padding: 2px;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    #00eaff,
+    transparent
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .coming-soon-text {
+    font-size: 2rem;
+    padding: 20px 40px;
+    letter-spacing: 4px;
+  }
+}
+  </style>
+</head>
+
+<body>
+
+  
+  <div id="vertical-lines-container">
+    <div class="vertical-line" id="line-left"></div>
+    <div class="vertical-line" id="line-right"></div>
+    
+  </div>
+
+  <canvas id="gridCanvas"></canvas>
+
+  <div id="intro-overlay">
+    <div class="container">
+      <div class="border-container">
+        <div class="border-line border-top"></div>
+        <div class="border-line border-top_2"></div>
+        <div class="border-line border-bottom"></div>
+        <div class="border-line border-bottom_2"></div>
+        <div class="border-line border-left"></div>
+        <div class="border-line border-right"></div>
+      </div>
+    </div>
+    <button id="introButton">Enter AESS</button>
+    <!-- <div id="transition-border"></div> -->
+    <!-- Add this right after the closing </div> of #intro-overlay -->
+    <div id="bottom-to-button-line"></div>
+  </div>
+
+  <div class="section-nav">
+    <div class="section-nav-item" data-section="hero">
+      <span class="section-nav-label">Home</span>
+      <div class="section-nav-dot"></div>
+    </div>
+    <div class="section-nav-item" data-section="about">
+      <span class="section-nav-label">About AESS</span>
+      <div class="section-nav-dot"></div>
+    </div>
+    <div class="section-nav-item" data-section="media">
+      <span class="section-nav-label">News</span>
+      <div class="section-nav-dot"></div>
+    </div>
+    <div class="section-nav-item" data-section="researchers">
+      <span class="section-nav-label">Research</span>
+      <div class="section-nav-dot"></div>
+    </div>
+    <div class="section-nav-item" data-section="electronics">
+      <span class="section-nav-label">Electronics Branch</span>
+      <div class="section-nav-dot"></div>
+    </div>
+    <div class="section-nav-item" data-section="aviation">
+      <span class="section-nav-label">Aeronautic Branch</span>
+      <div class="section-nav-dot"></div>
+    </div>
+    <div class="section-nav-item" data-section="aerospace">
+      <span class="section-nav-label">Aerospace Branch</span>
+      <div class="section-nav-dot"></div>
+    </div>
+
+    <div class="section-nav-item" data-section="social-media">
+      <span class="section-nav-label">Social</span>
+      <div class="section-nav-dot"></div>
+    </div>
+  </div>
+
+<header>
+  <nav>
+    <a href="#">
+      <img src="AESS_IMG/aess.png" alt="AESS Logo" class="logo">
+    </a>
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#researchers">Research</a></li>
+      <li><a href="#electronics">Branches</a></li>
+      <li><a href="#media">Media</a></li>
+      <li><a href="#social-media">Social</a></li>
+      <li class="small_bar">
+        <a href="#">
+          <div class="bar"></div>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<!-- Video Background for Hero Section -->
+<div class="video-background hero-video-bg">
+  <video autoplay muted loop playsinline>
+    <source src="AESS_IMG/HOME_2.mp4" type="video/mp4">
+  </video>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<section class="hero-section">
+  <a href="#researchers" class="floating-research-btn">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"></circle>
+      <path d="m21 21-4.35-4.35"></path>
+    </svg>
+  </a>
+  <h1 class="hero-title">
+    <span class="aess-text">IEEE AESS JUST</span><br>
+    Aerospace and Electronic Systems Society
+  </h1>
+  <a href="#about" class="explore-btn">Explore More</a>
+
+  <!-- ADD THE EXPLORE BOX HERE -->
+  <div class="explore-box">
+    <h3 class="explore-box-title">Latest NEWS</h3>
+    <p class="explore-box-details">See more of our activities and events</p>
+    <a href="#media" class="explore-box-btn">Explore</a>
+
+    <!-- Latest Events Carousel -->
+    <div class="latest-events-carousel">
+
+
+
+      <div class="card-stack">
+        <div class="mini-event-card" style="--i: 0">
+          <img src="AESS_IMG/Media/Volunter.jpeg" alt="Event 1" class="mini-event-image">
+          <div class="mini-event-info">
+            <p class="mini-event-title">Looking for Volunteers</p>
+          </div>
+        </div>
+
+
+
+        <div class="mini-event-card" style="--i: 1">
+          <img src="AESS_IMG/Media/Talent.png" alt="Event 2" class="mini-event-image">
+          <div class="mini-event-info">
+            <p class="mini-event-title">YOUR TALENT LAUNCHPAD</p>
+          </div>
+        </div>
+
+
+
+        <div class="mini-event-card" style="--i: 2">
+          <img src="AESS_IMG/Media/Session_1.png" alt="Event 3" class="mini-event-image">
+          <div class="mini-event-info">
+            <p class="mini-event-title">From Campus to Cockpit</p>
+          </div>
+        </div>
+
+
+        <div class="mini-event-card" style="--i: 2">
+          <img src="AESS_IMG/Media/Envent_1_1.png" alt="Event 3" class="mini-event-image">
+          <div class="mini-event-info">
+            <p class="mini-event-title">من مقاعد الدراسة إلى قمرة القيادة"</p>
+          </div>
+        </div>
+
+
+
+      </div>
+    </div>
+  </div>
+
+</section>
+
+  <section id="about" class="about-section">
+    <div class="about-scroll-container">
+      <div class="aess-circle"></div>
+    <div class="aess-letters">
+      <div class="aess-letter" data-letter="A">A</div>
+      <div class="aess-letter" data-letter="E">E</div>
+      <div class="aess-letter" data-letter="S1">S</div>
+      <div class="aess-letter" data-letter="S2">S</div>
+      <div class="aess-letter aess-underscore" data-letter="_">_</div>
+      <div class="aess-letter" data-letter="J">J</div>
+      <div class="aess-letter" data-letter="U">U</div>
+      <div class="aess-letter" data-letter="S3">S</div>
+      <div class="aess-letter" data-letter="T">T</div>
+    </div>
+
+      <div class="about-content-wrapper">
+        <div class="whats-aess-container">
+          <div class="whats-aess-main-card">
+            <h2 class="whats-aess-main-title">WHAT'S AESS at JUST?</h2>
+            <p class="whats-aess-main-text">
+              The Aerospace & Electronic Systems Society (AESS) is a professional society under IEEE dedicated to
+              advancing the fields of aerospace engineering, electronic systems, avionics, and defense.
+            </p>
+          </div>
+
+          <div class="whats-aess-bottom-cards">
+            <div class="whats-aess-card">
+              <h3 class="whats-aess-card-title">AEROSPACE</h3>
+              <p class="whats-aess-card-text">
+                The field that designs, builds, and studies aircraft and spacecraft.
+              </p>
+            </div>
+            <div class="whats-aess-card">
+              <h3 class="whats-aess-card-title">ELECTRONIC</h3>
+              <p class="whats-aess-card-text">
+                The discipline that builds and manages complex electronic circuits.
+              </p>
+            </div>
+            <div class="whats-aess-card">
+              <h3 class="whats-aess-card-title">AVIONICS</h3>
+              <p class="whats-aess-card-text">
+                The electronic systems inside aircraft and spacecraft.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-stats">
+          <div class="stat-item">
+            <div class="stat-number" data-target="7043">0+</div>
+            <div class="stat-label">Active Members</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" data-target="30">0+</div>
+            <div class="stat-label">Conferences</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" data-target="17">0+</div>
+            <div class="stat-label">Awards Won</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+
+  <section class="card">
+  
+    <!-- <img src="assets/img/img-bg.png" alt="image" class="card__bg"> -->
+    <!-- <div class="card__blur"></div> -->
+      <div class="HEAD-all">
+        <h2>Our Team</h2>
+      </div>
+  
+    <div class="card__container container_team">
+      <article class="card__article card-yellow">
+        <img src="AESS_IMG/Bashar_2.jpg" alt="image" class="card__img">
+        <div class="card__shadow"></div>
+  
+        <div class="card__data">
+          <h2 class="card__name">Bashar Alzoubi</h2>
+          <span class="card__profession">Head of Human Resources & Scientific Teams Co-Leader</span>
+        </div>
+  
+        <div class="card__clip">
+          <i class="ri-menu-4-line"></i>
+        </div>
+  
+        <div class="info">
+          <div class="info__data">
+            <h2 class="info__name">Bashar</h2>
+            <p class="info__description">
+              <span class="info__name-title"> </span>
+            
+              <br><br>
+            
+              Mechanical Engineering student driven by scientific curiosity, technical innovation, and the ambition to build strong,
+              high-performing teams. My journey combines hands-on engineering projects, impactful leadership experiences, and
+              contributions to scientific and educational communities.
+            
+              <br><br>
+            
+              I’ve contributed to several major technical initiatives, including serving as a Team Leader in the JUST_1 Rocket
+              Project, participating in the Al-Rhim SAT satellite program at HTU, and competing in Robofight, where I gained solid
+              experience in mechanical design, system integration, and real-world engineering problem-solving.
+            
+              <br><br>
+            
+              I also led Team Raymark in the NASA Space Apps Challenge, where our team achieved 2nd place, demonstrating creativity,
+              technical capability, and strong teamwork under pressure.
+            
+              <br><br>
+            
+              Alongside engineering projects, I expanded my leadership and organizational experience through roles such as HR
+              Officer
+              at JFJ Newspaper, focusing on member development and team coordination. I also joined MINA as part of the Science &
+              Experiment Team, contributing to scientific outreach and hands-on educational initiatives.
+            
+              <br><br>
+            
+              In AESS, I serve as Head of Human Resources and Co-Leader of the Scientific Teams, where I focus on empowering
+              members,
+              improving recruitment and onboarding systems, and building a collaborative environment that supports innovation,
+              learning, and meaningful achievement.
+            
+              <br><br>
+            
+              Driven, organized, and impact-oriented, I strive to build communities that learn, innovate, and leave a
+              lasting contribution.
+            </p>
+            <a href="https://www.linkedin.com/in/bashar-alzoubi-2b784631a/" class="info__button">Follow Me</a>
+          </div>
+  
+          <!-- <div class="info__social">
+            <a href="https://www.facebook.com/" target="_blank" class="info__link">
+              <i class="ri-facebook-circle-line"></i>
+            </a>
+            <a href="https://www.instagram.com/" target="_blank" class="info__link">
+              <i class="ri-instagram-line"></i>
+            </a>
+            <a href="https://twitter.com/" target="_blank" class="info__link">
+              <i class="ri-twitter-x-line"></i>
+            </a>
+          </div> -->
+        </div>
+      </article>
+
+
+
+
+      <article class="card__article card-green">
+        <img src="AESS_IMG/Osiad.jpg" alt="image" class="card__img">
+        <div class="card__shadow"></div>
+      
+        <div class="card__data">
+          <h2 class="card__name">Osaid Haimour</h2>
+          <span class="card__profession">Sponsorship</span>
+        </div>
+      
+        <div class="card__clip">
+          <i class="ri-menu-4-line"></i>
+        </div>
+      
+        <div class="info">
+          <div class="info__data">
+            <h2 class="info__name">Osaid</h2>
+          <p class="info__description">
+            <span class="info__intro-line"></span>
+          
+            <br><br>
+          
+            With a careful, analytical approach, I manage the society’s financial responsibilities with accuracy, and a focus on
+            long-term sustainability.
+          
+            <br><br>
+          
+            Outside of AESS, I am deeply involved in scientific and creative projects. I lead the Science & Experiments Team at
+            MENA, contributing to space-analog research and mission design. Volunteered as an organizer for NASA Space Apps Amman,
+            helping bring together innovators and students to tackle global challenges. Along working as a Sponsorship Team member
+            at TEDxYU, NextStep, and MENA.
+          
+            <br><br>
+          
+            My passion for aerospace, exploration, and pushing boundaries drives me in everything I do. I am committed to
+            continuous growth, meaningful impact, and contributing to the future of space exploration through every role I take
+            on.
+          </p>
+            <a href="https://www.linkedin.com/in/osaid-haimour/" class="info__button">Follow Me</a>
+          </div>
+      
+          <!-- <div class="info__social">
+                  <a href="https://www.facebook.com/" target="_blank" class="info__link">
+                    <i class="ri-facebook-circle-line"></i>
+                  </a>
+                  <a href="https://www.instagram.com/" target="_blank" class="info__link">
+                    <i class="ri-instagram-line"></i>
+                  </a>
+                  <a href="https://twitter.com/" target="_blank" class="info__link">
+                    <i class="ri-twitter-x-line"></i>
+                  </a>
+                </div> -->
+        </div>
+      </article>
+
+
+  <article class="card__article card-pink">
+    <img src="AESS_IMG/ayah.jpg" alt="image" class="card__img">
+    <div class="card__shadow"></div>
+  
+    <div class="card__data">
+      <h2 class="card__name">Ayah Ayesh</h2>
+      <span class="card__profession">Vice Chair</span>
+    </div>
+  
+    <div class="card__clip">
+      <i class="ri-menu-4-line"></i>
+    </div>
+  
+    <div class="info">
+      <div class="info__data">
+        <h2 class="info__name">Ayah</h2>
+      <p class="info__description">
+        <span class="info__intro-line">Biomedical Engineering student passionate about innovation, technology, and social
+          impact.</span>
+      
+        <br><br>
+      
+        With a solid background in leadership, public speaking, and community-driven initiatives, I thrive at the intersection
+        of science, creativity, and purpose.
+      
+        <br><br>
+      
+        From founding youth programs to representing Jordan in national conferences, I’ve collaborated with global and local
+        organizations including AIESEC, IEEE, TEDx, and the Red Crescent, contributing to events that promote scientific
+        education and intercultural exchange.
+      
+        <br><br>
+      
+        I strive to empower others, spread knowledge, and build platforms that make a difference.
+      </p>
+        <a href="https://www.linkedin.com/in/ayah-ayesh-3a7b94262/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="info__button">Follow Me</a>
+      </div>
+  
+      <!-- <div class="info__social">
+                    <a href="https://www.facebook.com/" target="_blank" class="info__link">
+                      <i class="ri-facebook-circle-line"></i>
+                    </a>
+                    <a href="https://www.instagram.com/" target="_blank" class="info__link">
+                      <i class="ri-instagram-line"></i>
+                    </a>
+                    <a href="https://twitter.com/" target="_blank" class="info__link">
+                      <i class="ri-twitter-x-line"></i>
+                    </a>
+                  </div> -->
+    </div>
+  </article>
+  
+
+
+  <article class="card__article card-red">
+    <img src="AESS_IMG/Joud.jpg" alt="image" class="card__img">
+    <div class="card__shadow"></div>
+  
+    <div class="card__data">
+      <h2 class="card__name">Joud Mahasneh</h2>
+      <span class="card__profession">Marketing Leader</span>
+    </div>
+  
+    <div class="card__clip">
+      <i class="ri-menu-4-line"></i>
+    </div>
+  
+    <div class="info">
+      <div class="info__data">
+        <h2 class="info__name">Joud</h2>
+        <p class="info__description">
+          <span class="info__intro-line">A Mechanical Engineering student with a slightly abnormal obsession with space, motors,
+            and machines.</span>
+        
+          <br><br>
+        
+          She has a strong background in leadership and media, and she has worked with teams inside and outside the university
+          across all kinds of fields and vibes.
+        
+          <br><br>
+        
+          Currently leads the media team for AESS, and has been involved with most of the IEEE societies, NASA Space Apps,
+          AIESEC, and a bunch of competitions and innovative projects that kept her creativity and energy constantly running.
+        
+          <br><br>
+        
+          Joud is known for her ideas, her drive, and the bit of ADHD spark that somehow makes every team she joins more fun,
+          more active, and definitely louder.
+        </p>
+        <a href="https://www.linkedin.com/in/joudmahasneh/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+          class="info__button">Follow Me</a>
+      </div>
+  
+      <!-- <div class="info__social">
+                      <a href="https://www.facebook.com/" target="_blank" class="info__link">
+                        <i class="ri-facebook-circle-line"></i>
+                      </a>
+                      <a href="https://www.instagram.com/" target="_blank" class="info__link">
+                        <i class="ri-instagram-line"></i>
+                      </a>
+                      <a href="https://twitter.com/" target="_blank" class="info__link">
+                        <i class="ri-twitter-x-line"></i>
+                      </a>
+                    </div> -->
+    </div>
+  </article>
+      
+  <article class="card__article card-other">
+    <img src="AESS_IMG/glass_2.jpg" alt="image" class="card__img">
+    <div class="card__shadow"></div>
+  
+    <div class="card__data">
+      <h2 class="card__name">Retaj Jehad</h2>
+      <span class="card__profession">Secretary</span>
+    </div>
+  
+    <div class="card__clip">
+      <i class="ri-menu-4-line"></i>
+    </div>
+  
+    <div class="info">
+      <div class="info__data">
+        <h2 class="info__name">Retaj</h2>
+        <p class="info__description">
+          <span class="info__intro-line">Aeronautical engineering student with a lot of interest in aerospace engineering
+            fields.</span>
+        
+          <br><br>
+        
+          I’ve been part of many projects some being technical such as the JUST one rocket project as I am part of the stability
+          and control team. I’ve also organized NASA space apps irbid for two years in a row.
+        
+          <br><br>
+        
+          I’ve been an active IEEE member for two years and I’ve been a part of the media team for the AESS at al Yarmouk
+          University.
+        
+          <br><br>
+        
+          I’ve also been part of many other teams through which I’ve learned communication and gained experience. As secretary,
+          I focus on dealing with the v-tools and communication with the teams members.
+        </p>
+        <a href="https://www.linkedin.com/in/retaj-jehad-a930b1318/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app"
+          class="info__button">Follow Me</a>
+      </div>
+  
+      <!-- <div class="info__social">
+                        <a href="https://www.facebook.com/" target="_blank" class="info__link">
+                          <i class="ri-facebook-circle-line"></i>
+                        </a>
+                        <a href="https://www.instagram.com/" target="_blank" class="info__link">
+                          <i class="ri-instagram-line"></i>
+                        </a>
+                        <a href="https://twitter.com/" target="_blank" class="info__link">
+                          <i class="ri-twitter-x-line"></i>
+                        </a>
+                      </div> -->
+    </div>
+  </article>
+
+
+
+
+    </div>
+  </section>
+
+
+
+
+  <section id="media" class="media-section">
+    <div class="HEAD-all">
+      <h2>Latest News & Update</h2>
+    </div>
+    <div class="media-container">
+
+      <div class="curved-carousel-wrapper">
+        <!-- LEFT ARROW -->
+        <button class="carousel-nav-btn carousel-nav-left" id="carousel-prev" aria-label="Previous">
+          ←
+        </button>
+      
+        <div class="curved-carousel" id="media-carousel">
+          <!-- Existing cards stay here -->
+          <div class="media-card carousel-card">
+            <img src="AESS_IMG/Media/Volunter.jpeg" alt="News 1" class="media-card-image">
+            <div class="media-card-content">
+              <div class="media-card-date">November 21, 2025</div>
+              <h3 class="media-card-title">Looking for Volunteers</h3>
+              <p class="media-card-excerpt">If you'd like to be part of the largest community focused on...</p>
+            </div>
+          </div>
+
+
+          
+
+
+          <div class="media-card carousel-card">
+            <img src="AESS_IMG/Media/Talent.png" alt="News 2" class="media-card-image">
+            <div class="media-card-content">
+              <div class="media-card-date">November 27, 2025</div>
+              <h3 class="media-card-title">YOUR TALENT LAUNCHPAD</h3>
+              <p class="media-card-excerpt">Unleash your skills. Inspire the community...</p>
+            </div>
+          </div>
+
+
+
+
+          <div class="media-card carousel-card">
+            <img src="AESS_IMG/Media/Session_1.png" alt="News 3" class="media-card-image">
+            <div class="media-card-content">
+              <div class="media-card-date">November 28, 2025</div>
+              <h3 class="media-card-title">From Campus to Cockpit</h3>
+              <p class="media-card-excerpt">Head of the Aeronautical Engineering Department, Dr. Moath Bani Hani...</p>
+            </div>
+          </div>
+
+
+
+
+
+          <div class="media-card carousel-card">
+            <img src="AESS_IMG/Media/Envent_1_3.png" alt="News 4" class="media-card-image">
+            <div class="media-card-content">
+              <div class="media-card-date">Dec 2, 2025</div>
+              <h3 class="media-card-title">من مقاعد الدراسة إلى قمرة القيادة"</h3>
+              <p class="media-card-excerpt">تحت رعاية رئيس قسم هندسة الطيران، الدكتور معاذ بني هاني، اختتمت اليوم...</p>
+            </div>
+          </div>
+
+
+
+        </div>
+      
+        <!-- RIGHT ARROW -->
+        <button class="carousel-nav-btn carousel-nav-right" id="carousel-next" aria-label="Next">
+          →
+        </button>
+      </div>
+      <a href="Media.html" class="explore-btn">Explore More</a>
+    </div>
+  </section>
+  
+
+
+
+
+
+  <section id="researchers" class="researchers-section">
+    <div class="HEAD-all">
+      <h2>Our Research</h2>
+    </div>
+    <div class="researchers-container">
+<div class="locked-section">
+  <div class="coming-soon-overlay">
+    <span>COMING SOON</span>
+  </div>
+
+      <div class="researchers-columns">
+
+
+
+
+        <div class="researcher-column" data-researcher="1">
+          <span class="researcher-column-label">Adaptive Drone Navigation</span>
+          <div class="researcher-card">
+            <span class="researcher-card-close">×</span>
+            <img src="AESS_IMG/Research/Adaptive Drone Navigation.jpg" alt="Researcher 1" class="researcher-card-image">
+            <h3 class="researcher-card-title">Adaptive Drone Navigation in GPS-Denied Environments</h3>
+            <p class="researcher-card-description">
+              This research develops an adaptive navigation system for UAVs that operate in areas with weak or unavailable GPS
+              signals...
+            </p>
+            <p class="researcher-card-name">Omar Al-Hadid</p>
+            <p class="researcher-card-name">Date: March 2024</p>
+          </div>
+        </div>
+
+        <div class="researcher-column" data-researcher="2">
+          <span class="researcher-column-label">AI-Enhanced Radar</span>
+          <div class="researcher-card">
+            <span class="researcher-card-close">×</span>
+            <img src="AESS_IMG/Research/AI-Enhanced Radar.png" alt="Researcher 1" class="researcher-card-image">
+            <h3 class="researcher-card-title">AI-Enhanced Radar Signal Classification for Low-Visibility Conditions</h3>
+            <p class="researcher-card-description">
+              The study proposes a lightweight neural network capable of classifying radar signals accurately during heavy fog, dust,
+              or cluttered environments...
+            </p>
+            <p class="researcher-card-name">Sara Y. Al-Khateeb</p>
+            <p class="researcher-card-name">Date: July 2024</p>
+          </div>
+        </div>
+
+        <div class="researcher-column" data-researcher="3">
+          <span class="researcher-column-label">CubeSat Thermal Control</span>
+          <div class="researcher-card">
+            <span class="researcher-card-close">×</span>
+            <img src="AESS_IMG/Research/cubesate.jpg" alt="Researcher 1" class="researcher-card-image">
+            <h3 class="researcher-card-title">CubeSat Thermal Control Optimization Using Hybrid Simulation Models</h3>
+            <p class="researcher-card-description">
+          This project presents a hybrid thermal simulation combining computational models and real sensor data from lab CubeSat
+          prototypes...
+            </p>
+            <p class="researcher-card-name">Dr. Mahmoud M. Al-Rifai</p>
+            <p class="researcher-card-name">Date: January 2025</p>
+          </div>
+        </div>
+
+
+      </div>
+</div>
+      <!-- <a href="Research.html" class="explore-btn">Explore More</a> -->
+    </div>
+  </section>
+
+<section id="electronics" class="electronics-section">
+
+  <!-- FIXED BACKGROUND VIDEO -->
+  <video class="electronics-video" autoplay muted loop playsinline>
+    <source src="Videos/Elec.mp4" type="video/mp4">
+  </video>
+
+  <!-- CONTENT GRID -->
+  <div class="electronics-content">
+
+    <!-- LEFT TITLE -->
+    <div class="electronics-title glass-box" id="elecTitle">
+      Electronics
+    </div>
+
+    <!-- RIGHT TEXT -->
+  <div class="electronics-join glass-box" id="elecJoin">
+    <!-- ADD THIS NEW OVERLAY -->
+    <div class="coming-soon-timeline-overlay">
+      <span class="coming-soon-text">COMING SOON</span>
+    </div>
+
+    <h2 style="color: white; text-align: center; font-size: 1.5rem; margin-bottom: 0.5rem; text-transform: uppercase;">Our
+      Courses and NEWS</h2>
+    <!-- TIMELINE -->
+    <div class="timeline-container">
+      <div class="timeline-wrapper">
+        <!-- First set of cards -->
+        <div class="timeline-card">
+          <img src="AESS_IMG/Electronics/ardunio.jpg" alt="Card 1" class="timeline-card-image">
+          <div class="timeline-card-title">Basics of Arduino</div>
+          <button class="timeline-card-btn">Learn More</button>
+        </div>
+        <div class="timeline-card">
+          <img src="AESS_IMG/Electronics/elec.jpg" alt="Card 2" class="timeline-card-image">
+          <div class="timeline-card-title">Basics of Electronics</div>
+          <button class="timeline-card-btn">Learn More</button>
+        </div>
+        <div class="timeline-card">
+          <img src="AESS_IMG/Electronics/PCB.jpg" alt="Card 3" class="timeline-card-image">
+          <div class="timeline-card-title">Basics of PCB</div>
+          <button class="timeline-card-btn">Learn More</button>
+        </div>
+        <div class="timeline-card">
+          <img src="AESS_IMG/Electronics/ardunio_2.jpg" alt="Card 4" class="timeline-card-image">
+          <div class="timeline-card-title">Arduino Advanced</div>
+          <button class="timeline-card-btn">Learn More</button>
+        </div>
+      
+        <!-- Duplicate set for seamless loop -->
+        <div class="timeline-card">
+          <img src="AESS_IMG/Electronics/ardunio.jpg" alt="Card 1" class="timeline-card-image">
+          <div class="timeline-card-title">Basics of Arduino</div>
+          <button class="timeline-card-btn">Learn More</button>
+        </div>
+        <div class="timeline-card">
+          <img src="AESS_IMG/Electronics/elec.jpg" alt="Card 2" class="timeline-card-image">
+          <div class="timeline-card-title">Basics of Electronics</div>
+          <button class="timeline-card-btn">Learn More</button>
+        </div>
+        <div class="timeline-card">
+          <img src="AESS_IMG/Electronics/PCB.jpg" alt="Card 3" class="timeline-card-image">
+          <div class="timeline-card-title">Basics of PCB</div>
+          <button class="timeline-card-btn">Learn More</button>
+        </div>
+        <div class="timeline-card">
+          <img src="AESS_IMG/Electronics/ardunio_2.jpg" alt="Card 4" class="timeline-card-image">
+          <div class="timeline-card-title">Arduino Advanced</div>
+          <button class="timeline-card-btn">Learn More</button>
+        </div>
+      </div>
+
+
+
+
+    </div>
+    </div>
+
+  </div>
+
+
+
+</section>
+
+
+<section id="aviation" class="aviation-section">
+  <!-- FIXED BACKGROUND VIDEO -->
+  <video class="aviation-video" autoplay muted loop playsinline>
+    <source src="Videos/plane.mp4" type="video/mp4">
+  </video>
+
+  <!-- CONTENT GRID -->
+  <div class="aviation-content">
+    <!-- LEFT TITLE -->
+    <div class="aviation-title glass-box" id="aviationTitle">
+      Aeronautic
+    </div>
+
+    <!-- RIGHT TEXT -->
+  <!-- RIGHT TEXT -->
+  <div class="aviation-join glass-box" id="aviationJoin">
+    <!-- ADD THIS -->
+    <div class="coming-soon-timeline-overlay">
+      <span class="coming-soon-text">COMING SOON</span>
+    </div>
+    <!-- END -->
+    <h2 style="color: white; text-align: center; font-size: 1.5rem; margin-bottom: 0.5rem; text-transform: uppercase;">Our
+      Courses and NEWS</h2>
+    <!-- TIMELINE -->
+    <div class="timeline-container">
+      <div class="timeline-wrapper">
+        <!-- First set of cards -->
+        <div class="timeline-card">
+          <img src="AESS_IMG/Aviation/aviation_2.png" alt="Card 1" class="timeline-card-image">
+          <div class="timeline-card-title">Flight Dynamics</div>
+          <button class="timeline-card-btn">Learn More</button>
+        </div>
+        <div class="timeline-card">
+          <img src="AESS_IMG/Aviation/aviation-courses.jpg" alt="Card 2" class="timeline-card-image">
+          <div class="timeline-card-title">Aircraft Systems</div>
+          <button class="timeline-card-btn">Learn More</button>
+        </div>
+        <div class="timeline-card">
+          <img src="AESS_IMG/Aviation/Drone.jpg" alt="Card 3" class="timeline-card-image">
+          <div class="timeline-card-title">Aerodynamics</div>
+          <button class="timeline-card-btn">Learn More</button>
+        </div>
+        <div class="timeline-card">
+          <img src="AESS_IMG/Aviation/airfoil.png" alt="Card 4" class="timeline-card-image">
+          <div class="timeline-card-title">Aviation Safety</div>
+          <button class="timeline-card-btn">Learn More</button>
+        </div>
+        <div class="timeline-card">
+          <img src="AESS_IMG/Aviation/Drone2.png" alt="Card 4" class="timeline-card-image">
+          <div class="timeline-card-title">Aviation Safety</div>
+          <button class="timeline-card-btn">Learn More</button>
+        </div>
+  
+        <!-- Duplicate set for seamless loop -->
+        <div class="timeline-card">
+          <img src="AESS_IMG/Aviation/aviation_2.png" alt="Card 1" class="timeline-card-image">
+          <div class="timeline-card-title">Flight Dynamics</div>
+          <button class="timeline-card-btn">Learn More</button>
+        </div>
+        <div class="timeline-card">
+          <img src="AESS_IMG/Aviation/aviation-courses.jpg" alt="Card 2" class="timeline-card-image">
+          <div class="timeline-card-title">Aircraft Systems</div>
+          <button class="timeline-card-btn">Learn More</button>
+        </div>
+        <div class="timeline-card">
+          <img src="AESS_IMG/Aviation/Drone.jpg" alt="Card 3" class="timeline-card-image">
+          <div class="timeline-card-title">Aerodynamics</div>
+          <button class="timeline-card-btn">Learn More</button>
+        </div>
+        <div class="timeline-card">
+          <img src="AESS_IMG/Aviation/airfoil.png" alt="Card 4" class="timeline-card-image">
+          <div class="timeline-card-title">Aviation Safety</div>
+          <button class="timeline-card-btn">Learn More</button>
+        </div>
+        <div class="timeline-card">
+          <img src="AESS_IMG/Aviation/Drone2.png" alt="Card 4" class="timeline-card-image">
+          <div class="timeline-card-title">Aviation Safety</div>
+          <button class="timeline-card-btn">Learn More</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  </div>
+</section>
+
+  <section id="aerospace" class="aerospace-section">
+    <!-- FIXED BACKGROUND VIDEO -->
+    <video class="aerospace-video" autoplay muted loop playsinline>
+      <source src="Videos/space.mp4" type="video/mp4">
+    </video>
+  
+    <!-- CONTENT GRID -->
+    <div class="aerospace-content">
+      <!-- LEFT TITLE -->
+      <div class="aerospace-title glass-box" id="aerospaceTitle">
+        Aerospace
+      </div>
+  
+      <!-- RIGHT TEXT -->
+    <!-- RIGHT TEXT -->
+    <div class="aerospace-join glass-box" id="aerospaceJoin">
+      <!-- ADD THIS -->
+      <div class="coming-soon-timeline-overlay">
+        <span class="coming-soon-text">COMING SOON</span>
+      </div>
+      <!-- END -->
+      <h2 style="color: white; text-align: center; font-size: 1.5rem; margin-bottom: 0.5rem; text-transform: uppercase;">Our
+        Courses and NEWS</h2>
+      <!-- TIMELINE -->
+      <div class="timeline-container">
+        <div class="timeline-wrapper">
+          <!-- First set of cards -->
+          <div class="timeline-card">
+            <img src="AESS_IMG/Aerospace/economy.png" alt="Card 1" class="timeline-card-image">
+            <div class="timeline-card-title">Orbital Mechanics</div>
+            <button class="timeline-card-btn">Learn More</button>
+          </div>
+          <div class="timeline-card">
+            <img src="AESS_IMG/Aerospace/Rockets.jpg" alt="Card 2" class="timeline-card-image">
+            <div class="timeline-card-title">Satellite Systems</div>
+            <button class="timeline-card-btn">Learn More</button>
+          </div>
+          <div class="timeline-card">
+            <img src="AESS_IMG/Aerospace/book.jpg" alt="Card 3" class="timeline-card-image">
+            <div class="timeline-card-title">Rocket Propulsion</div>
+            <button class="timeline-card-btn">Learn More</button>
+          </div>
+          <div class="timeline-card">
+            <img src="AESS_IMG/Aerospace/Rockets_2.jpg" alt="Card 4" class="timeline-card-image">
+            <div class="timeline-card-title">Space Mission Design</div>
+            <button class="timeline-card-btn">Learn More</button>
+          </div>
+    
+          <!-- Duplicate set for seamless loop -->
+          <div class="timeline-card">
+            <img src="AESS_IMG/Aerospace/economy.png" alt="Card 1" class="timeline-card-image">
+            <div class="timeline-card-title">Orbital Mechanics</div>
+            <button class="timeline-card-btn">Learn More</button>
+          </div>
+          <div class="timeline-card">
+            <img src="AESS_IMG/Aerospace/Rockets.jpg" alt="Card 2" class="timeline-card-image">
+            <div class="timeline-card-title">Satellite Systems</div>
+            <button class="timeline-card-btn">Learn More</button>
+          </div>
+          <div class="timeline-card">
+            <img src="AESS_IMG/Aerospace/book.jpg" alt="Card 3" class="timeline-card-image">
+            <div class="timeline-card-title">Rocket Propulsion</div>
+            <button class="timeline-card-btn">Learn More</button>
+          </div>
+          <div class="timeline-card">
+            <img src="AESS_IMG/Aerospace/Rockets_2.jpg" alt="Card 4" class="timeline-card-image">
+            <div class="timeline-card-title">Space Mission Design</div>
+            <button class="timeline-card-btn">Learn More</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </section>
+
+
+
+
+
+  <!-- Social Media Section -->
+  <section id="social-media" class="social-media-section">
+    <div class="social-media-container">
+      <div class="social-media-header">
+        <h2>Connect With Us</h2>
+        <p>Follow our journey across social platforms</p>
+      </div>
+  
+      <div class="social-media-cards">
+  
+      <!-- WhatsApp Card -->
+      <a href="https://chat.whatsapp.com/GzfWUsp3DER2PsUczb4qFX?mode=hqrt1" class="social-card facebook" target="_blank"
+        rel="noopener noreferrer">
+        <div class="social-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+            <path
+              d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
+          </svg>
+        </div>
+        <div class="social-name">WhatsApp</div>
+        <div class="social-handle">@AESSJordan</div>
+      </a>
+  
+        <!-- Instagram Card -->
+        <a href="https://www.instagram.com/ieee_aess_just/" class="social-card instagram" target="_blank" rel="noopener noreferrer">
+          <!-- 👇 ADD YOUR INSTAGRAM LINK HERE (replace the # in href="") -->
+          <div class="social-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+              <path
+                d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" />
+            </svg>
+          </div>
+          <div class="social-name">Instagram</div>
+          <div class="social-handle">@ieee_aess_just</div>
+        </a>
+  
+        <!-- LinkedIn Card -->
+        <a href="https://www.linkedin.com/company/ieee-aess-just/posts/?feedView=all" class="social-card linkedin" target="_blank" rel="noopener noreferrer">
+          <!-- 👇 ADD YOUR LINKEDIN LINK HERE (replace the # in href="") -->
+          <div class="social-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+              <path
+                d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z" />
+            </svg>
+          </div>
+          <div class="social-name">LinkedIn</div>
+          <div class="social-handle">IEEE AESS JUST</div>
+        </a>
+  
+      </div>
+    </div>
+  </section>
+
+
+<footer style="background:#0a0a0a; color:#fff; padding:20px 0; text-align:center; font-family:Arial, sans-serif;">
+
+  <p style="margin: 0 0 10px 0; font-size:14px;">
+    &copy; 2025 AESS JUST. All Rights Reserved. | Built for AESS Society.
+  </p>
+
+  <div style="margin-top:10px;">
+    <!-- Social Media Links -->
+    <a href="https://chat.whatsapp.com/GzfWUsp3DER2PsUczb4qFX?mode=hqrt1" target="_blank"
+      style="color:#fff; margin:0 10px; text-decoration:none;">
+      WhatsApp
+    </a>
+    |
+    <a href="https://www.instagram.com/ieee_aess_just/" target="_blank"
+      style="color:#fff; margin:0 10px; text-decoration:none;">
+      Instagram
+    </a>
+    |
+    <a href="https://www.linkedin.com/company/ieee-aess-just/posts/?feedView=all" target="_blank"
+      style="color:#fff; margin:0 10px; text-decoration:none;">
+      LinkedIn
+    </a>
+  </div>
+
+</footer>
+
+
+
+<!-- Card Modal -->
+<div id="cardModal" class="card-modal">
+  <div class="card-modal-content">
+    <span class="card-modal-close">&times;</span>
+    <div class="card-modal-body">
+      <div class="card-modal-left">
+        <img id="modalImage" src="" alt="Card Image" class="card-modal-image">
+      </div>
+      <div class="card-modal-right">
+        <h2 id="modalName" class="card-modal-name"></h2>
+        <p id="modalProfession" class="card-modal-profession"></p>
+        <p id="modalDescription" class="card-modal-description"></p>
+        <div id="modalSocial" class="card-modal-social"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <script>
+    const canvas = document.getElementById('gridCanvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    const gridSize = 50; // Size of each grid square
+    const gridColor = 'rgba(0, 0, 97, 0.4)'; // Dark blue/indigo grid lines
+    const flashColor = 'rgba(0, 234, 255, 1)'; // Bright cyan/flash blue
+    const maxParticles = 30;
+
+    // Particle Class
+    class Particle {
+      constructor(x, y, isVertical) {
+        this.x = x;
+        this.y = y;
+        this.isVertical = isVertical; // True for vertical line, false for horizontal
+        this.speed = Math.random() * 0.8 + 0.4;
+        this.size = Math.random() * 3 + 1;
+        this.direction = Math.random() > 0.5 ? 1 : -1; // -1 for reverse, 1 for forward
+      }
+
+      update() {
+        if (this.isVertical) {
+          this.y += this.speed * this.direction;
+        } else {
+          this.x += this.speed * this.direction;
+        }
+
+        // Wrap-around logic for movement within the grid structure
+        if (this.isVertical) {
+          if (this.direction > 0 && this.y > height) {
+            this.y = 0;
+          } else if (this.direction < 0 && this.y < 0) {
+            this.y = height;
+          }
+        } else {
+          if (this.direction > 0 && this.x > width) {
+            this.x = 0;
+          } else if (this.direction < 0 && this.x < 0) {
+            this.x = width;
+          }
+        }
+      }
+
+      draw() {
+        // Create a glowing effect
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = flashColor;
+        ctx.shadowColor = flashColor;
+        ctx.shadowBlur = 10;
+        ctx.fill();
+        ctx.shadowBlur = 0; // Reset shadow after drawing particle
+      }
+    }
+
+    let particles = [];
+
+    // Initialize Particles
+    function initParticles() {
+      particles = [];
+      // Calculate how many vertical and horizontal lines there are
+      const numVertLines = Math.floor(width / gridSize) + 1;
+      const numHorizLines = Math.floor(height / gridSize) + 1;
+
+      for (let i = 0; i < maxParticles; i++) {
+        if (i % 2 === 0) {
+          // Place particle on a Vertical line
+          const lineIndex = Math.floor(Math.random() * numVertLines);
+          const xPos = lineIndex * gridSize;
+          const yPos = Math.random() * height;
+          particles.push(new Particle(xPos, yPos, true));
+        } else {
+          // Place particle on a Horizontal line
+          const lineIndex = Math.floor(Math.random() * numHorizLines);
+          const yPos = lineIndex * gridSize;
+          const xPos = Math.random() * width;
+          particles.push(new Particle(xPos, yPos, false));
+        }
+      }
+    }
+
+
+    // Draw the main grid lines
+    function drawGrid() {
+      ctx.strokeStyle = gridColor;
+      ctx.lineWidth = 1;
+
+      // Vertical lines
+      for (let x = 0; x <= width; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+      }
+
+      // Horizontal lines
+      for (let y = 0; y <= height; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+    }
+
+    // Animation Loop
+    function animateGrid() {
+      // Clear canvas, maintaining transparency for content underneath
+      ctx.clearRect(0, 0, width, height);
+
+      // Draw the static grid
+      drawGrid();
+
+      // Update and draw particles
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+
+      requestAnimationFrame(animateGrid);
+    }
+
+    // Handle Resize and Initialization
+    function resizeCanvas() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      initParticles();
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas(); // Initial call to set size and initialize
+    animateGrid();
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+
+
+
+  // ============================================
+  // PLANET SYSTEM
+  // ============================================
+
+  // Planet Configuration
+  const PLANET_CONFIG = {
+    textureFolder: 'AESS_IMG/Planets/',
+    textureFiles: [
+      'planet1.jpg', 'planet2.jpg', 'planet3.jpg', 'planet4.jpg',
+      'planet5.jpg', 'planet6.jpg'
+      // Add more filenames as needed
+    ],
+    spawnInterval: { min: 5000, max: 10000 }, // milliseconds
+    speed: { min: 1, max: 1.5 },
+    size: { min: 15, max: 30 },
+   startZ: -600,   // Start far away (top of screen)
+    endZ: 1000,      // End close (bottom of screen)
+    spreadX: { min: -500, max: 50 },
+    spreadY: { min: -500, max: -1000 },
+    maxPlanets: 5
+  };
+
+  const textureLoader = new THREE.TextureLoader();
+  const planets = [];
+
+  // Create Planet Class
+  class Planet {
+    constructor() {
+      this.speed = Math.random() * (PLANET_CONFIG.speed.max - PLANET_CONFIG.speed.min) + PLANET_CONFIG.speed.min;
+      this.size = Math.random() * (PLANET_CONFIG.size.max - PLANET_CONFIG.size.min) + PLANET_CONFIG.size.min;
+
+      // Random texture
+      const randomTexture = PLANET_CONFIG.textureFiles[
+        Math.floor(Math.random() * PLANET_CONFIG.textureFiles.length)
+      ];
+      const texturePath = PLANET_CONFIG.textureFolder + randomTexture;
+
+      // Create sphere geometry
+      const geometry = new THREE.SphereGeometry(this.size, 32, 32);
+      const texture = textureLoader.load(texturePath);
+      const material = new THREE.MeshStandardMaterial({
+        map: texture,
+        roughness: 0.8,
+        metalness: 0.2
+      });
+
+      this.mesh = new THREE.Mesh(geometry, material);
+
+      // Random starting position
+      this.mesh.position.x = Math.random() * (PLANET_CONFIG.spreadX.max - PLANET_CONFIG.spreadX.min) + PLANET_CONFIG.spreadX.min;
+      this.mesh.position.y = Math.random() * (PLANET_CONFIG.spreadY.max - PLANET_CONFIG.spreadY.min) + PLANET_CONFIG.spreadY.min;
+      this.mesh.position.z = PLANET_CONFIG.startZ;
+
+      // Random rotation for variety
+      this.rotationSpeed = {
+        x: (Math.random() - 0.5) * 0.01,
+        y: (Math.random() - 0.5) * 0.01
+      };
+
+      scene.add(this.mesh);
+    }
+
+    update() {
+        // Move planet forward
+      this.mesh.position.z += this.speed;  // Changed from -= to +=
+
+      // Rotate planet
+      this.mesh.rotation.x += this.rotationSpeed.x;
+      this.mesh.rotation.y += this.rotationSpeed.y;
+
+      // Check if planet is out of view
+      if (this.mesh.position.z > PLANET_CONFIG.endZ) {  // Changed from < to >
+        return false; // Signal for removal
+      }
+      return true; // Still active
+    }
+
+    destroy() {
+      scene.remove(this.mesh);
+      this.mesh.geometry.dispose();
+      this.mesh.material.dispose();
+    }
+  }
+
+  // Planet Spawner
+  let lastPlanetSpawn = 0;
+  let nextSpawnDelay = 0;
+
+  function getRandomSpawnDelay() {
+    return Math.random() * (PLANET_CONFIG.spawnInterval.max - PLANET_CONFIG.spawnInterval.min) + PLANET_CONFIG.spawnInterval.min;
+  }
+
+  function updatePlanets(currentTime) {
+    // Spawn new planets
+    if (currentTime - lastPlanetSpawn > nextSpawnDelay && planets.length < PLANET_CONFIG.maxPlanets) {
+      planets.push(new Planet());
+      lastPlanetSpawn = currentTime;
+      nextSpawnDelay = getRandomSpawnDelay();
+    }
+
+    // Update existing planets
+    for (let i = planets.length - 1; i >= 0; i--) {
+      const stillActive = planets[i].update();
+      if (!stillActive) {
+        planets[i].destroy();
+        planets.splice(i, 1);
+      }
+    }
+  }
+
+  // Initialize first spawn delay
+  nextSpawnDelay = getRandomSpawnDelay();
+
+
+
+
+
+
+  // DOM Elements
+    const introOverlay = document.getElementById('intro-overlay');
+    const introButton = document.getElementById('introButton');
+    const borderEffect = document.getElementById('transition-border'); // Select border div
+    const verticalLinesContainer = document.getElementById('vertical-lines-container'); // 👈 ADD THIS LINE
+    // Add this right after the line: const verticalLinesContainer = document.getElementById('vertical-lines-container')
+
+      const bottomLine = document.getElementById('bottom-to-button-line');
+
+      // Show the line when borders finish animating
+      setTimeout(() => {
+        if (bottomLine) {
+          bottomLine.classList.add('show-line');
+        }
+      }, 2650); // Show after border animation (2s border + 0.8s delay)
+
+    // Scene Setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 180, 0);
+    camera.lookAt(0, 0, 0);
+
+   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.2;
+
+    
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x000000, 1);
+    introOverlay.appendChild(renderer.domElement);
+
+    // Lights
+   // Realistic Lighting Setup
+    // 1. Reduced ambient light for more contrast
+    scene.add(new THREE.AmbientLight(0x404060, 0.3));
+
+    // 2. Main directional light (sun-like)
+    const mainLight = new THREE.DirectionalLight(0xffffff, 3);
+    mainLight.position.set(100, 15, 60);
+    mainLight.castShadow = true;
+    scene.add(mainLight);
+      //  // 2. Main directional light (sun-like)
+      //   const mainLight_2 = new THREE.DirectionalLight(0xf70000, 1.5);
+      //   mainLight_2.position.set(10, 15, 10);
+      //   mainLight_2.castShadow = true;
+      //   scene.add(mainLight_2);
+
+    // 3. Rim light (backlight for depth)
+    const rimLight = new THREE.DirectionalLight(0x5c5c5c, 1.5);
+    rimLight.position.set(-10, 5, -10);
+    scene.add(rimLight);
+
+    // // 4. Fill light (softer, from below)
+    // const fillLight = new THREE.DirectionalLight(0xf70000, 1);
+    // fillLight.position.set(0, -10, 5);
+    // scene.add(fillLight);
+
+    // // 5. Point lights for star glow effect
+    // const pointLight1 = new THREE.PointLight(0xf70000, 1, 100);
+    // pointLight1.position.set(20, 10, -30);
+    // scene.add(pointLight1);
+
+    const pointLight2 = new THREE.PointLight(0xff6600, 0.8, 80);
+    pointLight2.position.set(-20, -10, -20);
+    scene.add(pointLight2);
+
+    // Animation Variables
+    let rocket = null;
+    let animationProgress = 0;
+    const animationDuration = 2;
+    const startZ = 100;
+    const midZ = -40;
+    const endZ = -250; // Fly far away
+    let animationPhase = 0; // 0=Intro, 1=Wait, 2=Exit, 4=Done
+
+
+    // Add after line: let animationPhase = 0;
+      let linesAnimationComplete = false;
+      const linesContainer = document.getElementById('vertical-lines-container');
+      const lineLeft = document.getElementById('line-left');
+      const lineRight = document.getElementById('line-right');
+
+      // Start lines animation timer
+      // setTimeout(() => {
+      //   linesAnimationComplete = true;
+      //   if (linesContainer) {
+      //     linesContainer.classList.add('fade-out-lines');
+      //     setTimeout(() => {
+      //       if (linesContainer) linesContainer.style.display = 'none';
+      //     }, 500);
+      //   }
+      //   // Show button after lines disappear
+      //   if (animationPhase === 1) {
+      //     introButton.classList.add('show-btn');
+      //   }
+      // }, 10000); // 10 seconds
+
+      // Update the button show logic in animate function
+      // Find this section and replace it:
+      if (animationProgress >= 1) {
+        animationPhase = 1;
+        // Only show button after lines animation completes
+        if (linesAnimationComplete) {
+          introButton.classList.add('show-btn');
+        }
+      }
+
+    function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+    // Create Stars
+    let spheres = new THREE.Group();
+    scene.add(spheres);
+    function createSphere(radius) {
+      const geometry = new THREE.SphereGeometry(radius, 8, 8);
+      const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      return new THREE.Mesh(geometry, material);
+    }
+    function addSpheres(count, minX, maxX, minZ, maxZ) {
+      for (let i = 0; i < count; i++) {
+        const radius = Math.random() * 1;
+        const sphere = createSphere(radius);
+        sphere.position.x = Math.random() * (maxX - minX) + minX;
+        sphere.position.y = Math.random() * -2000 - 10;
+        sphere.position.z = Math.random() * (maxZ - minZ) + minZ;
+        spheres.add(sphere);
+      }
+    }
+    addSpheres(500, -500, 500, -500, 500);
+
+    // Load 3D Model
+    const loader = new GLTFLoader();
+    loader.load(
+      "aess_3d/scene.gltf",
+      (gltf) => {
+        rocket = gltf.scene;
+        rocket.scale.set(0.05, 0.05, 0.05);
+        rocket.position.set(0, 0, startZ);
+        rocket.rotation.y = Math.PI / 2;
+        scene.add(rocket);
+      },
+      undefined,
+      (err) => console.error("Error loading rocket:", err)
+    );
+
+    let lastTime = Date.now();
+
+    // Button Click to Exit Intro
+    introButton.addEventListener('click', () => {
+        if (animationPhase === 1) {
+          // 1. Resume animation (Rocket Flies)
+           if (bottomLine) bottomLine.classList.add('hide-line');
+          animationPhase = 2;
+          animationProgress = 0;
+
+          // 2. Hide Button
+          introButton.classList.add('hide-btn');
+          introButton.classList.remove('show-btn');
+
+          // 3. Hide Border Container (NEW)
+          const borderContainer = document.querySelector('.container');
+          if (borderContainer) {
+            borderContainer.classList.add('hide-container');
+          }
+
+          // 4. Trigger the border effect
+          if (borderEffect) borderEffect.classList.add('activate-border');
+
+          // Trigger the vertical lines growth animation
+          if (verticalLinesContainer) {
+            verticalLinesContainer.classList.add('start-animation');
+            setTimeout(() => {
+              verticalLinesContainer.classList.add('fade-out-lines');
+            }, 1500);
+          }
+        }
+      });
+
+    function animate() {
+        if (animationPhase === 4) return; // Stop loop when done
+
+        requestAnimationFrame(animate);
+        const currentTime = Date.now();
+        const deltaTime = (currentTime - lastTime) / 1000;
+        lastTime = currentTime;
+        // Update planets
+      updatePlanets(currentTime);
+
+        if (rocket) {
+          // ===== CONFIGURABLE FLUCTUATION PARAMETERS =====
+          const fluctuationSpeed = 1;        // Speed multiplier (1-5)
+          const fluctuationAngleX = 0.1;     // X-axis tilt (0.05-0.3 radians)
+          const fluctuationAngleY = 0;    // Y-axis tilt (0.05-0.3 radians)
+          const fluctuationAngleZ = 0;    // Z-axis tilt (0.05-0.3 radians)
+          // ===============================================
+
+          if (animationPhase === 0) {
+            // Fly In
+            animationProgress += deltaTime / animationDuration;
+            animationProgress = Math.min(animationProgress, 1);
+            const val = easeOutCubic(animationProgress);
+            rocket.position.z = startZ + (midZ - startZ) * val;
+
+           if (animationProgress >= 1) {
+              animationPhase = 1;
+
+              // Add delay before showing button (3000ms = 3 seconds)
+              setTimeout(() => {
+                introButton.classList.add('show-btn');
+              }, 1000); // Change this number for different delay
+            }
+          } else if (animationPhase === 2) {
+            // Fly Out
+            animationProgress += deltaTime / animationDuration;
+            animationProgress = Math.min(animationProgress, 1);
+            const val = easeOutCubic(animationProgress);
+            rocket.position.z = midZ + (endZ - midZ) * val;
+
+            if (animationProgress >= 1) {
+              animationPhase = 4;
+              // Hide Overlay
+              introOverlay.classList.add('fade-out');
+              // Unlock Scrolling
+              document.body.classList.add('scroll-active');
+              document.body.classList.add('intro-complete');
+            }
+          }
+
+          // ===== FLUCTUATION (RUNS IN ALL PHASES) =====
+          rocket.rotation.x = Math.sin(currentTime * 0.001 * fluctuationSpeed) * fluctuationAngleX;
+          rocket.rotation.z = Math.cos(currentTime * 0.001 * fluctuationSpeed * 0.7) * fluctuationAngleZ;
+          rocket.rotation.y = Math.PI / 2 + Math.sin(currentTime * 0.001 * fluctuationSpeed * 0.5) * fluctuationAngleY;
+          // ==============================================
+        }
+        renderer.render(scene, camera);
+      }
+      animate();
+
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+
+
+    // Animated Counter
+    // Animated Counter
+      function animateCounter(element, target, duration = 2000) {
+        let startTime = null;
+        const startValue = 0;
+
+        function animate(currentTime) {
+          if (!startTime) startTime = currentTime;
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+
+          // Easing function for smooth animation
+          const easeOutQuad = progress * (2 - progress);
+          const currentValue = Math.floor(startValue + (target - startValue) * easeOutQuad);
+
+          element.textContent = currentValue.toLocaleString() + '+';
+
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            element.textContent = target.toLocaleString() + '+';
+          }
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+    // Observer
+  const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const statNumbers = entry.target.querySelectorAll('.stat-number');
+          statNumbers.forEach(stat => {
+            const targetValue = parseInt(stat.getAttribute('data-target'));
+            if (!isNaN(targetValue)) {
+              animateCounter(stat, targetValue);
+            }
+          });
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const aboutStats = document.querySelector('.about-stats');
+      if (aboutStats) observer.observe(aboutStats);
+    });
+    // Truncate descriptions to 20 words
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.info__description').forEach(desc => {
+          const fullText = desc.textContent.trim();
+          const words = fullText.split(' ');
+
+          if (words.length > 100) {
+            const truncated = words.slice(0, 100).join(' ') + '...';
+            desc.textContent = truncated;
+            // Store full text as data attribute for modal
+            desc.setAttribute('data-full-text', fullText);
+          } else {
+            desc.setAttribute('data-full-text', fullText);
+          }
+        });
+      });
+    // Nav Logic
+    const sections = document.querySelectorAll('section');
+    const navItems = document.querySelectorAll('.section-nav-item');
+
+    function updateActiveNavItem() {
+      let currentSection = 0;
+      sections.forEach((section, index) => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+          currentSection = index;
+        }
+      });
+      navItems.forEach((item, index) => {
+        if (index < sections.length) {
+          item.classList.toggle('active', index === currentSection);
+        }
+      });
+    }
+    window.addEventListener('scroll', updateActiveNavItem);
+
+    navItems.forEach((item, index) => {
+      item.addEventListener('click', () => {
+        if (sections[index]) sections[index].scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Researcher Cards
+    const researcherColumns = document.querySelectorAll('.researcher-column');
+    researcherColumns.forEach(column => {
+      column.addEventListener('click', function (e) {
+        if (e.target.classList.contains('researcher-card-close')) return;
+        researcherColumns.forEach(col => { if (col !== column) col.classList.remove('active'); });
+        this.classList.toggle('active');
+      });
+      const closeBtn = column.querySelector('.researcher-card-close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          column.classList.remove('active');
+        });
+      }
+    });
+
+    // About Scroll Animation
+    // About Scroll Animation
+      const aboutSectionElement = document.querySelector('#about');
+      const aessLetters = document.querySelectorAll('.aess-letter');
+      const aessLettersContainer = document.querySelector('.aess-letters');
+      const aessCircle = document.querySelector('.aess-circle');
+      const aboutContentWrapper = document.querySelector('.about-content-wrapper');
+
+      function updateLetterAnimation() {
+        if (!aboutSectionElement) return;
+        const rect = aboutSectionElement.getBoundingClientRect();
+        const sectionHeight = aboutSectionElement.offsetHeight;
+        const viewportHeight = window.innerHeight;
+        const scrollProgress = Math.max(0, Math.min(1, (viewportHeight - rect.top) / (sectionHeight - viewportHeight)));
+
+        if (scrollProgress < 0.65) {
+          aessLettersContainer.classList.remove('move-right');
+          aessCircle.classList.remove('visible');
+          aessLetters.forEach((letter, index) => {
+            const startProgress = (index + 1) * 0.08; // Changed from 0.15 to 0.08
+          if (scrollProgress >= startProgress) {
+            letter.classList.add('visible');
+            const letterProgress = Math.min(1, (scrollProgress - startProgress) / 0.1);
+            letter.style.transform = `translateX(${-100 + (100 * letterProgress)}vw)`;
+            letter.style.opacity = letterProgress;
+          } else {
+            letter.classList.remove('visible');
+            letter.style.transform = 'translateX(-100vw)';
+          }
+        });
+        aboutContentWrapper.classList.remove('visible');
+      } else if (scrollProgress >= 0.65) {
+        aessLetters.forEach((letter) => {
+          letter.classList.add('visible');
+          letter.style.transform = 'translateX(0)';
+          letter.style.opacity = 1;
+        });
+        if ((scrollProgress - 0.65) / 0.2 > 0.1) {
+          aessLettersContainer.classList.add('move-right');
+          aessCircle.classList.add('visible');
+        }
+        if (scrollProgress >= 0.85) {
+          aboutContentWrapper.classList.add('visible');
+        }
+      }
+    }
+    window.addEventListener('scroll', () => window.requestAnimationFrame(updateLetterAnimation));
+
+
+
+
+
+
+
+
+   // --- NEW: Curved Media Carousel Logic ---
+    const carousel = document.getElementById('media-carousel');
+    const cards = carousel ? carousel.querySelectorAll('.carousel-card') : [];
+    const numCards = cards.length;
+    const prevBtn = document.getElementById('carousel-prev');
+    const nextBtn = document.getElementById('carousel-next');
+    let rotationAngle = 0;
+    const radius = 700;
+    const cardArc = 30;
+
+    if (carousel) {
+      // 1. Position Cards on the Curve
+      cards.forEach((card, index) => {
+        const angle = index * cardArc;
+        card.style.transform = `
+      translateY(200px) 
+      rotateY(${angle}deg) 
+      translateZ(${radius}px)
+    `;
+        card.style.opacity = 0.5;
+        card.style.transform += ` scale(0.9)`;
+      });
+
+      let currentIndex = 0;
+      const rotationStep = cardArc; // Rotate by one card's arc angle
+      let autoRotateInterval;
+
+      function rotateCarousel() {
+        const targetRotation = -currentIndex * rotationStep; // Negative for proper direction
+        carousel.style.transform = `rotateY(${targetRotation}deg)`;
+
+        cards.forEach((card, index) => {
+          const distance = Math.abs(index - currentIndex);
+          let scaleFactor = 1;
+          let opacityFactor = 1;
+
+          if (distance === 0) {
+            scaleFactor = 1.1;
+            opacityFactor = 1;
+          } else if (distance === 1) {
+            scaleFactor = 1;
+            opacityFactor = 0.8;
+          } else {
+            scaleFactor = 0.8;
+            opacityFactor = 0.4;
+          }
+
+          const baseTransform = `translateY(100px) rotateY(${index * cardArc}deg) translateZ(${radius}px)`;
+          card.style.transform = `${baseTransform} scale(${scaleFactor})`;
+          card.style.opacity = opacityFactor;
+        });
+      }
+
+      // Navigation Functions
+      function goToNext() {
+        currentIndex = (currentIndex + 1) % numCards;
+        rotateCarousel();
+      }
+
+      function goToPrev() {
+        currentIndex = (currentIndex - 1 + numCards) % numCards;
+        rotateCarousel();
+      }
+
+      // Button Event Listeners
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          goToNext();
+          resetAutoRotate();
+        });
+      }
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          goToPrev();
+          resetAutoRotate();
+        });
+      }
+
+      // Auto-Play Rotation
+      function startAutoRotate() {
+        autoRotateInterval = setInterval(goToNext, 4000);
+      }
+
+      function stopAutoRotate() {
+        clearInterval(autoRotateInterval);
+      }
+
+      function resetAutoRotate() {
+        stopAutoRotate();
+        sstartAutoRotate();
+      }
+      // --- END: Curved Media Carousel Logic ---
+
+      // --- Media Card Click Navigation ---
+      const mediaCards = document.querySelectorAll('.media-card');
+      mediaCards.forEach(card => {
+        card.addEventListener('click', () => {
+          window.location.href = 'Media.html';
+        });
+
+        // Add cursor pointer style on hover
+        card.style.cursor = 'pointer';
+      });
+      // --- END: Media Card Click Navigation ---
+
+
+
+
+      // --- Researchers Section Entry Animation (with reverse) ---
+      const researchersSection = document.querySelector('#researchers');
+
+      // Pause on hover
+      carousel.addEventListener('mouseenter', stopAutoRotate);
+      carousel.addEventListener('mouseleave', startAutoRotate);
+
+      // Initialize
+      rotateCarousel();
+      startAutoRotate();
+    }
+    // --- END: Curved Media Carousel Logic ---
+
+
+
+
+    // --- Researchers Section Entry Animation (with reverse) ---
+      const researchersSection = document.querySelector('#researchers');
+      const researchersColumns = document.querySelector('.researchers-columns');
+
+      if (researchersSection && researchersColumns) {
+        // Set random initial positions for each card
+        const columns = researchersColumns.querySelectorAll('.researcher-column');
+        columns.forEach((column) => {
+          // Generate random values for scattered initial positions
+          const randomX = (Math.random() - 0.5) * 800; // -400 to 400
+          const randomY = (Math.random() - 0.5) * 600; // -300 to 300
+          const randomRotate = (Math.random() - 0.5) * 180; // -90 to 90 degrees
+
+          // Set CSS custom properties for each card
+          column.style.setProperty('--random-x', randomX);
+          column.style.setProperty('--random-y', randomY);
+          column.style.setProperty('--random-rotate', randomRotate);
+        });
+
+        // Create observer for the researchers section (NO unobserve, keeps watching)
+        const researchersObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              // Scrolling down / entering - trigger collect animation
+              researchersColumns.classList.add('animate-entry');
+              researchersColumns.classList.remove('animate-exit');
+            } else {
+              // Scrolling up / leaving - trigger scatter animation
+              researchersColumns.classList.remove('animate-entry');
+              researchersColumns.classList.add('animate-exit');
+            }
+          });
+        }, {
+          threshold: 0.3 // Trigger when 30% of section is visible
+        });
+
+        researchersObserver.observe(researchersSection);
+      }
+
+     // ELECTRONICS SCROLL ANIMATION + VIDEO VISIBILITY CONTROL
+      const elecSection = document.getElementById("electronics");
+      const elecTitle = document.getElementById("elecTitle");
+      const elecJoin = document.getElementById("elecJoin");
+      const elecVideo = document.querySelector(".electronics-video");
+
+      window.addEventListener("scroll", () => {
+        const rect = elecSection.getBoundingClientRect();
+        const vh = window.innerHeight;
+
+        const isVisible = rect.top < vh && rect.bottom > 0;
+
+        if (isVisible) {
+          elecVideo.style.opacity = "0.7";
+          elecVideo.style.pointerEvents = "auto";
+        } else {
+          elecVideo.style.opacity = "0";
+          elecVideo.style.pointerEvents = "none";
+        }
+
+        const progress = Math.min(1, Math.max(0, (vh - rect.top) / vh));
+
+        // Hide when leaving section (earlier - at 90% scroll)
+        if (rect.bottom < vh || rect.top > vh) {
+          elecTitle.classList.add("hidden");
+          elecJoin.classList.add("hidden");
+        } else {
+          elecTitle.classList.remove("hidden");
+          elecJoin.classList.remove("hidden");
+
+          if (progress > 0.1) elecTitle.classList.add("fixed");
+          else elecTitle.classList.remove("fixed");
+
+          if (progress > 0.8) elecJoin.classList.add("fixed");
+          else elecJoin.classList.remove("fixed");
+        }
+      });
+
+
+       // AVIATION SCROLL ANIMATION + VIDEO VISIBILITY CONTROL
+       // AVIATION SCROLL ANIMATION + VIDEO VISIBILITY CONTROL
+        const aviationSection = document.getElementById("aviation");
+        const aviationTitle = document.getElementById("aviationTitle");
+        const aviationJoin = document.getElementById("aviationJoin");
+        const aviationVideo = document.querySelector(".aviation-video");
+
+        window.addEventListener("scroll", () => {
+          const rect = aviationSection.getBoundingClientRect();
+          const vh = window.innerHeight;
+
+          const isVisible = rect.top < vh && rect.bottom > 0;
+
+          if (isVisible) {
+            aviationVideo.style.opacity = "0.7";
+            aviationVideo.style.pointerEvents = "auto";
+          } else {
+            aviationVideo.style.opacity = "0";
+            aviationVideo.style.pointerEvents = "none";
+          }
+
+          const progress = Math.min(1, Math.max(0, (vh - rect.top) / vh));
+
+          // Hide when leaving section (earlier - at 90% scroll)
+          if (rect.bottom < vh || rect.top > vh) {
+            aviationTitle.classList.add("hidden");
+            aviationJoin.classList.add("hidden");
+          } else {
+            aviationTitle.classList.remove("hidden");
+            aviationJoin.classList.remove("hidden");
+
+            if (progress > 0.1) aviationTitle.classList.add("fixed");
+            else aviationTitle.classList.remove("fixed");
+
+            if (progress > 0.8) aviationJoin.classList.add("fixed");
+            else aviationJoin.classList.remove("fixed");
+          }
+        });
+
+
+
+
+          // AEROSPACE SCROLL ANIMATION + VIDEO VISIBILITY CONTROL
+            const aerospaceSection = document.getElementById("aerospace");
+            const aerospaceTitle = document.getElementById("aerospaceTitle");
+            const aerospaceJoin = document.getElementById("aerospaceJoin");
+            const aerospaceVideo = document.querySelector(".aerospace-video");
+
+            window.addEventListener("scroll", () => {
+              const rect = aerospaceSection.getBoundingClientRect();
+              const vh = window.innerHeight;
+
+              const isVisible = rect.top < vh && rect.bottom > 0;
+
+              if (isVisible) {
+                aerospaceVideo.style.opacity = "0.7";
+                aerospaceVideo.style.pointerEvents = "auto";
+              } else {
+                aerospaceVideo.style.opacity = "0";
+                aerospaceVideo.style.pointerEvents = "none";
+              }
+
+              const progress = Math.min(1, Math.max(0, (vh - rect.top) / vh));
+
+
+              if (rect.bottom < vh || rect.top > vh) {
+                aerospaceTitle.classList.add("hidden");
+                aerospaceJoin.classList.add("hidden");
+              } else {
+                aerospaceTitle.classList.remove("hidden");
+                aerospaceJoin.classList.remove("hidden");
+
+                if (progress > 0.1) aerospaceTitle.classList.add("fixed");
+                else aerospaceTitle.classList.remove("fixed");
+
+                if (progress > 0.8) aerospaceJoin.classList.add("fixed");
+                else aerospaceJoin.classList.remove("fixed");
+              }
+            });
+
+
+
+              document.addEventListener('DOMContentLoaded', () => {
+
+                const mediaCards = document.querySelectorAll('.media-card');
+
+                mediaCards.forEach(card => {
+
+                  const imageElement = card.querySelector('.media-card-image');
+
+                  if (imageElement) {
+                    const imageUrl = imageElement.src;
+                    card.style.backgroundImage = `url('${imageUrl}')`;
+                    card.style.backgroundSize = 'cover';
+                    card.style.backgroundPosition = 'center';
+                    card.style.backgroundRepeat = 'no-repeat';
+
+                  
+                  }
+                });
+              });
+
+
+              
+              // Background Control
+                const heroVideoBackground = document.querySelector('.hero-video-bg');
+                const heroSection = document.querySelector('.hero-section');
+
+                if (heroVideoBackground && heroSection) {
+                  window.addEventListener('scroll', () => {
+                    const heroRect = heroSection.getBoundingClientRect();
+                    const isHeroVisible = heroRect.bottom > 0;
+
+                    if (isHeroVisible) {
+                      heroVideoBackground.style.opacity = '1';
+                    } else {
+                      heroVideoBackground.style.opacity = '0';
+                    }
+                  });
+                }
+
+
+
+                // Card Modal Functionality
+                  const cardModal = document.getElementById('cardModal');
+                  const modalImage = document.getElementById('modalImage');
+                  const modalName = document.getElementById('modalName');
+                  const modalProfession = document.getElementById('modalProfession');
+                  const modalDescription = document.getElementById('modalDescription');
+                  const modalSocial = document.getElementById('modalSocial');
+                  const modalClose = document.querySelector('.card-modal-close');
+
+                  // Add click event to all card articles
+                  document.querySelectorAll('.card__article').forEach(card => {
+                    card.addEventListener('click', function (e) {
+                      // Don't open modal if clicking on clip button or info area
+                      if (e.target.closest('.card__clip') || e.target.closest('.info')) {
+                        return;
+                      }
+
+                      // Get card data
+                     // Get card data
+                      const img = this.querySelector('.card__img').src;
+                      const name = this.querySelector('.card__name').textContent;
+                      const profession = this.querySelector('.card__profession').textContent;
+                      const descElement = this.querySelector('.info__description');
+                      const description = descElement.getAttribute('data-full-text') || descElement.textContent; // Use full text
+
+                      // Get hue color from card classes
+                      let hue = '200'; // default
+                      if (this.classList.contains('card-yellow')) hue = '200';
+                      if (this.classList.contains('card-green')) hue = '0';
+                      if (this.classList.contains('card-pink')) hue = '300';
+
+                      // Set modal content
+                      modalImage.src = img;
+                      modalName.textContent = name;
+                      modalProfession.textContent = profession;
+                      modalDescription.textContent = description;
+
+                      // Clone social links
+                     // Clone social links (with error handling)
+                      const socialLinksElement = this.querySelector('.info__social');
+                      if (socialLinksElement) {
+                        const socialLinks = socialLinksElement.cloneNode(true);
+                        modalSocial.innerHTML = '';
+                        modalSocial.appendChild(socialLinks);
+                      } else {
+                        modalSocial.innerHTML = ''; // Clear if no social links
+                      }
+
+                      // Set color scheme
+                      document.documentElement.style.setProperty('--modal-hue', hue);
+
+                      // Show modal
+                      cardModal.style.display = 'block';
+                      document.body.style.overflow = 'hidden'; // Prevent background scrolling
+                    });
+                  });
+
+                  // Close modal when clicking X
+                  modalClose.addEventListener('click', () => {
+                    cardModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                  });
+
+                  // Close modal when clicking outside
+                  window.addEventListener('click', (e) => {
+                    if (e.target === cardModal) {
+                      cardModal.style.display = 'none';
+                      document.body.style.overflow = 'auto';
+                    }
+                  });
+
+                  // Close modal with ESC key
+                  document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && cardModal.style.display === 'block') {
+                      cardModal.style.display = 'none';
+                      document.body.style.overflow = 'auto';
+                    }
+                  });
+
+                  
+  </script>
+
+
+
+</body>
+
+</html>
