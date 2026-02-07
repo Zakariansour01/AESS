@@ -44,6 +44,19 @@
       pointer-events: none;
     }
 
+    :root {
+            --glassmorphic-leaderboard-bg-dark: #0f172a49;
+            --glassmorphic-leaderboard-bg-gradient: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
+            --glassmorphic-leaderboard-glass-bg: rgba(255, 255, 255, 0.05);
+            --glassmorphic-leaderboard-glass-border: rgba(255, 255, 255, 0.1);
+            --glassmorphic-leaderboard-glass-highlight: rgba(255, 255, 255, 0.2);
+            --glassmorphic-leaderboard-text-primary: #ffffff;
+            --glassmorphic-leaderboard-text-secondary: #94a3b8;
+            --glassmorphic-leaderboard-gold: #fbbf24;
+            --glassmorphic-leaderboard-silver: #e2e8f0;
+            --glassmorphic-leaderboard-bronze: #b45309;
+        }
+
     /* The "ENTER" Glass Button */
     #introButton {
 
@@ -149,7 +162,64 @@
       font-family: 'Cairo', 'Orbitron', Courier, monospace;
       background-color: black;
       overflow: hidden;
+      cursor: none; /* Hide default cursor */
     }
+    /* Custom cursor dot */
+/* Find this section in your <style> */
+
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  background: rgba(0, 234, 255, 1);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 99999;
+  
+  /* ADD THIS LINE 👇 */
+  transform: translate(-50%, -50%); 
+  
+  transition: width 0.1s, height 0.1s; /* Changed 'transform' to width/height to avoid conflict */
+  box-shadow: 
+    0 0 10px rgba(0, 234, 255, 1),
+    0 0 20px rgba(0, 234, 255, 0.8),
+    0 0 30px rgba(0, 234, 255, 0.6);
+}
+
+.cursor-outline {
+  width: 30px;
+  height: 30px;
+  border: 2px solid rgba(0, 234, 255, 0.8);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 99998;
+  
+  /* ADD THIS LINE 👇 */
+  transform: translate(-50%, -50%);
+
+  transition: all 0.15s ease;
+  box-shadow: 
+    0 0 15px rgba(0, 234, 255, 0.6),
+    inset 0 0 10px rgba(0, 234, 255, 0.3);
+}
+
+/* Hover effect on clickable elements */
+a:hover ~ .cursor-outline,
+button:hover ~ .cursor-outline,
+.cursor-outline.hover {
+  width: 50px;
+  height: 50px;
+  border-color: rgba(0, 255, 255, 1);
+  box-shadow: 
+    0 0 25px rgba(0, 255, 255, 0.9),
+    inset 0 0 15px rgba(0, 255, 255, 0.5);
+}
+
+/* Show default cursor on clickable elements for backup */
+a, button, .clickable {
+  cursor: pointer;
+}
 
     body.scroll-active {
       overflow-y: auto;
@@ -171,14 +241,55 @@
     }
 
 
-    /* Header & Nav */
-    /* Header & Nav */
+
+
+    /* =========================================
+   GLOBAL GLASSMORPHISM BUTTONS
+   ========================================= */
+
+/* 1. Apply Glass Style to all Button Classes */
+.explore-btn,
+.explore-box-btn,
+.timeline-card-btn,
+.card-modal-button {
+  /* Glass Background */
+  background: rgba(255, 255, 255, 0.255) !important; 
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  
+  /* Glass Border */
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  
+  /* Text & Shape */
+  color: white !important;
+  border-radius: 50px !important; /* Forces the rounded 'pill' shape like Intro button */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* 2. Unified Hover Effect (Glow & Brighten) */
+.explore-btn:hover,
+.explore-box-btn:hover,
+.timeline-card-btn:hover,
+.card-modal-button:hover {
+  background: rgba(255, 255, 255, 0.25) !important; /* Brighter on hover */
+  border-color: rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 0 20px rgba(0, 234, 255, 0.6), inset 0 0 10px rgba(0, 234, 255, 0.2) !important;
+  transform: translateY(-3px) scale(1.05);
+  color: #fff !important;
+}
+
+
+
+
 header {
   width: 100%;
   max-height: 100px;
   position: fixed; /* Changed from relative to fixed */
   top: 0;          /* Added to stick it to the top */
-  z-index: 1000;   /* Increased to ensure it stays above all content (like the sections) */
+  z-index: 1005;   /* Increased to ensure it stays above all content (like the sections) */
   /* Remove max-height: 150px; if you want the header to strictly define the space
      but given the complex header nav style, let's keep it for now.
      A fixed header doesn't take up space in the document flow.
@@ -220,7 +331,7 @@ body.intro-complete header {
     }
 
     .logo {
-      max-height: 50px;
+      max-height: 70px;
       padding-left: 2rem;
     }
 
@@ -237,48 +348,6 @@ body.intro-complete header {
       text-transform: uppercase;
     }
 
-    .small_bar {
-      padding-left: 1.5rem;
-    }
-
-    .small_bar a {
-      padding: 0;
-      width: 37px;
-      height: 37px;
-      display: flex;
-      border-radius: 50%;
-      background-color: rgb(3, 0, 155);
-      backdrop-filter: blur(15px);
-      justify-content: center;
-      align-items: center;
-    }
-
-    .small_bar .bar {
-      position: relative;
-      width: 52%;
-      height: 1.3px;
-      background-color: white;
-      border-radius: 2rem;
-    }
-
-    .small_bar .bar::before,
-    .small_bar .bar::after {
-      content: "";
-      left: 50%;
-      position: absolute;
-      transform: translateX(-50%);
-      width: 50%;
-      height: 100%;
-      background-color: inherit;
-    }
-
-    .small_bar .bar::before {
-      top: -4.5px;
-    }
-
-    .small_bar .bar::after {
-      top: 4.5px;
-    }
 
     /* Video Background */
     .video-background {
@@ -371,23 +440,17 @@ body.intro-complete header {
       }
     }
 
-   .explore-btn {
+.explore-btn {
   padding: 1rem 2.5rem;
   font-size: 1.1rem;
   font-family: 'Orbitron', Courier, monospace;
   font-weight: 600;
-  text-transform: uppercase;
-  color: white;
-  background-color: rgb(0, 0, 97);
-  border: 2px solid white;
-  border-radius: 50px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  display: block;
+  margin: 0 auto;
+  width: fit-content;
   text-decoration: none;
-  display: block; /* changed from inline-block */
-  margin: 0 auto; /* centers the button horizontally */
-  width: fit-content; /* button only as wide as its content */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+  /* Background/Border removed here, handled by Global Glass block */
 }
 
     .explore-btn:hover {
@@ -540,7 +603,7 @@ body.intro-complete header {
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1.5rem;
 }
 
 .whats-aess-main-card {
@@ -717,13 +780,14 @@ body.intro-complete header {
 
     
     /* Media Section */
-    .media-section {
-      position: relative;
-      z-index: 1;
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 97, 0.8) 100%);
-      /* padding: 4rem 2rem; */
-      min-height: 100vh;
-    }
+   .media-section {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 97, 0.8) 100%);
+  padding-bottom: 6rem; /* Adds nice spacing at the bottom instead of full screen height */
+  height: auto;         /* Allows the section to shrink to fit the content */
+  min-height: auto;     /* Overrides any previous min-height */
+}
 
     .media-container {
       max-width: 1400px;
@@ -743,23 +807,36 @@ body.intro-complete header {
       z-index: 10000;
     }
 
+.media-grid {
+  display: grid;
+  /* 👇 CHANGE minwidth TO minmax */
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  overflow: visible; 
+}
     .media-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 2rem;
-    }
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minwidth(320px, 1fr));
+  gap: 2rem;
+  overflow: visible; /* ADD THIS LINE */
+}
 
-    .media-card {
-      background: rgba(0, 0, 97, 0.4);
-      border-radius: 17px;
-      overflow: hidden;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      backdrop-filter: blur(10px);
-      position: relative;
-      border: 2px solid transparent;
-      background-clip: padding-box;
-    }
+.media-card {
+  background: rgba(0, 0, 97, 0.4);
+  border-radius: 26px;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, z-index 0.3s ease; 
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  position: relative;
+  background-clip: padding-box;
+}
+
+/* ADD THE NEW HOVER RULE HERE */
+.media-card:hover {
+  z-index: 10;
+  box-shadow: 0 10px 30px rgba(0, 191, 255, 0.5);
+}
    /* ADD THIS - Blurred green overlay */
 .media-card::before {
   content: "";
@@ -784,29 +861,23 @@ body.intro-complete header {
 }
 
 
+
     
-   .media-card::after {
+.media-card::after {
   content: "";
   position: absolute;
-  /* Shorthand for top: 0; left: 0; right: 0; bottom: 0; */
   inset: 0;
-  
-  border-radius: 15px;
+  border-radius: 25px;
 
-  /* Padding controls the thickness of the visible border line */
-  padding: 4.5px; 
+  /* CHANGE THIS VALUE: A smaller number makes the border thinner */
+  padding: 4px; /* It was originally 4.5px */
 
-  /* Extended gradient for smoother animation loop */
   background: linear-gradient(45deg, #00bfff, #0012b5, #37cdff, #0012b5); 
   background-size: 300% 100%;
-
-  /* Webkit and standard masking to create the hollow border */
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-
-  pointer-events: none; /* Allows clicks to pass through */
-
+  pointer-events: none;
   animation: borderMove 5s linear infinite;
 }
 
@@ -887,7 +958,7 @@ body.intro-complete header {
       right: 2rem;
       top: 50%;
       transform: translateY(-50%);
-      z-index: 1000;
+      z-index: 1005;
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
@@ -947,11 +1018,13 @@ body.intro-complete header {
 
     /* Researchers */
     .researchers-section {
-      position: relative;
-      z-index: 1;
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 97, 0.8) 100%);
+  padding-bottom: 6rem; /* Adds nice spacing at the bottom instead of full screen height */
+  height: auto;         /* Allows the section to shrink to fit the content */
+  min-height: auto;     /* Overrides any previous min-height */
       background: linear-gradient(180deg, rgba(0, 0, 97, 0.8) 0%, rgba(0, 0, 0, 0.9) 100%);
-      padding: 6rem 0rem;
-      min-height: 100vh;
     }
 
     .researchers-header {
@@ -972,14 +1045,14 @@ body.intro-complete header {
     .researcher-column {
       width: 20px;
       min-width: 50px;
-      height: 500px;
+      height: 800px;
       background: linear-gradient(180deg, rgba(0, 0, 97, 0.6), rgba(3, 0, 155, 0.8));
       border: 1px solid rgba(255, 255, 255, 0.3);
       border-radius: 10px;
       cursor: pointer;
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
-      overflow: hidden;
+     overflow: visible;
     }
 
     .researcher-column-label {
@@ -1092,16 +1165,16 @@ body.intro-complete header {
 }
 
 .electronics-video {
-  position: fixed;
+  position: -webkit-sticky; /* For Safari */
+  position: sticky;         /* Sticky makes it scroll with the section */
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
   object-fit: cover;
-  opacity: 0;
-  transition: opacity 1.2s ease;
+  opacity: 0.7;             /* Visible by default (no fading) */
   z-index: 1;
-  pointer-events: none;
+  pointer-events: none;     /* Allows clicking through to content */
 }
 
 .electronics-content {
@@ -1189,14 +1262,14 @@ body.intro-complete header {
 }
 
 .aviation-video {
-  position: fixed;
+  position: -webkit-sticky;
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
   object-fit: cover;
-  opacity: 0;
-  transition: opacity 1.2s ease;
+  opacity: 0.7;
   z-index: 1;
   pointer-events: none;
 }
@@ -1267,14 +1340,14 @@ body.intro-complete header {
 }
 
 .aerospace-video {
-  position: fixed;
+  position: -webkit-sticky;
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
   object-fit: cover;
-  opacity: 0;
-  transition: opacity 1.2s ease;
+  opacity: 0.7;
   z-index: 1;
   pointer-events: none;
 }
@@ -1366,6 +1439,9 @@ body.intro-complete header {
   transform: translateY(0);
   opacity: 1;
 }
+
+
+
 
 
     /* Explore More Box */
@@ -1538,7 +1614,7 @@ body.intro-complete header {
 }
 
 /* Responsive adjustment */
-@media (max-width: 968px) {
+/* @media (max-width: 968px) {
   .explore-box {
     left: 2rem;
     width: 280px;
@@ -1557,7 +1633,7 @@ body.intro-complete header {
   .mini-event-image {
     height: 80px;
   }
-}
+} */
 
 
 
@@ -1603,7 +1679,7 @@ body.intro-complete header {
     }
 
     /* Media Query for smaller screens */
-    @media (max-width: 768px) {
+    /* @media (max-width: 768px) {
       .curved-carousel-wrapper {
         height: 350px;
       }
@@ -1612,7 +1688,7 @@ body.intro-complete header {
         margin-left: -45%;
         height: 300px;
       }
-    }
+    } */
 
 
     /* Carousel Navigation Arrows */
@@ -1622,8 +1698,8 @@ body.intro-complete header {
   transform: translateY(-50%);
   width: 50px;
   height: 50px;
-  background: rgba(0, 0, 97, 0.6);
-  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 97, 0.1);
+  backdrop-filter: blur(5px);
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   color: white;
@@ -1637,7 +1713,7 @@ body.intro-complete header {
   user-select: none;
 }
 
-.carousel-nav-btn:hover {
+/* .carousel-nav-btn:hover {
   background: rgba(0, 0, 97, 0.9);
   border-color: rgba(0, 234, 255, 0.8);
   box-shadow: 0 0 20px rgba(0, 234, 255, 0.5);
@@ -1646,17 +1722,23 @@ body.intro-complete header {
 
 .carousel-nav-btn:active {
   transform: translateY(-50%) scale(0.95);
-}
-
+} */
 .carousel-nav-left {
-  left: 2rem;
+  left: 50%; /* 1. Reset to Middle */
+  right: auto;
+  /* 2. Center Vertically (-50%) and Move Left (-14rem) */
+  transform: translate(-50%, -50%) translateX(-14rem); 
 }
 
 .carousel-nav-right {
-  right: 2rem;
+  left: 50%; /* 1. Reset to Middle */
+  right: auto;
+  /* 2. Center Vertically (-50%) and Move Right (14rem) */
+  transform: translate(-50%, -50%) translateX(14rem); 
 }
 
-@media (max-width: 768px) {
+
+/* @media (max-width: 768px) {
   .carousel-nav-btn {
     width: 40px;
     height: 40px;
@@ -1670,7 +1752,7 @@ body.intro-complete header {
   .carousel-nav-right {
     right: 1rem;
   }
-}
+} */
 
 
 /* Animation for collecting cards */
@@ -1720,7 +1802,7 @@ body.intro-complete header {
   height: 100%;
   z-index: 10001; /* Above intro overlay */
   display: flex;
- justify-content: center;
+  justify-content: center;
   transform: translateY(-100px); /* 👈 ADD THIS */
   align-items: center;
   gap: 750px; /* Distance between lines */
@@ -2083,18 +2165,18 @@ body.intro-complete header {
 
 
 /* Social Media Section */
+/* Find this block in your CSS */
 .social-media-section {
   position: relative;
-  z-index: 1;
+  z-index: 10;   /* 👈 CHANGE THIS from 1 to 10 */
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 97, 0.8) 100%);
-  padding: 6rem 2rem;
+  padding: 2rem 2rem;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
-
 .social-media-container {
   max-width: 1200px;
   width: 100%;
@@ -2322,18 +2404,20 @@ body.intro-complete header {
 
 
 /* Hero Section Video Background */
+/* Hero Section Video Background */
+/* Hero Section Video Background */
 .hero-video-bg {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
-  z-index: 0; /* Below hero content but above grid canvas */
+  z-index: 0; 
   overflow: hidden;
   opacity: 0;
   transition: opacity 1s ease;
+  pointer-events: none; /* 👈 ADD THIS LINE HERE */
 }
-
 .hero-video-bg video {
   min-width: 100%;
   min-height: 100%;
@@ -2375,7 +2459,11 @@ body.scroll-active .hero-video-bg {
 
 
 
-
+/* Add this class to properly remove the intro container */
+.hide-container {
+  display: none !important;
+  pointer-events: none !important;
+}
 
 
 
@@ -2391,8 +2479,14 @@ body.scroll-active .hero-video-bg {
   --yellow-color: 200;
   --green-color: 0;
   --pink-color: 310;
+  --green-color_more: 120;
+  --orange-color: 31;
+  --brown-color: 17;
+  --sun-color: 51;
   --black-color: 300;
   --red-color: 340;
+  --sky-color: 184;
+  --red_more-color: 0;
   --random-color: 230;
 
   --white-color: hsl(0, 0%, 100%);
@@ -2416,7 +2510,7 @@ body.scroll-active .hero-video-bg {
 @media screen and (min-width: 1150px) {
   :root {
     --biggest-font-size: 3rem;
-    --big-font-size: 2.5rem;
+    --big-font-size: 2rem;
     --normal-font-size: 1rem;
     --small-font-size: .875rem;
   }
@@ -2446,16 +2540,39 @@ img {
   --hue: var(--yellow-color);
 }
 
+.card-sky {
+  --hue: var(--sky-color);
+}
+
+
+.card-brown {
+  --hue: var(--brown-color);
+}
+
 
 .card-pink {
   --hue: var(--pink-color);
 }
+
+.card-sun {
+  --hue: var(--sun-color);
+}
+.card-green_more {
+  --hue: var(--green-color_more);
+}
+.card-orange{
+  --hue: var(--orange-color);
+}
+
 .card-black {
   --hue: var(--black-color);
 }
 
 .card-red {
   --hue: var(--red-color);
+}
+.card-red_more {
+  --hue: var(--red_more-color);
 }
 .card-other {
   --hue: var(--random-color);
@@ -2475,7 +2592,45 @@ img {
 /*=============== CARD ===============*/
 .card {
   position: relative;
-  padding-block: 5rem;
+  overflow: hidden; /* Keeps video inside the section bounds */
+  z-index: 1;
+  background: transparent; /* Remove default background if any */
+}
+
+/* 2. Position the video container */
+.team-video-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0; /* Sits behind the cards */
+  pointer-events: none; /* Allows clicking through to cards */
+}
+
+/* 4. Add a dark overlay so white text remains readable */
+.team-video-background::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* Adjust 0.6 to make it darker/lighter */
+  z-index: 1;
+}
+/* 5. Ensure existing content sits ABOVE the video */
+.card .HEAD-all,
+.card__container {
+  position: relative;
+  z-index: 2; /* Higher than the video z-index */
+}
+
+
+.team-video-background video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures video covers the area without stretching */
 }
 
 .card__bg, 
@@ -2537,8 +2692,26 @@ img {
 .card__data {
   color: var(--white-color);
   position: absolute;
-  left: 1.5rem;
+  left: 1rem;
   bottom: 2rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 2;
+}
+
+.card__data .card__profession {
+  align-self: flex-start;
+}
+
+.card__data-bottom {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 0.5rem;
 }
 
 .card__name {
@@ -2549,6 +2722,24 @@ img {
 .card__profession {
   display: block;
   font-size: var(--small-font-size);
+  background-color: hsla(var(--hue), 80%, 50%, 0.2);
+  backdrop-filter: blur(8px);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid hsla(var(--hue), 80%, 50%, 0.4);
+}
+.card-green .card__profession {
+  display: block;
+  font-size: var(--small-font-size);
+  background-color: hsla(var(--hue), 80%, 50%, 0.2);
+  backdrop-filter: blur(8px);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid white;
 }
 
 .card__clip {
@@ -2596,13 +2787,8 @@ img {
 .info__description {
   font-size: var(--small-font-size);
   margin-bottom: 1rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 3; /* Shows approximately 20 words across 3 lines */
-  -webkit-box-orient: vertical;
   line-height: 1.5;
-  max-height: 4.5em; /* 3 lines * 1.5 line-height */
+  /* We removed the overflow and line-clamp properties */
 }
 
 .info__button {
@@ -2617,9 +2803,7 @@ img {
   transition: box-shadow .4s;
 }
 
-/* .info__button:hover {
-  box-shadow: 0 0 20px hsl(var(--hue), 90%, 50%);
-} */
+
 
 .info__social {
   position: absolute;
@@ -2719,14 +2903,15 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.1);
+  /* background: rgba(255, 255, 255, 0.1); */
   border-radius: 50%;
   transition: all 0.3s ease;
 }
 
 .card-modal-close:hover {
-  background: rgba(255, 0, 0, 0.8);
-  transform: rotate(90deg);
+  /* background: rgba(255, 0, 0, 0.8); */
+  /* transform: rotate(90deg); */
+  color: red;
 }
 
 .card-modal-body {
@@ -2910,7 +3095,7 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
+  z-index: 1000;
   pointer-events: all; /* Blocks all clicks */
 }
 
@@ -3035,6 +3220,7 @@ img {
   -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 1001;
 }
 
 .HEAD-all h2 {
@@ -3043,7 +3229,7 @@ img {
   font-size: 2rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 4px;
+  letter-spacing: 2px;
   color: white;
   padding: 0.5rem 2rem;
   
@@ -3116,23 +3302,42 @@ img {
 }
 
 
+
+.coming-soon-timeline .timeline-content,
+.coming-soon-timeline .timeline-item > * {
+  filter: blur(20px);
+  -webkit-filter: blur(20px);
+  user-select: none;
+  pointer-events: none;
+}
 /* Timeline Coming Soon Overlay */
+/* Update this existing class */
 .coming-soon-timeline-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.599);
-  backdrop-filter: blur(50px);
-  -webkit-backdrop-filter: blur(50px);
-  border-radius: 20px;
+  /* Dark background, but transparent enough to see the glow of the blur behind it */
+  background: rgba(0, 0, 0, 0.4); 
+  /* This creates the frosted surface */
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px);
+  /* border-radius: 20px; */
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
-  pointer-events: all; /* Blocks all clicks */
+  z-index: 999;
+  pointer-events: all; 
   animation: pulseOverlay 3s ease-in-out infinite;
+}
+/* Paste this immediately after the class above */
+.coming-soon-timeline-overlay ~ * {
+  filter: blur(10px);       /* This effectively wipes out the content details */
+  opacity: 0.6;             /* Dims the content so it's not distracting */
+  pointer-events: none;     /* Ensures users can't click buttons through the blur */
+  user-select: none;        /* Prevents users from highlighting/copying the hidden text */
+  transition: all 0.5s ease;
 }
 
 .coming-soon-text {
@@ -3165,7 +3370,7 @@ img {
   content: '';
   position: absolute;
   inset: -2px;
-  border-radius: 15px;
+  /* border-radius: 15px; */
   padding: 2px;
   background: linear-gradient(
     45deg,
@@ -3178,8 +3383,18 @@ img {
   mask-composite: exclude;
 }
 
+/* Smooth fade-out transition for videos */
+/* Smooth fade-out transition for videos */
+video {
+  /* Increase duration to 1s for a smoother effect */
+  transition: opacity 1s ease-in-out !important; 
+  /* Default opacity is handled by your section classes (e.g., 0.7), so we don't force it here */
+}
 
-
+video.fade-out {
+  /* Force opacity to 0 to make it completely disappear/black */
+  opacity: 0.3 !important; 
+}
 /* Responsive */
 @media (max-width: 768px) {
   .coming-soon-text {
@@ -3188,6 +3403,1705 @@ img {
     letter-spacing: 4px;
   }
 }
+
+/* Update the Left Column to stack items */
+.card-modal-left {
+  flex: 0 0 40%;
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center;    /* Center align items */
+  justify-content: flex-start;
+  gap: 1.5rem;            /* Space between Image, Profession, Button */
+}
+
+/* Update Profession Styling to look like a badge */
+.card-modal-profession {
+  font-size: 1rem;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background-color: hsla(var(--modal-hue), 80%, 50%, 0.2); /* Dynamic Color */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 0.8rem 1.5rem;
+  border-radius: 50px;
+  border: 1px solid hsla(var(--modal-hue), 80%, 50%, 0.4);
+  text-align: center;
+  margin: 0; /* Reset margins */
+  width: fit-content;
+}
+
+/* Add Styling for the new Follow Button */
+.card-modal-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: hsl(var(--modal-hue), 90%, 50%); /* Dynamic Color */
+  box-shadow: 0 0 12px hsl(var(--modal-hue), 90%, 50%);
+  padding: 0.8rem 2rem;
+  border-radius: 50px;
+  color: var(--black-color, #000); /* Fallback to black if variable missing */
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.3s, box-shadow 0.3s;
+  text-transform: uppercase;
+}
+
+.card-modal-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 20px hsl(var(--modal-hue), 90%, 50%);
+}
+
+/* Optional: Ensure image doesn't get too big in this new layout */
+.card-modal-image {
+  width: 100%;
+  max-width: 350px; /* Limit width */
+  height: auto;
+  border-radius: 15px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+/* Style for the titles inside the bio */
+.bio-title {
+  color: #00eaff;       /* Bright Cyan to pop against the background */
+  font-weight: 800;     /* Extra Bold */
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  display: inline-block;
+  margin-top: 10px;     /* Space above the title */
+  margin-bottom: 2px;   /* Small space below the title */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3); /* Underline */
+}
+
+/* =========================================
+       NEON SCROLLBAR STYLES
+   ========================================= */
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.8);
+  border-left: 1px solid rgba(0, 234, 255, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 234, 255, 0.8),
+    rgba(0, 150, 255, 0.6)
+  );
+  border-radius: 10px;
+  box-shadow: 
+    0 0 10px rgba(0, 234, 255, 0.8),
+    0 0 20px rgba(0, 234, 255, 0.5),
+    inset 0 0 10px rgba(0, 234, 255, 0.3);
+  border: 1px solid rgba(0, 234, 255, 0.4);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 255, 255, 1),
+    rgba(0, 200, 255, 0.8)
+  );
+  box-shadow: 
+    0 0 15px rgba(0, 255, 255, 1),
+    0 0 30px rgba(0, 234, 255, 0.8),
+    inset 0 0 15px rgba(0, 255, 255, 0.5);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 234, 255, 0.8) rgba(0, 0, 0, 0.8);
+}
+
+/* =========================================
+   AI CHATBOX STYLES
+   ========================================= */
+.ai-chat-box {
+  position: fixed;
+  bottom: 2rem; /* Above the floating button */
+  right: 2rem;
+  width: 350px;
+  height: 500px;
+  margin-right: 5rem;
+  background: rgba(0, 0, 30, 0.85); /* Dark Blue Transparent */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 234, 255, 0.3);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  z-index: 10000;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 234, 255, 0.1);
+  
+  /* Animation State */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px) scale(0.9);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.ai-chat-box.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+/* Header */
+.chat-header {
+  padding: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 234, 255, 0.1);
+  border-radius: 20px 20px 0 0;
+}
+
+.chat-title {
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chat-title .dot {
+  width: 8px;
+  height: 8px;
+  background-color: #00eaff;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #00eaff;
+  animation: pulseDot 2s infinite;
+}
+
+@keyframes pulseDot {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; box-shadow: 0 0 15px #00eaff; }
+  100% { opacity: 0.5; }
+}
+
+.close-chat {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 24px;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.3s;
+}
+
+.close-chat:hover {
+  color: #ff0055;
+}
+
+/* Messages Area */
+.chat-messages {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: rgba(0, 234, 255, 0.5) rgba(0, 0, 0, 0.3);
+}
+
+.message {
+  max-width: 80%;
+  padding: 10px 15px;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  word-wrap: break-word;
+  animation: popIn 0.3s ease;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.bot-message {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-bottom-left-radius: 2px;
+}
+
+.user-message {
+  align-self: flex-end;
+  background: rgba(0, 234, 255, 0.2);
+  border: 1px solid rgba(0, 234, 255, 0.4);
+  color: #fff;
+  border-bottom-right-radius: 2px;
+  text-align: right;
+}
+
+/* Input Area */
+.chat-input-area {
+  padding: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  gap: 10px;
+}
+
+#chatInput {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 25px;
+  padding: 10px 15px;
+  color: white;
+  font-family: 'Cairo', sans-serif;
+  outline: none;
+  transition: all 0.3s;
+}
+
+#chatInput:focus {
+  border-color: #00eaff;
+  box-shadow: 0 0 10px rgba(0, 234, 255, 0.2);
+}
+
+#sendMessageBtn {
+  background: #00eaff;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#sendMessageBtn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px #00eaff;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 480px) {
+  .ai-chat-box {
+    width: 90%;
+    right: 5%;
+    bottom: 5rem;
+    height: 60vh;
+  }
+}
+
+
+
+
+
+
+/* New Intro Overlay Styles */
+.ai-intro-overlay {
+  position: absolute;
+  top: 60px; /* Height of the header */
+  left: 0;
+  width: 100%;
+  height: calc(100% - 60px);
+  background: rgba(0, 0, 20, 0.95); /* Dark background to hide messages */
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  z-index: 20; /* Sit on top of messages */
+  display: none; /* Hidden by default */
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 0 20px 20px;
+  padding: 2rem;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.ai-intro-overlay.active {
+  display: flex; /* Shown via JS */
+}
+
+.ai-intro-content p {
+  color: white;
+  font-family: 'Cairo', sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 10px rgba(0, 234, 255, 0.5);
+}
+
+#closeIntroBtn {
+  background: transparent;
+  border: 1px solid #00eaff;
+  color: #00eaff;
+  padding: 10px 30px;
+  border-radius: 50px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+#closeIntroBtn:hover {
+  background: #00eaff;
+  color: black;
+  box-shadow: 0 0 20px rgba(0, 234, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+
+
+
+
+/* --- 2. Layout & Section --- */
+.glassmorphic-leaderboard-section-wrapper {
+   position: relative;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 97, 0.8) 100%);
+  padding-bottom: 10rem; /* Adds nice spacing at the bottom instead of full screen height */
+  height: auto;         /* Allows the section to shrink to fit the content */
+  min-height: auto;     /* Overrides any previous min-height */
+        }
+
+        .glassmorphic-leaderboard-main-title {
+            font-size: 2.5rem;
+            /* margin-bottom: 4rem; */
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(to right, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0;
+            /* Hidden initially for scroll anim */
+            transform: translateY(20px);
+            transition: all 0.8s ease;
+        }
+
+        .glassmorphic-leaderboard-cards-flex-container {
+            display: flex;
+            align-items: flex-end;
+            /* Aligns them at the bottom so heights differ */
+            justify-content: center;
+            /* gap: 20px; */
+            flex-wrap: wrap;
+        }
+
+        /* --- 3. Glassmorphism Card Styling --- */
+        .glassmorphic-performer-card-base {
+            position: relative;
+            width: 240px;
+            background: #001aff16;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.501);
+            border-top: 1px solid white;
+            border-radius: 24px;
+            padding: 2rem 1.5rem;
+            margin: 1rem;
+            text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+
+            /* Initial State for Scroll Animation */
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* --- 4. Content Styling --- */
+        .glassmorphic-performer-avatar-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.5rem auto;
+            border-radius: 50%;
+            padding: 4px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
+        }
+
+        .glassmorphic-performer-avatar-container img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(0, 0, 0, 0.2);
+        }
+
+        .glassmorphic-performer-rank-badge-circle {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 30px;
+            height: 30px;
+            background: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #0f172a;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .glassmorphic-performer-name-display {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            color: white;
+        }
+
+        .glassmorphic-performer-role-subtitle {
+            font-size: 0.9rem;
+            color: white;
+            font-weight: 500;
+        }
+
+        /* --- 5. Specific Ranking Styles --- */
+
+        /* Rank 1 (Middle) */
+        .glassmorphic-performer-card-first-place {
+            width: 280px;
+            /* Bigger */
+            padding: 3rem 1.5rem;
+            z-index: 2;
+            background: rgba(0, 60, 255, 0.15);
+            /* Slightly lighter */
+            box-shadow: 0 0 50px rgba(96, 165, 250, 0.15);
+        }
+
+        .glassmorphic-performer-card-first-place .glassmorphic-performer-rank-badge-circle {
+            background: var(--glassmorphic-leaderboard-gold);
+        }
+
+        .glassmorphic-performer-card-first-place .glassmorphic-performer-avatar-container {
+            width: 120px;
+            height: 120px;
+        }
+
+        /* Rank 2 (Left) */
+        .glassmorphic-performer-card-second-place {
+            order: -1;
+        }
+
+        /* Flexbox trick to put it left */
+        .glassmorphic-performer-card-second-place .glassmorphic-performer-rank-badge-circle {
+            background: var(--glassmorphic-leaderboard-silver);
+        }
+
+        /* Rank 3 (Right) */
+        .glassmorphic-performer-card-third-place {
+            order: 1;
+        }
+
+        .glassmorphic-performer-card-third-place .glassmorphic-performer-rank-badge-circle {
+            background: var(--glassmorphic-leaderboard-bronze);
+        }
+
+
+        /* --- 6. Interactions (Hover & Scroll) --- */
+
+        /* Hover Effect: Rotate and Scale */
+        .glassmorphic-performer-card-base:hover {
+            transform: scale(1.05) !important;
+            background: rgba(0, 17, 255, 0.232);
+            border-color: rgb(255, 255, 255);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        /* Scroll Active State (Added via JS) */
+        .glassmorphic-leaderboard-section-active .glassmorphic-leaderboard-main-title {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .glassmorphic-leaderboard-section-active .glassmorphic-performer-card-base {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Staggered delay for scroll animation */
+        .glassmorphic-leaderboard-section-active .glassmorphic-performer-card-second-place {
+            transition-delay: 0.1s;
+        }
+
+        .glassmorphic-leaderboard-section-active .glassmorphic-performer-card-first-place {
+            transition-delay: 0.3s;
+        }
+
+        /* Middle pops up last/distinctly */
+        .glassmorphic-leaderboard-section-active .glassmorphic-performer-card-third-place {
+            transition-delay: 0.5s;
+        }
+        
+
+        /* --- TEAM ENTRY ANIMATION --- */
+
+/* 1. Initial State: Hidden and pushed down */
+.card__article {
+  opacity: 0;
+  transform: translateY(60px); 
+  /* We combine your existing transition with the entry transition */
+  transition: transform 0.4s, opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* 2. Active State: Visible and back to original position */
+.card__article.team-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 3. Staggered Delays (Cascading effect) */
+/* This ensures they don't all appear at once */
+.card__article.team-visible:nth-child(1) { transition-delay: 0.1s; }
+.card__article.team-visible:nth-child(2) { transition-delay: 0.2s; }
+.card__article.team-visible:nth-child(3) { transition-delay: 0.3s; }
+.card__article.team-visible:nth-child(4) { transition-delay: 0.4s; }
+.card__article.team-visible:nth-child(5) { transition-delay: 0.5s; }
+.card__article.team-visible:nth-child(6) { transition-delay: 0.6s; }
+.card__article.team-visible:nth-child(7) { transition-delay: 0.7s; }
+.card__article.team-visible:nth-child(8) { transition-delay: 0.8s; }
+
+
+
+/* =========================================
+   IOS GLASS HEADER ANIMATION (CENTER OUT)
+   ========================================= */
+
+/* 1. Ensure Header Container is visible, but interactions disabled initially */
+body:not(.intro-complete) header {
+  opacity: 1; 
+  pointer-events: none;
+}
+
+/* 2. Configure Nav to be centered and collapsed */
+header nav {
+  /* Vital: 'auto' on left/right margins centers it, enabling the center-out effect */
+  margin: 2rem auto; 
+  
+  /* Start completely collapsed */
+  width: 0px; 
+  opacity: 0;
+  
+  /* Hide messy content while expanding */
+  overflow: hidden; 
+  white-space: nowrap; 
+  
+  /* Remove box model thickness initially */
+  padding: 0; 
+  border-width: 0;
+  
+  will-change: width, padding, opacity;
+}
+
+/* 3. Hide Inner Content (Logo, Links) Initially */
+header nav > * {
+  opacity: 0;
+  transform: translateY(15px);
+  filter: blur(5px);
+}
+
+/* 4. Trigger Animations */
+body.intro-complete header nav {
+  animation: expandNavCenter 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: 0.5s; 
+}
+
+body.intro-complete header nav > * {
+  animation: fadeContentUp 0.8s ease forwards;
+  /* Wait for the bar to be mostly open before showing text */
+  animation-delay: 1.3s; 
+}
+
+/* 5. Keyframes */
+
+@keyframes expandNavCenter {
+  0% {
+    width: 0;
+    opacity: 0;
+    padding: 0;
+    border-width: 0;
+    background: rgba(0, 0, 97, 0);
+  }
+  1% {
+    /* Flash into existence as a tiny sliver in the center */
+    opacity: 1;
+    border-width: 1px;
+    background: rgba(0, 0, 97, 0.1);
+  }
+  100% {
+    /* Expand to fill width minus the 2rem margins on sides */
+    width: calc(100% - 4rem); 
+    opacity: 1;
+    padding: 1.5rem 0.8rem;
+    border-width: 1px;
+    background: rgba(0, 0, 97, 0.3);
+  }
+}
+
+@keyframes fadeContentUp {
+  0% {
+    opacity: 0;
+    transform: translateY(15px);
+    filter: blur(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================================
+    MOBILE RESPONSIVENESS (Max-Width: 768px)
+   ========================================================================= */
+
+
+   /* =========================================
+   MOBILE MENU ICON STYLES
+   ========================================= */
+
+/* 1. Default: Hide the Space icon on Desktop */
+.mobile-menu-icon {
+  display: none; 
+  width: 50px;       /* Adjust size as needed */
+  height: 50px;      /* Adjust size as needed */
+  object-fit: contain;
+  cursor: pointer;
+  z-index: 1006;     /* Ensure it's clickable above other elements */
+  transition: transform 0.3s ease;
+}
+
+/* Optional: Rotate effect on hover */
+.mobile-menu-icon:hover {
+  transform: rotate(20deg) scale(1.1);
+}
+
+
+
+
+
+
+/* 2. Mobile: Show the icon when screen is 768px or smaller */
+@media screen and (max-width: 768px) {
+  
+  /* Hide the desktop text links */
+  header ul {
+    display: none;
+  }
+
+  /* Show the Space icon */
+  .mobile-menu-icon {
+    display: block;
+  }
+
+  /* Ensure the nav spreads items (Logo Left <-> Icon Right) */
+  header nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem; /* Adjust padding if needed */
+  }
+}
+
+ /* 4. Mobile Menu Overlay Styles */
+          .mobile-nav-overlay {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.192) !important; 
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+            /* Deep dark blue background */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 10000;
+            /* On top of everything */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+    
+            /* Animation Start State */
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-20px);
+            transition: all 0.4s ease;
+          }
+    
+          /* Active State (Added via JS) */
+          .mobile-nav-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+          }
+    
+          /* Close Button */
+          .mobile-nav-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 3rem;
+            color: #00eaff;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+          }
+    
+          .mobile-nav-close:hover {
+            color: rgba(255, 0, 0, 0.799);
+          }
+    
+          /* Links Styling */
+          .mobile-nav-links {
+            list-style: none;
+            text-align: center;
+            padding: 0;
+          }
+    
+          .mobile-nav-links li {
+            margin: 1.5rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+          }
+    
+          /* Staggered Animation for Links when active */
+          .mobile-nav-overlay.active .mobile-nav-links li {
+            opacity: 1;
+            transform: translateY(0);
+          }
+    
+          /* Delay for each link */
+          .mobile-nav-overlay.active .mobile-nav-links li:nth-child(1) {
+            transition-delay: 0.1s;
+          }
+    
+          .mobile-nav-overlay.active .mobile-nav-links li:nth-child(2) {
+            transition-delay: 0.2s;
+          }
+    
+          .mobile-nav-overlay.active .mobile-nav-links li:nth-child(3) {
+            transition-delay: 0.3s;
+          }
+    
+          .mobile-nav-overlay.active .mobile-nav-links li:nth-child(4) {
+            transition-delay: 0.4s;
+          }
+    
+          .mobile-nav-overlay.active .mobile-nav-links li:nth-child(5) {
+            transition-delay: 0.5s;
+          }
+    
+          .mobile-nav-overlay.active .mobile-nav-links li:nth-child(6) {
+            transition-delay: 0.6s;
+          }
+    
+          .mobile-nav-overlay.active .mobile-nav-links li:nth-child(7) {
+            transition-delay: 0.7s;
+          }
+    
+          .mobile-nav-overlay.active .mobile-nav-links li:nth-child(8) {
+            transition-delay: 0.8s;
+          }
+    
+          .mobile-nav-links a {
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            text-decoration: none;
+            letter-spacing: 2px;
+            transition: color 0.3s;
+          }
+    
+          .mobile-nav-links a:hover {
+            color: #00eaff;
+            text-shadow: 0 0 20px rgba(0, 234, 255, 0.6);
+          }
+        
+
+
+
+
+
+
+
+@media screen and (max-width: 768px) {
+
+  /* --- 1. GLOBAL & TYPOGRAPHY --- */
+  :root {
+    --biggest-font-size: 1.8rem;
+    --big-font-size: 1.25rem;
+    --normal-font-size: 0.9rem;
+  }
+  
+  body {
+    overflow-x: hidden; /* Prevent horizontal scroll from animations */
+  }
+
+  /* --- 2. HEADER & NAV --- */
+  header nav {
+      background: rgba(0, 0, 97, 0.3);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 100px;
+      padding: 1.5rem 0.8rem;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 97, 0.37);
+      max-width: 100%;
+      margin: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-height: 80px;
+  }
+
+  header ul {
+  display: none;
+  }
+
+  header ul a {
+    display: none;
+  }
+
+  .logo {
+    max-height: 50px;
+    padding-left: 10px;
+    margin-bottom: 0.5rem;
+  }
+
+
+
+.hero-section {
+    padding-top: 120px; /* Space for stacked header */
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .hero-title {
+    font-size: 1.8rem;
+    padding: 0 0.5rem;
+  }
+
+
+
+  .HEAD-all h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+
+  /* Explore Box (Bottom Left Box) */
+  .explore-box {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    width: 40%;
+    margin: 2rem auto;
+    transform: none;
+  }
+
+
+/* ... (Keep your ::before and ::after worm animations as they are) ... */
+
+.explore-box-title {
+  font-size: 0.95rem;      /* Reduced from 1.2rem */
+  font-weight: 700;
+  margin-bottom: 0.5rem;   /* Reduced margin */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.explore-box-details {
+  font-size: 0.8rem;       /* Reduced from 0.9rem */
+  line-height: 1.2;        /* Increased slightly for readability at small size */
+  margin-bottom: 0.8rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.explore-box-btn {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;  /* Added vertical padding for better look */
+  font-size: 0.75rem;      /* Smaller font for button */
+  margin-bottom: 3px;
+  background: rgba(0, 0, 97, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.529);
+  border-radius: 50px;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;        /* Adjusted from 5500 (invalid value) */
+  z-index: 999;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Card Stack Carousel - Reduced height */
+.latest-events-carousel {
+  width: 100%;
+  height: 120px;           /* Reduced from 160px */
+  position: relative;
+  margin-top: 1rem;
+}
+
+/* Mini Event Card - Scaled down height and width */
+.mini-event-card {
+  position: absolute;
+  width: 110px;            /* Reduced from 150px */
+  height: 140px;           /* Reduced from 200px */
+  background: rgba(0, 0, 97, 0.7);
+  backdrop-filter: blur(50px);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  animation: fadeInOut 9s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 3s);
+  opacity: 0;
+}
+
+
+.mini-event-title {
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+
+
+
+
+
+
+
+
+  /* Vertical Lines Animation Adjustment */
+  #vertical-lines-container {
+     gap: 100px; /* Bring lines closer */
+  }
+
+  /* --- 4. ABOUT SECTION --- */
+  .about-content-wrapper {
+    position: relative;
+    transform: none !important; /* Disable JS transform effects */
+    opacity: 1 !important;
+    width: 100%;
+    padding: 6rem 1rem 2rem 1rem;
+  }
+  
+  .aess-letters {
+    display: none; /* Hide giant letters on mobile to clean up UI */
+  }
+
+  .whats-aess-container {
+    padding: 0;
+  }
+
+
+
+
+
+  
+
+  .whats-aess-main-card {
+    margin-top: 22rem;
+    padding: 2rem;
+    /* padding: 10rem; */
+    /* margin-bottom: rem; */
+    transform: none !important;
+    opacity: 1 !important;
+      margin-bottom: 2rem;
+  }
+
+  .whats-aess-main-title {
+  color: white;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.whats-aess-main-text {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+.whats-aess-card-text {
+  font-size: 0.95rem;
+  line-height: 1.2;
+  text-align: justify;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+
+
+
+
+
+  .whats-aess-bottom-cards {
+    grid-template-columns: 1fr; /* Stack cards vertically */
+    gap: 1.5rem;
+  }
+
+  .about-stats {
+    gap: 1.5rem;
+  }
+
+  /* --- 5. TEAM CARDS (The Grid) --- */
+  .card__container {
+    grid-template-columns: repeat(2, 270px); /* 3 cards in a row */
+    gap: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .card__article {
+    width: 300px; /* Fixed width for mobile consistency */
+    height: 400px; /* Slightly shorter */
+    margin: 0 auto; /* Center cards */
+  }
+  
+  /* Reset Hover Transforms for touch devices */
+  .card__article:hover .card__img {
+    transform: none;
+  }
+
+  /* --- 6. MEDIA & CAROUSEL --- */
+  .curved-carousel-wrapper {
+    perspective: 1400px;
+     height: 350px;
+  }
+
+/* Find this inside @media (max-width: 768px) */
+.carousel-card {
+  width: 150px;       /* Change from 90% to a fixed pixel width */
+  height: 200px;      /* Adjust height as needed */
+  margin-left: 0;     /* REMOVE the -45%. The JS handles centering. */
+  left: 50%;          /* Ensure this stays to align with JS calculations */
+}
+
+
+
+
+      /* .carousel-card {
+        width: 90%;
+        margin-left: -45%;
+        height: 300px;
+      } */
+.media-card::after {
+  padding: 2px; /* It was originally 4.5px */
+
+}
+  
+  .carousel-nav-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+  
+  /* Adjust arrow positions */
+.carousel-nav-left {
+  left: 1rem;
+  transform: translateY(-50%);
+}
+
+.carousel-nav-right {
+  right: 1rem;
+  left: auto;
+  transform: translateY(-50%);
+}
+
+  /* --- 7. LEADERBOARD (Glassmorphism) --- */
+  .glassmorphic-leaderboard-cards-flex-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding-top: 2rem;
+  }
+
+  /* Reorder: Rank 1 on top, then 2, then 3 */
+  .glassmorphic-performer-card-first-place { order: 1; margin-bottom: 1rem; }
+  .glassmorphic-performer-card-second-place { order: 2; }
+  .glassmorphic-performer-card-third-place { order: 3; }
+
+  .glassmorphic-performer-card-base {
+    width: 90%; /* Full width cards */
+    margin: 0;
+    transform: none !important; /* Disable scroll complexity */
+    opacity: 1 !important;
+  }
+
+  /* --- 8. RESEARCHERS (Accordion) --- */
+  .researchers-columns {
+    flex-direction: column; /* Stack vertically */
+    height: auto;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .researcher-column {
+    width: 100%; /* Full width */
+    height: 80px; /* Collapsed height */
+    min-width: unset;
+    /* Reset rotation label */
+  }
+  
+  .researcher-column-label {
+    transform: translate(-50%, -50%); /* No rotation */
+    width: 100%;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+
+  .researcher-column.active {
+    width: 100%;
+    height: 550px; /* Expanded height */
+  }
+
+  .researcher-card {
+    padding: 1rem;
+  }
+  
+  .researcher-card-image {
+    height: 120px;
+  }
+
+  /* --- 9. BRANCH SECTIONS (Electronics, Aviation, Aerospace) --- */
+  /* General container adjustments */
+  .electronics-content, 
+  .aviation-content, 
+  .aerospace-content {
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 100px 1rem;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  /* Title Box adjustments */
+  .electronics-title, .aviation-title, .aerospace-title {
+    font-size: 2rem;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    width: 100%;
+    text-align: center;
+    
+    /* Override JS Fixed positioning for mobile flow */
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  /* Content Box adjustments */
+  .electronics-join, .aviation-join, .aerospace-join {
+    width: 100%;
+    padding: 1.5rem;
+    
+    /* Override JS Fixed positioning */
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    transform: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  /* Videos inside branches */
+  .electronics-video, .aviation-video, .aerospace-video {
+    position: absolute; /* Fix background */
+    height: 100%;
+  }
+
+  /* Timeline inside branches */
+  .timeline-container {
+    padding: 20px 0;
+  }
+  
+  .timeline-card {
+    width: 220px; /* Smaller cards in scrolling timeline */
+  }
+
+  /* --- 10. SOCIAL MEDIA --- */
+  .social-media-header h2 {
+    font-size: 2rem;
+  }
+  
+  .social-media-cards {
+    grid-template-columns: 1fr;
+    width: 90%;
+    gap: 1.5rem;
+  }
+
+  /* --- 11. AI CHAT BOX --- */
+  .ai-chat-box {
+    width: 50%;
+    right: 5%;
+    bottom: 5rem;
+    height: 60vh;
+    margin-right: 0;
+  }
+
+  /* --- 12. SECTION NAV DOTS --- */
+  .section-nav {
+    display: none; /* Hide right-side dots on mobile, too cramped */
+  }
+
+  /* --- 13. CARD MODAL --- */
+  .card-modal-content {
+    width: 95%;
+    margin: 15% auto;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .card-modal-body {
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+
+  .card-modal-left {
+    width: 100%;
+    margin-bottom: 1.5rem;
+  }
+  
+  .card-modal-image {
+    max-width: 200px;
+  }
+
+  .card-modal-name {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+  
+  .card-modal-description {
+    text-align: justify;
+    font-size: 0.9rem;
+  }
+  
+  .card-modal-social {
+    justify-content: center;
+  }
+
+  /* --- 14. INTRO OVERLAY --- */
+  #introButton {
+    font-size: 18px;
+    padding: 12px 30px;
+    width: 80%;
+  }
+  
+  .border-container {
+    display: none; /* Simplify intro on mobile */
+  }
+}
+
+
+
+
+
+
+
+
+
+
+/* =========================================================================
+   MOBILE RESPONSIVENESS (Max-Width: 430px)
+   ========================================================================= */
+
+@media screen and (max-width: 650px) {
+
+  /* --- 1. GLOBAL RESETS & TYPOGRAPHY --- */
+  :root {
+    --biggest-font-size: 1.6rem;
+    --big-font-size: 1.1rem;
+    --normal-font-size: 0.85rem;
+  }
+  
+  body {
+    cursor: auto; /* Restore native touch cursor */
+    overflow-x: hidden;
+  }
+
+  /* Hide custom cursor on touch devices to improve performance */
+  .cursor-dot, .cursor-outline {
+    display: none !important;
+  }
+
+  /* --- 2. INTRO OVERLAY --- */
+  #introButton {
+    width: 85%;
+    font-size: 1rem;
+    padding: 12px 20px;
+    top: 65%; /* Adjust position for mobile screens */
+  }
+
+  /* Hide complex border animations that might lag on mobile */
+  .border-container {
+    display: none; 
+  }
+
+  /* --- 3. HEADER & NAV --- */
+  header nav {
+    width: 95% !important; /* Force width */
+    margin: 1rem auto;
+    padding: 0.8rem 1.5rem;
+    flex-direction: row; /* Keep logo and hamburger inline */
+    justify-content: space-between;
+    background: rgba(0, 0, 97, 0.9); /* Darker background for readability */
+    height: auto;
+    max-height: 70px; /* Prevent expansion */
+  }
+
+  .logo {
+    max-height: 40px; /* Smaller logo */
+    padding-left: 0;
+  }
+
+    .HEAD-all h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+
+
+  /* --- 4. HERO SECTION --- */
+  .hero-section {
+    padding-top: 120px; /* Space for stacked header */
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .hero-title {
+    font-size: 1.8rem;
+    padding: 0 0.5rem;
+  }
+
+  /* Stack the Explore Box naturally */
+.explore-box {
+    width: 60%;
+  }
+  
+
+/* .latest-events-carousel {
+  width: 100%;
+  height: 160px;
+  position: relative;
+  margin-top: 1.5rem;
+}
+
+.mini-event-card {
+  position: absolute;
+  width: 180px;
+  height: 140px;
+  background: rgba(0, 0, 97, 0.7);
+  backdrop-filter: blur(50px);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  animation: fadeInOut 9s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 3s);
+  opacity: 0;
+} */
+
+  /* --- 5. ABOUT SECTION --- */
+  .about-section {
+    min-height: auto;
+    padding-bottom: 4rem;
+  }
+
+  /* Hide the giant animated letters (AESS) - they take up too much space */
+  .aess-letters {
+    display: none; 
+  }
+
+  .about-content-wrapper {
+    position: relative;
+    width: 100%;
+    transform: none !important; /* Disable JS transforms */
+    opacity: 1 !important;
+    padding: 2rem 1rem;
+    margin-top: 0;
+  }
+
+  .whats-aess-main-card {
+    padding: 1.5rem;
+    width: 100%;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .whats-aess-bottom-cards {
+    grid-template-columns: 1fr; /* Stack 1 column */
+    gap: 1.5rem;
+  }
+
+  .about-stats {
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 1rem;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+  }
+
+  /* --- 6. TEAM SECTION (Cards) --- */
+  .card {
+    height: auto;
+    padding: 4rem 0;
+  }
+
+  .card__container {
+    grid-template-columns: repeat(1, 300px); /* 3 cards in a row */
+    gap: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .card__article {
+    width: 100%; 
+    max-width: 320px; /* Prevent cards from being too wide */
+    height: 420px; /* Slightly shorter */
+    margin: 0 auto;
+  }
+
+  /* Disable hover scales on touch */
+  .card__article:hover .card__img {
+    transform: none;
+  }
+
+
+
+  /* --- 8. LEADERBOARD --- */
+  .glassmorphic-leaderboard-cards-flex-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  /* Order: 1st place on top */
+  .glassmorphic-performer-card-first-place { order: 1; margin-top: 0; width: 90%; }
+  .glassmorphic-performer-card-second-place { order: 2; width: 90%; }
+  .glassmorphic-performer-card-third-place { order: 3; width: 90%; }
+
+  .glassmorphic-performer-card-base {
+    margin: 0;
+    transform: none !important; /* Stop scroll animation */
+    opacity: 1 !important;
+  }
+
+  /* --- 9. RESEARCH (Accordion) --- */
+  .researchers-columns {
+    flex-direction: column;
+    height: auto;
+    padding: 1rem;
+    gap: 15px;
+  }
+
+  .researcher-column {
+    width: 100%;
+    height: 60px; /* Collapsed height */
+    min-width: unset;
+    border-radius: 15px;
+  }
+  
+  /* Reset rotation of text label */
+  .researcher-column-label {
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+    white-space: normal;
+    font-size: 0.8rem;
+    padding: 0 10px;
+  }
+
+  .researcher-column.active {
+    width: 100%;
+    height: 500px; /* Expanded height */
+  }
+
+  .researcher-card-image {
+    height: 150px;
+  }
+
+  /* --- 10. BRANCHES (Electronics, Aviation, Aerospace) --- */
+  /* This fixes the split screen layout issue */
+  
+  .electronics-section, .aviation-section, .aerospace-section {
+    height: auto; /* Remove 200vh height */
+    min-height: 100vh;
+  }
+
+  /* The container */
+  .electronics-content, 
+  .aviation-content, 
+  .aerospace-content {
+    flex-direction: column; /* Stack Title then Content */
+    padding: 60px 1rem;
+    height: auto;
+  }
+
+  /* Video Background */
+  .electronics-video, .aviation-video, .aerospace-video {
+    position: absolute; /* Not sticky on mobile */
+    height: 100%;
+  }
+
+  /* Glass Boxes (Title & Content) */
+  .glass-box {
+    width: 100%;
+    margin-bottom: 2rem;
+    /* IMPORTANT: Override JS Fixed positioning */
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  /* Specific Titles */
+  .electronics-title, .aviation-title, .aerospace-title {
+    font-size: 1.8rem;
+    text-align: center;
+    padding: 1.5rem;
+  }
+
+  /* Join/Content Box */
+  .electronics-join, .aviation-join, .aerospace-join {
+    padding: 1rem;
+    min-height: auto;
+  }
+
+  /* Branch Timelines */
+  .timeline-container {
+    padding: 10px 0;
+  }
+  .timeline-card {
+    width: 200px; /* Make scrollable cards smaller */
+  }
+  .timeline-card-image {
+    height: 120px;
+  }
+
+  /* --- 11. SOCIAL MEDIA --- */
+  .social-media-header h2 {
+    font-size: 1.8rem;
+  }
+  .social-media-cards {
+    grid-template-columns: 1fr;
+    width: 90%;
+    gap: 1.5rem;
+  }
+
+  /* --- 12. UI ELEMENTS (Nav Dots, Chat, Modals) --- */
+  
+  /* Hide side dots on small screens */
+  .section-nav {
+    display: none;
+  }
+
+  /* AI Chat Box - Full width at bottom */
+  .ai-chat-box {
+    width: 70%;
+    right: 5%;
+    bottom: 5rem;
+    height: 50vh;
+    margin-right: 0;
+  }
+  /* Card Modal */
+  .card-modal-content {
+    width: 95%;
+    margin: 5% auto;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .card-modal-body {
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .card-modal-left {
+    margin-bottom: 0;
+  }
+  
+  .card-modal-image {
+    max-width: 200px;
+  }
+  
+  .card-modal-name {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  
+  .card-modal-social {
+    justify-content: center;
+    margin-top: 1rem;
+  }
+}
+
+
+
+
+
   </style>
 </head>
 
@@ -3228,8 +5142,16 @@ img {
       <span class="section-nav-label">About AESS</span>
       <div class="section-nav-dot"></div>
     </div>
+    <div class="section-nav-item" data-section="AESS Current Team">
+      <span class="section-nav-label">Team</span>
+      <div class="section-nav-dot"></div>
+    </div>
     <div class="section-nav-item" data-section="media">
       <span class="section-nav-label">News</span>
+      <div class="section-nav-dot"></div>
+    </div>
+    <div class="section-nav-item" data-section="glassmorphic-leaderboard-section-wrapper">
+      <span class="section-nav-label">Best Member</span>
       <div class="section-nav-dot"></div>
     </div>
     <div class="section-nav-item" data-section="researchers">
@@ -3260,21 +5182,37 @@ img {
     <a href="#">
       <img src="AESS_IMG/aess.png" alt="AESS Logo" class="logo">
     </a>
+
     <ul>
       <li><a href="#">Home</a></li>
       <li><a href="#about">About</a></li>
+      <li><a href="#container_team">Team</a></li>
+      <li><a href="#media">Media</a></li>
+      <li><a href="#glassmorphic-leaderboard-section-wrapper">Best Member</a></li>
       <li><a href="#researchers">Research</a></li>
       <li><a href="#electronics">Branches</a></li>
-      <li><a href="#media">Media</a></li>
-      <li><a href="#social-media">Social</a></li>
-      <li class="small_bar">
-        <a href="#">
-          <div class="bar"></div>
-        </a>
-      </li>
+      <li><a href="#social-media">Contact</a></li>
     </ul>
+
+    <img src="AESS_IMG/Space.png" alt="Menu" class="mobile-menu-icon" id="mobileMenuBtn">
   </nav>
 </header>
+
+<div class="mobile-nav-overlay" id="mobileNav">
+  <div class="mobile-nav-header">
+    <span class="mobile-nav-close" id="closeMobileNav">&times;</span>
+  </div>
+  <ul class="mobile-nav-links">
+  <li><a href="#">Home</a></li>
+  <li><a href="#about">About</a></li>
+  <li><a href="#container_team">Team</a></li>
+  <li><a href="#media">Media</a></li>
+  <li><a href="#glassmorphic-leaderboard-section-wrapper">Best Member</a></li>
+  <li><a href="#researchers">Research</a></li>
+  <li><a href="#electronics">Branches</a></li>
+  <li><a href="#social-media">Contact</a></li>
+  </ul>
+</div>
 
 <!-- Video Background for Hero Section -->
 <div class="video-background hero-video-bg">
@@ -3293,19 +5231,68 @@ img {
 
 
 
+
 <section class="hero-section">
-  <a href="#researchers" class="floating-research-btn">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="11" cy="11" r="8"></circle>
-      <path d="m21 21-4.35-4.35"></path>
-    </svg>
-  </a>
+
+<!-- AI Chat -->
+<a href="javascript:void(0)" id="chatTrigger" class="floating-research-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+  </svg>
+</a>
+<div id="aiChatBox" class="ai-chat-box">
+  <div class="chat-header">
+    <div class="chat-title">
+      <span class="dot"></span> AESS AI Assistant
+    </div>
+    <span id="closeChatBtn" class="close-chat">×</span>
+  </div>
+
+  <div id="aiIntroOverlay" class="ai-intro-overlay">
+    <div class="ai-intro-content">
+      <p>⚠️ Right now, I can answer questions about the AESS team. In the next updates, I will answer general questions
+        about space. Stay tuned :</p>
+      <button id="closeIntroBtn">Got it!</button>
+    </div>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="message bot-message">
+      Hello! I am the AESS AI. Ask me about our <strong>Team</strong>, <strong>Research</strong>, or
+      <strong>Space</strong>!
+    </div>
+  </div>
+
+  <div class="chat-input-area">
+    <input type="text" id="chatInput" placeholder="Type your question..." autocomplete="off">
+    <button id="sendMessageBtn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"></line>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+      </svg>
+    </button>
+  </div>
+</div>
+
+
+
+
+
   <h1 class="hero-title">
     <span class="aess-text">IEEE AESS JUST</span><br>
     Aerospace and Electronic Systems Society
   </h1>
+
   <a href="#about" class="explore-btn">Explore More</a>
+
+
+
+
+
+
+
+
 
   <!-- ADD THE EXPLORE BOX HERE -->
   <div class="explore-box">
@@ -3357,6 +5344,12 @@ img {
       </div>
     </div>
   </div>
+
+
+
+
+
+
 
 </section>
 
@@ -3410,15 +5403,15 @@ img {
         <div class="about-stats">
           <div class="stat-item">
             <div class="stat-number" data-target="7043">0+</div>
-            <div class="stat-label">Active Members</div>
+            <div class="stat-label">Active Members Gloabally</div>
           </div>
           <div class="stat-item">
             <div class="stat-number" data-target="30">0+</div>
-            <div class="stat-label">Conferences</div>
+            <div class="stat-label">Conferences Gloabally</div>
           </div>
           <div class="stat-item">
             <div class="stat-number" data-target="17">0+</div>
-            <div class="stat-label">Awards Won</div>
+            <div class="stat-label">Awards Won Gloabally</div>
           </div>
         </div>
       </div>
@@ -3432,20 +5425,239 @@ img {
 
   <section class="card">
   
-    <!-- <img src="assets/img/img-bg.png" alt="image" class="card__bg"> -->
-    <!-- <div class="card__blur"></div> -->
-      <div class="HEAD-all">
-        <h2>Our Team</h2>
-      </div>
+    <div class="team-video-background">
+      <video autoplay muted loop playsinline>
+        <source src="AESS_IMG/Team_2.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="HEAD-all">
+      <h2>AESS Current Team</h2>
+    </div>
   
     <div class="card__container container_team">
+
+
+
+
+
+       <article class="card__article card-sky">
+        <img src="AESS_IMG/DR. Mohaith.jpeg" alt="image" class="card__img">
+        <div class="card__shadow"></div>
+      
+        <div class="card__data">
+          <span class="card__profession">ADVISOR</span>
+          <div class="card__data-bottom">
+            <h2 class="card__name">DR. Mu'adh</h2>
+            <a href=" " class="info__button card__button" target="_blank" rel="noopener noreferrer">
+              Follow Me
+            </a>
+          </div>
+        </div>
+      
+        <div class="card__clip">
+          <i class="ri-menu-4-line"></i>
+        </div>
+      
+        <div class="info">
+          <div class="info__data">
+            <h2 class="info__name">Dr. Mu'adh</h2>
+            <p class="info__description">
+              <span class="info__intro-line">
+      
+              </span>
+            </p>
+          </div>
+          <!-- <div class="info__social">
+                                      <a href="https://www.facebook.com/" target="_blank" class="info__link">
+                                        <i class="ri-facebook-circle-line"></i>
+                                      </a>
+                                      <a href="https://www.instagram.com/" target="_blank" class="info__link">
+                                        <i class="ri-instagram-line"></i>
+                                      </a>
+                                      <a href="https://twitter.com/" target="_blank" class="info__link">
+                                        <i class="ri-twitter-x-line"></i>
+                                      </a>
+                                    </div> -->
+        </div>
+      </article>
+
+
+
+
+
+
+
+        <article class="card__article card-red_more">
+          <img src="AESS_IMG/Hisham.jpeg" alt="image" class="card__img">
+          <div class="card__shadow"></div>
+        
+          <div class="card__data">
+            <span class="card__profession">Founder & ChairMan</span>
+            <div class="card__data-bottom">
+              <h2 class="card__name">Hisham Khreis</h2>
+              <a href="https://www.linkedin.com/in/hiskh/" class="info__button card__button" target="_blank"
+                rel="noopener noreferrer">
+                Follow Me
+              </a>
+            </div>
+          </div>
+        
+          <div class="card__clip">
+            <i class="ri-menu-4-line"></i>
+          </div>
+        
+          <div class="info">
+            <div class="info__data">
+              <h2 class="info__name">Hisham</h2>
+              <p class="info__description">
+                <span class="bio-title">Vision & Mission</span><br>
+                I founded and led the AESS chapter at JUST out of a firm belief that Jordanian youth possess the talent and
+                drive to excel on a global scale. My mission is to elevate our university students to international standards in
+                aerospace and electronic systems engineering. By establishing this platform, I aim to channel the immense
+                potential of Jordanian engineers into world-class innovations.
+                <br><br>
+        
+                <span class="bio-title">About Me</span><br>
+                • <b>Education:</b> 3rd Year Electrical Engineering Student at JUST.<br>
+                • <b>Focus:</b> Aerospace Engineering, Strategic Leadership, and Public Relations.
+                <br><br>
+        
+                <span class="bio-title">Current Experience</span><br>
+                • Founder & Leader | IEEE AESS JUST Student Chapter<br>
+                • Co-Leader | TEDx PHU 2026<br>
+                • PR Officer | IEEE AESS Jordan Chapter<br>
+                • Media and Information Literacy (MIL) Trainer | FCPS<br>
+                • Public Speaking Trainer | RISE
+                <br><br>
+        
+                <span class="bio-title">Previous Experience</span><br>
+                • Leader | NASA Space Apps Irbid 2025<br>
+                • Master of Ceremony & Core Member | TEDxYarmoukUniversity 2025<br>
+                • PR & Marketing Team Leader | IEEE AESS Yarmouk University (2024-2025)<br>
+                • Marketing & Media Team | MENA<br>
+                • Secretary | IEEE PES JUST Student Chapter
+              </p>
+        
+            </div>
+        
+            <!-- <div class="info__social">
+                              <a href="https://www.facebook.com/" target="_blank" class="info__link">
+                                <i class="ri-facebook-circle-line"></i>
+                              </a>
+                              <a href="https://www.instagram.com/" target="_blank" class="info__link">
+                                <i class="ri-instagram-line"></i>
+                              </a>
+                              <a href="https://twitter.com/" target="_blank" class="info__link">
+                                <i class="ri-twitter-x-line"></i>
+                              </a>
+                            </div> -->
+          </div>
+        </article>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <article class="card__article card-pink">
+        <img src="AESS_IMG/ayah.jpg" alt="image" class="card__img">
+        <div class="card__shadow"></div>
+      
+        <div class="card__data">
+          <span class="card__profession">Vice-Chair</span>
+          <div class="card__data-bottom">
+            <h2 class="card__name">Ayah Ayesh</h2>
+            <a href="https://www.linkedin.com/in/ayah-ayesh-3a7b94262/" class="info__button card__button" target="_blank"
+              rel="noopener noreferrer">
+              Follow Me
+            </a>
+          </div>
+        </div>
+      
+        <div class="card__clip">
+          <i class="ri-menu-4-line"></i>
+        </div>
+      
+        <div class="info">
+          <div class="info__data">
+            <h2 class="info__name">Ayah</h2>
+            <p class="info__description">
+              <span class="info__intro-line">Biomedical Engineering student passionate about innovation, technology, and
+                social
+                impact.</span>
+      
+              <br><br>
+      
+              With a solid background in leadership, public speaking, and community-driven initiatives, I thrive at the
+              intersection
+              of science, creativity, and purpose.
+      
+              <br><br>
+      
+              From founding youth programs to representing Jordan in national conferences, I’ve collaborated with global and
+              local
+              organizations including AIESEC, IEEE, TEDx, and the Red Crescent, contributing to events that promote scientific
+              education and intercultural exchange.
+      
+              <br><br>
+      
+              I strive to empower others, spread knowledge, and build platforms that make a difference.
+            </p>
+      
+          </div>
+      
+          <!-- <div class="info__social">
+                          <a href="https://www.facebook.com/" target="_blank" class="info__link">
+                            <i class="ri-facebook-circle-line"></i>
+                          </a>
+                          <a href="https://www.instagram.com/" target="_blank" class="info__link">
+                            <i class="ri-instagram-line"></i>
+                          </a>
+                          <a href="https://twitter.com/" target="_blank" class="info__link">
+                            <i class="ri-twitter-x-line"></i>
+                          </a>
+                        </div> -->
+        </div>
+      </article>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <article class="card__article card-yellow">
         <img src="AESS_IMG/Bashar_2.jpg" alt="image" class="card__img">
         <div class="card__shadow"></div>
   
         <div class="card__data">
-          <h2 class="card__name">Bashar Alzoubi</h2>
-          <span class="card__profession">Head of Human Resources & Scientific Teams Co-Leader</span>
+          <span class="card__profession">Head of Human Resources & Scientific Teams leader</span>
+          <div class="card__data-bottom">
+            <h2 class="card__name">Bashar Alzoubi</h2>
+            <a href="https://www.linkedin.com/in/bashar-alzoubi-2b784631a/" class="info__button card__button" target="_blank"
+              rel="noopener noreferrer">
+              Follow Me
+            </a>
+          </div>
         </div>
   
         <div class="card__clip">
@@ -3458,43 +5670,15 @@ img {
             <p class="info__description">
               <span class="info__name-title"> </span>
             
-              <br><br>
-            
-              Mechanical Engineering student driven by scientific curiosity, technical innovation, and the ambition to build strong,
-              high-performing teams. My journey combines hands-on engineering projects, impactful leadership experiences, and
-              contributions to scientific and educational communities.
-            
-              <br><br>
-            
-              I’ve contributed to several major technical initiatives, including serving as a Team Leader in the JUST_1 Rocket
-              Project, participating in the Al-Rhim SAT satellite program at HTU, and competing in Robofight, where I gained solid
-              experience in mechanical design, system integration, and real-world engineering problem-solving.
-            
-              <br><br>
-            
-              I also led Team Raymark in the NASA Space Apps Challenge, where our team achieved 2nd place, demonstrating creativity,
-              technical capability, and strong teamwork under pressure.
-            
-              <br><br>
-            
-              Alongside engineering projects, I expanded my leadership and organizational experience through roles such as HR
-              Officer
-              at JFJ Newspaper, focusing on member development and team coordination. I also joined MINA as part of the Science &
-              Experiment Team, contributing to scientific outreach and hands-on educational initiatives.
-            
-              <br><br>
-            
-              In AESS, I serve as Head of Human Resources and Co-Leader of the Scientific Teams, where I focus on empowering
-              members,
-              improving recruitment and onboarding systems, and building a collaborative environment that supports innovation,
-              learning, and meaningful achievement.
-            
-              <br><br>
-            
-              Driven, organized, and impact-oriented, I strive to build communities that learn, innovate, and leave a
-              lasting contribution.
+              Mechanical Engineering student with a strong passion for scientific innovation and team leadership. I have hands-on
+              experience in engineering projects such as the JUST_1 Rocket Project, the Al-Rhim SAT satellite program, Robofight, and
+              the NASA Space Apps Challenge (2nd place).
+              
+              Currently serving as Head of Human Resources and Head of the Scientific Teams at AESS, I focus on building
+              high-performing teams, empowering members, and creating a collaborative environment that drives learning and meaningful
+              impact.
             </p>
-            <a href="https://www.linkedin.com/in/bashar-alzoubi-2b784631a/" class="info__button">Follow Me</a>
+
           </div>
   
           <!-- <div class="info__social">
@@ -3518,11 +5702,18 @@ img {
         <img src="AESS_IMG/Osiad.jpg" alt="image" class="card__img">
         <div class="card__shadow"></div>
       
-        <div class="card__data">
+      <div class="card__data">
+        <span class="card__profession">Treasurer</span>
+        <div class="card__data-bottom">
           <h2 class="card__name">Osaid Haimour</h2>
-          <span class="card__profession">Sponsorship</span>
+          <a href="https://www.linkedin.com/in/osaid-haimour/" class="info__button card__button" target="_blank"
+            rel="noopener noreferrer">
+            Follow Me
+          </a>
         </div>
-      
+      </div>
+
+
         <div class="card__clip">
           <i class="ri-menu-4-line"></i>
         </div>
@@ -3551,7 +5742,7 @@ img {
             continuous growth, meaningful impact, and contributing to the future of space exploration through every role I take
             on.
           </p>
-            <a href="https://www.linkedin.com/in/osaid-haimour/" class="info__button">Follow Me</a>
+         
           </div>
       
           <!-- <div class="info__social">
@@ -3569,67 +5760,23 @@ img {
       </article>
 
 
-  <article class="card__article card-pink">
-    <img src="AESS_IMG/ayah.jpg" alt="image" class="card__img">
-    <div class="card__shadow"></div>
   
-    <div class="card__data">
-      <h2 class="card__name">Ayah Ayesh</h2>
-      <span class="card__profession">Vice Chair</span>
-    </div>
-  
-    <div class="card__clip">
-      <i class="ri-menu-4-line"></i>
-    </div>
-  
-    <div class="info">
-      <div class="info__data">
-        <h2 class="info__name">Ayah</h2>
-      <p class="info__description">
-        <span class="info__intro-line">Biomedical Engineering student passionate about innovation, technology, and social
-          impact.</span>
-      
-        <br><br>
-      
-        With a solid background in leadership, public speaking, and community-driven initiatives, I thrive at the intersection
-        of science, creativity, and purpose.
-      
-        <br><br>
-      
-        From founding youth programs to representing Jordan in national conferences, I’ve collaborated with global and local
-        organizations including AIESEC, IEEE, TEDx, and the Red Crescent, contributing to events that promote scientific
-        education and intercultural exchange.
-      
-        <br><br>
-      
-        I strive to empower others, spread knowledge, and build platforms that make a difference.
-      </p>
-        <a href="https://www.linkedin.com/in/ayah-ayesh-3a7b94262/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="info__button">Follow Me</a>
-      </div>
-  
-      <!-- <div class="info__social">
-                    <a href="https://www.facebook.com/" target="_blank" class="info__link">
-                      <i class="ri-facebook-circle-line"></i>
-                    </a>
-                    <a href="https://www.instagram.com/" target="_blank" class="info__link">
-                      <i class="ri-instagram-line"></i>
-                    </a>
-                    <a href="https://twitter.com/" target="_blank" class="info__link">
-                      <i class="ri-twitter-x-line"></i>
-                    </a>
-                  </div> -->
-    </div>
-  </article>
   
 
 
-  <article class="card__article card-red">
+  <!-- <article class="card__article card-red">
     <img src="AESS_IMG/Joud.jpg" alt="image" class="card__img">
     <div class="card__shadow"></div>
   
     <div class="card__data">
-      <h2 class="card__name">Joud Mahasneh</h2>
-      <span class="card__profession">Marketing Leader</span>
+      <span class="card__profession">Marketing and Media Leader</span>
+      <div class="card__data-bottom">
+        <h2 class="card__name">Joud Mahasneh</h2>
+        <a href="https://www.linkedin.com/in/retaj-jehad-a930b1318/" class="info__button card__button" target="_blank"
+          rel="noopener noreferrer">
+          Follow Me
+        </a>
+      </div>
     </div>
   
     <div class="card__clip">
@@ -3658,11 +5805,9 @@ img {
           Joud is known for her ideas, her drive, and the bit of ADHD spark that somehow makes every team she joins more fun,
           more active, and definitely louder.
         </p>
-        <a href="https://www.linkedin.com/in/joudmahasneh/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
-          class="info__button">Follow Me</a>
       </div>
   
-      <!-- <div class="info__social">
+      <div class="info__social">
                       <a href="https://www.facebook.com/" target="_blank" class="info__link">
                         <i class="ri-facebook-circle-line"></i>
                       </a>
@@ -3672,18 +5817,24 @@ img {
                       <a href="https://twitter.com/" target="_blank" class="info__link">
                         <i class="ri-twitter-x-line"></i>
                       </a>
-                    </div> -->
+                    </div>
     </div>
-  </article>
+  </article> -->
       
   <article class="card__article card-other">
-    <img src="AESS_IMG/glass_2.jpg" alt="image" class="card__img">
+    <img src="AESS_IMG/Retaj.jpeg" alt="image" class="card__img">
     <div class="card__shadow"></div>
   
-    <div class="card__data">
-      <h2 class="card__name">Retaj Jehad</h2>
-      <span class="card__profession">Secretary</span>
-    </div>
+<div class="card__data">
+  <span class="card__profession">Secretary</span>
+  <div class="card__data-bottom">
+    <h2 class="card__name">Retaj Jehad</h2>
+    <a href="https://www.linkedin.com/in/retaj-jehad-a930b1318/" class="info__button card__button" target="_blank"
+      rel="noopener noreferrer">
+      Follow Me
+    </a>
+  </div>
+</div>
   
     <div class="card__clip">
       <i class="ri-menu-4-line"></i>
@@ -3711,8 +5862,7 @@ img {
           I’ve also been part of many other teams through which I’ve learned communication and gained experience. As secretary,
           I focus on dealing with the v-tools and communication with the teams members.
         </p>
-        <a href="https://www.linkedin.com/in/retaj-jehad-a930b1318/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app"
-          class="info__button">Follow Me</a>
+
       </div>
   
       <!-- <div class="info__social">
@@ -3728,6 +5878,235 @@ img {
                       </div> -->
     </div>
   </article>
+
+
+
+
+
+
+
+  <article class="card__article card-green_more">
+    <img src="AESS_IMG/Momen.jpeg" alt="image" class="card__img">
+    <div class="card__shadow"></div>
+  
+    <div class="card__data">
+      <span class="card__profession">Head of Electronics Systems team</span>
+      <div class="card__data-bottom">
+        <h2 class="card__name">Momen Jarrah</h2>
+        <a href="https://www.linkedin.com/in/momen-jarrah-036a1b32a/" class="info__button card__button" target="_blank"
+          rel="noopener noreferrer">
+          Follow Me
+        </a>
+      </div>
+    </div>
+  
+    <div class="card__clip">
+      <i class="ri-menu-4-line"></i>
+    </div>
+  
+    <div class="info">
+      <div class="info__data">
+        <h2 class="info__name">Momen</h2>
+        <p class="info__description">
+          <span class="info__intro-line">
+            I am Momen Yousef Jarrah, an Electrical Engineer specializing in Communications, with hands-on experience in
+            electronics, drone systems, and robotics. I have completed training in the fundamentals of space technology and have a
+            strong interest in intelligent systems and advanced engineering applications. I currently serve as the Electronics Team
+            Leader at IEEE AESS, where I focus on developing innovative engineering solutions that bridge theory and practical
+            implementation while fostering a culture of technical excellence.
+          </span>
+  
+        </p>
+  
+      </div>
+  
+      <!-- <div class="info__social">
+                      <a href="https://www.facebook.com/" target="_blank" class="info__link">
+                        <i class="ri-facebook-circle-line"></i>
+                      </a>
+                      <a href="https://www.instagram.com/" target="_blank" class="info__link">
+                        <i class="ri-instagram-line"></i>
+                      </a>
+                      <a href="https://twitter.com/" target="_blank" class="info__link">
+                        <i class="ri-twitter-x-line"></i>
+                      </a>
+                    </div> -->
+    </div>
+  </article>
+
+      <article class="card__article card-orange">
+        <img src="AESS_IMG/Mohammad.jpeg" alt="image" class="card__img">
+        <div class="card__shadow"></div>
+      
+        <div class="card__data">
+          <span class="card__profession">leader of Events Team</span>
+          <div class="card__data-bottom">
+            <h2 class="card__name">Mohammad Alaa</h2>
+            <a href="https://www.linkedin.com/in/mohammad-alaa-3b2bb727b/" class="info__button card__button" target="_blank"
+              rel="noopener noreferrer">
+              Follow Me
+            </a>
+          </div>
+        </div>
+      
+        <div class="card__clip">
+          <i class="ri-menu-4-line"></i>
+        </div>
+      
+        <div class="info">
+          <div class="info__data">
+            <h2 class="info__name">Mohammad</h2>
+            <p class="info__description">
+              <span class="info__intro-line">
+                Mohammad Alaa Abdelhai is a Computer Science student at Philadelphia University (PHU). He previously served as Chair of
+                the IEEE Student Branch and is currently the licensee and lead organizer of TEDxPHU.
+              </span>
+            </p>
+          </div>
+          <!-- <div class="info__social">
+                          <a href="https://www.facebook.com/" target="_blank" class="info__link">
+                            <i class="ri-facebook-circle-line"></i>
+                          </a>
+                          <a href="https://www.instagram.com/" target="_blank" class="info__link">
+                            <i class="ri-instagram-line"></i>
+                          </a>
+                          <a href="https://twitter.com/" target="_blank" class="info__link">
+                            <i class="ri-twitter-x-line"></i>
+                          </a>
+                        </div> -->
+        </div>
+      </article>
+
+
+
+
+
+
+
+
+
+
+
+      <article class="card__article card-pink">
+        <img src="AESS_IMG/Razan.jpg" alt="image" class="card__img">
+        <div class="card__shadow"></div>
+      
+        <div class="card__data">
+          <span class="card__profession">Marketing and Media Leader</span>
+          <div class="card__data-bottom">
+            <h2 class="card__name">Razan Mohanad</h2>
+            <a href="https://www.linkedin.com/in/razan-mohanad-923263379/" class="info__button card__button" target="_blank" rel="noopener noreferrer">
+              Follow Me
+            </a>
+          </div>
+        </div>
+      
+        <div class="card__clip">
+          <i class="ri-menu-4-line"></i>
+        </div>
+      
+        <div class="info">
+          <div class="info__data">
+            <h2 class="info__name">Razan</h2>
+            <p class="info__description">
+              <span class="info__intro-line">
+      
+              </span>
+            </p>
+          </div>
+        </div>
+      </article>
+
+
+
+
+
+
+
+
+
+      <article class="card__article card-sun">
+        <img src="AESS_IMG/Ahmad.jpeg" alt="image" class="card__img">
+        <div class="card__shadow"></div>
+      
+        <div class="card__data">
+          <span class="card__profession">Leader of Aeronautic</span>
+          <div class="card__data-bottom">
+            <h2 class="card__name">Ahmad Aldarabseh</h2>
+            <a href="https://www.linkedin.com/in/ahmed-al-darabseh-22229724b/" class="info__button card__button" target="_blank"
+              rel="noopener noreferrer">
+              Follow Me
+            </a>
+          </div>
+        </div>
+      
+        <div class="card__clip">
+          <i class="ri-menu-4-line"></i>
+        </div>
+      
+        <div class="info">
+          <div class="info__data">
+            <h2 class="info__name"> Ahmad</h2>
+            <p class="info__description">
+              <span class="info__intro-line">
+      
+              </span>
+            </p>
+          </div>
+        </div>
+      </article>
+
+
+
+
+      <article class="card__article card-brown">
+        <img src="AESS_IMG/narim.jpeg" alt="image" class="card__img">
+        <div class="card__shadow"></div>
+      
+        <div class="card__data">
+          <span class="card__profession">Leader of Aeronautic</span>
+          <div class="card__data-bottom">
+            <h2 class="card__name">Narmeen Alrefae'e</h2>
+            <a href="https://www.linkedin.com/in/narmeen-al-refaee-143b75381/" class="info__button card__button"
+              target="_blank" rel="noopener noreferrer">
+              Follow Me
+            </a>
+          </div>
+        </div>
+      
+        <div class="card__clip">
+          <i class="ri-menu-4-line"></i>
+        </div>
+      
+        <div class="info">
+          <div class="info__data">
+            <h2 class="info__name">Narmeen</h2>
+            <p class="info__description">
+              <span class="info__intro-line">
+              </span>
+
+
+              I am an Aeronautical Engineering student with a strong interest in astronomy, astrophotography, astrophysics, and
+              astronomical spectroscopy. I have hands-on experience in astrophotography and working with telescopes, driven by a deep
+              and enduring passion for the sky.
+              I previously served as the Simulation Section Leader in the JUST_1 Rocket Project, where I gained valuable experience in
+              leadership, technical coordination, and teamwork within a scientific project environment.
+
+            </p>
+          </div>
+        </div>
+      </article>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3752,12 +6131,14 @@ img {
       
         <div class="curved-carousel" id="media-carousel">
           <!-- Existing cards stay here -->
+
+
+
+
+
           <div class="media-card carousel-card">
             <img src="AESS_IMG/Media/Volunter.jpeg" alt="News 1" class="media-card-image">
             <div class="media-card-content">
-              <div class="media-card-date">November 21, 2025</div>
-              <h3 class="media-card-title">Looking for Volunteers</h3>
-              <p class="media-card-excerpt">If you'd like to be part of the largest community focused on...</p>
             </div>
           </div>
 
@@ -3767,11 +6148,11 @@ img {
 
           <div class="media-card carousel-card">
             <img src="AESS_IMG/Media/Talent.png" alt="News 2" class="media-card-image">
-            <div class="media-card-content">
+            <!-- <div class="media-card-content">
               <div class="media-card-date">November 27, 2025</div>
               <h3 class="media-card-title">YOUR TALENT LAUNCHPAD</h3>
               <p class="media-card-excerpt">Unleash your skills. Inspire the community...</p>
-            </div>
+            </div> -->
           </div>
 
 
@@ -3779,11 +6160,11 @@ img {
 
           <div class="media-card carousel-card">
             <img src="AESS_IMG/Media/Session_1.png" alt="News 3" class="media-card-image">
-            <div class="media-card-content">
+            <!-- <div class="media-card-content">
               <div class="media-card-date">November 28, 2025</div>
               <h3 class="media-card-title">From Campus to Cockpit</h3>
               <p class="media-card-excerpt">Head of the Aeronautical Engineering Department, Dr. Moath Bani Hani...</p>
-            </div>
+            </div> -->
           </div>
 
 
@@ -3792,13 +6173,22 @@ img {
 
           <div class="media-card carousel-card">
             <img src="AESS_IMG/Media/Envent_1_3.png" alt="News 4" class="media-card-image">
-            <div class="media-card-content">
+            <!-- <div class="media-card-content">
               <div class="media-card-date">Dec 2, 2025</div>
               <h3 class="media-card-title">من مقاعد الدراسة إلى قمرة القيادة"</h3>
-              <p class="media-card-excerpt">تحت رعاية رئيس قسم هندسة الطيران، الدكتور معاذ بني هاني، اختتمت اليوم...</p>
+              <p class="media-card-excerpt">تحت رعاية رئيس قسم هندسة الطيران، الدكتور معاذ بني هاني، اختتمت اليوم...</p> -->
             </div>
-          </div>
 
+
+
+
+            <div class="media-card carousel-card">
+              <img src="AESS_IMG/Media/Eng Shatha.png" alt="News 5" class="media-card-image">
+              <!-- <div class="media-card-content">
+              <div class="media-card-date">Dec 2, 2025</div>
+              <h3 class="media-card-title">من مقاعد الدراسة إلى قمرة القيادة"</h3>
+              <p class="media-card-excerpt">تحت رعاية رئيس قسم هندسة الطيران، الدكتور معاذ بني هاني، اختتمت اليوم...</p> -->
+            </div>
 
 
         </div>
@@ -3811,7 +6201,73 @@ img {
       <a href="Media.html" class="explore-btn">Explore More</a>
     </div>
   </section>
-  
+
+
+
+
+
+
+
+
+
+
+
+
+  <section class="glassmorphic-leaderboard-section-wrapper" id="glassmorphic-leaderboard-main-section">
+    <div class="HEAD-all">
+      <h2>Best Members of the Month</h2>
+    </div>
+<div class="coming-soon-timeline-overlay">
+  <span class="coming-soon-text">COMING SOON</span>
+</div>
+      
+        <div class="glassmorphic-leaderboard-cards-flex-container">
+      
+          <div class="glassmorphic-performer-card-base glassmorphic-performer-card-first-place">
+            <div class="glassmorphic-performer-avatar-container">
+              <img src="AESS_IMG/Momen.jpeg" alt="Member">
+              <div class="glassmorphic-performer-rank-badge-circle">1</div>
+            </div>
+            <div class="glassmorphic-performer-name-display">Momen Jarrah</div>
+            <div class="glassmorphic-performer-role-subtitle">Head of Electronics Systems team</div>
+          </div>
+
+
+      
+          <div class="glassmorphic-performer-card-base glassmorphic-performer-card-second-place">
+            <div class="glassmorphic-performer-avatar-container">
+              <img src="AESS_IMG/Bashar_2.jpg" alt="Member">
+              <div class="glassmorphic-performer-rank-badge-circle">2</div>
+            </div>
+            <div class="glassmorphic-performer-name-display">Bashar Alzoubi</div>
+            <div class="glassmorphic-performer-role-subtitle">Head of Human Resources & Scientific Teams leader</div>
+          </div>
+      
+          <div class="glassmorphic-performer-card-base glassmorphic-performer-card-third-place">
+            <div class="glassmorphic-performer-avatar-container">
+              <img src="AESS_IMG/ayah.jpg" alt="Member">
+              <div class="glassmorphic-performer-rank-badge-circle">3</div>
+            </div>
+            <div class="glassmorphic-performer-name-display">Ayah Ayesh</div>
+            <div class="glassmorphic-performer-role-subtitle">Vice-Chair</div>
+          </div>
+      
+        </div>
+
+
+
+
+    
+  </section>
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3822,11 +6278,12 @@ img {
       <h2>Our Research</h2>
     </div>
     <div class="researchers-container">
-<div class="locked-section">
-  <div class="coming-soon-overlay">
-    <span>COMING SOON</span>
-  </div>
+      <div class="locked-section">
 
+
+        <div class="coming-soon-overlay">
+          <span>COMING SOON</span>
+        </div>
       <div class="researchers-columns">
 
 
@@ -4189,25 +6646,28 @@ img {
   </section>
 
 
-<footer style="background:#0a0a0a; color:#fff; padding:20px 0; text-align:center; font-family:Arial, sans-serif;">
+<footer
+  style="background:#0a0a0a; color:#fff; padding:20px 0; text-align:center; font-family:Arial, sans-serif; position: relative; z-index: 10;">
 
   <p style="margin: 0 0 10px 0; font-size:14px;">
-    &copy; 2025 AESS JUST. All Rights Reserved. | Built for AESS Society.
+    &copy; 2026 AESS JUST. All Rights Reserved. | Built for AESS Society.
   </p>
 
   <div style="margin-top:10px;">
+    Made by Zakaria Alnsour. Contact me:
+  </div>
+  <div style="margin-top:10px;">
     <!-- Social Media Links -->
-    <a href="https://chat.whatsapp.com/GzfWUsp3DER2PsUczb4qFX?mode=hqrt1" target="_blank"
-      style="color:#fff; margin:0 10px; text-decoration:none;">
-      WhatsApp
+    <a href="" target="_blank" style="color:#fff; margin:0 10px; text-decoration:none;">
+      Gmail
     </a>
     |
-    <a href="https://www.instagram.com/ieee_aess_just/" target="_blank"
+    <a href="" target="_blank"
       style="color:#fff; margin:0 10px; text-decoration:none;">
-      Instagram
+      Twitter (X)
     </a>
     |
-    <a href="https://www.linkedin.com/company/ieee-aess-just/posts/?feedView=all" target="_blank"
+    <a href="https://www.linkedin.com/in/zakaria-a-alnsour-a31602343/" target="_blank"
       style="color:#fff; margin:0 10px; text-decoration:none;">
       LinkedIn
     </a>
@@ -4222,15 +6682,21 @@ img {
   <div class="card-modal-content">
     <span class="card-modal-close">&times;</span>
     <div class="card-modal-body">
+
       <div class="card-modal-left">
         <img id="modalImage" src="" alt="Card Image" class="card-modal-image">
+
+        <p id="modalProfession" class="card-modal-profession"></p>
+
+        <a id="modalBtn" href="#" target="_blank" class="card-modal-button">Follow Me</a>
       </div>
+
       <div class="card-modal-right">
         <h2 id="modalName" class="card-modal-name"></h2>
-        <p id="modalProfession" class="card-modal-profession"></p>
         <p id="modalDescription" class="card-modal-description"></p>
         <div id="modalSocial" class="card-modal-social"></div>
       </div>
+
     </div>
   </div>
 </div>
@@ -4368,6 +6834,8 @@ img {
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas(); // Initial call to set size and initialize
     animateGrid();
+
+  
   </script>
 
   <script type="module">
@@ -4859,6 +7327,7 @@ img {
       const aessLettersContainer = document.querySelector('.aess-letters');
       const aessCircle = document.querySelector('.aess-circle');
       const aboutContentWrapper = document.querySelector('.about-content-wrapper');
+      let countersTriggered = false; // Flag to ensure counters only animate once
 
       function updateLetterAnimation() {
         if (!aboutSectionElement) return;
@@ -4867,7 +7336,7 @@ img {
         const viewportHeight = window.innerHeight;
         const scrollProgress = Math.max(0, Math.min(1, (viewportHeight - rect.top) / (sectionHeight - viewportHeight)));
 
-        if (scrollProgress < 0.65) {
+        if (scrollProgress < 0.85) {
           aessLettersContainer.classList.remove('move-right');
           aessCircle.classList.remove('visible');
           aessLetters.forEach((letter, index) => {
@@ -4883,7 +7352,7 @@ img {
           }
         });
         aboutContentWrapper.classList.remove('visible');
-      } else if (scrollProgress >= 0.65) {
+      } else if (scrollProgress >= 0.85) {
         aessLetters.forEach((letter) => {
           letter.classList.add('visible');
           letter.style.transform = 'translateX(0)';
@@ -4893,8 +7362,20 @@ img {
           aessLettersContainer.classList.add('move-right');
           aessCircle.classList.add('visible');
         }
-        if (scrollProgress >= 0.85) {
+        if (scrollProgress >= 0.5) {
           aboutContentWrapper.classList.add('visible');
+
+          // Trigger counter animation only once when content becomes visible
+          if (!countersTriggered) {
+            countersTriggered = true;
+            const statNumbers = document.querySelectorAll('.stat-number');
+            statNumbers.forEach(stat => {
+              const targetValue = parseInt(stat.getAttribute('data-target'));
+              if (!isNaN(targetValue)) {
+                animateCounter(stat, targetValue);
+              }
+            });
+          }
         }
       }
     }
@@ -4914,7 +7395,8 @@ img {
     const prevBtn = document.getElementById('carousel-prev');
     const nextBtn = document.getElementById('carousel-next');
     let rotationAngle = 0;
-    const radius = 700;
+  // If screen is smaller than 768px, use radius 180, otherwise use 700
+  const radius = 700;
     const cardArc = 30;
 
     if (carousel) {
@@ -4954,7 +7436,8 @@ img {
             opacityFactor = 0.4;
           }
 
-          const baseTransform = `translateY(100px) rotateY(${index * cardArc}deg) translateZ(${radius}px)`;
+         // Added translateX(-50%) to the start of the string to correct the centering
+          const baseTransform = `translateX(-50%) translateY(100px) rotateY(${index * cardArc}deg) translateZ(${radius}px)`;
           card.style.transform = `${baseTransform} scale(${scaleFactor})`;
           card.style.opacity = opacityFactor;
         });
@@ -4997,7 +7480,7 @@ img {
 
       function resetAutoRotate() {
         stopAutoRotate();
-        sstartAutoRotate();
+        startAutoRotate();
       }
       // --- END: Curved Media Carousel Logic ---
 
@@ -5081,15 +7564,15 @@ img {
         const rect = elecSection.getBoundingClientRect();
         const vh = window.innerHeight;
 
-        const isVisible = rect.top < vh && rect.bottom > 0;
+        // const isVisible = rect.top < vh && rect.bottom > 0;
 
-        if (isVisible) {
-          elecVideo.style.opacity = "0.7";
-          elecVideo.style.pointerEvents = "auto";
-        } else {
-          elecVideo.style.opacity = "0";
-          elecVideo.style.pointerEvents = "none";
-        }
+        // if (isVisible) {
+        //   elecVideo.style.opacity = "0.7";
+        //   elecVideo.style.pointerEvents = "auto";
+        // } else {
+        //   elecVideo.style.opacity = "0";
+        //   elecVideo.style.pointerEvents = "none";
+        // }
 
         const progress = Math.min(1, Math.max(0, (vh - rect.top) / vh));
 
@@ -5101,7 +7584,7 @@ img {
           elecTitle.classList.remove("hidden");
           elecJoin.classList.remove("hidden");
 
-          if (progress > 0.1) elecTitle.classList.add("fixed");
+          if (progress > 0.75) elecTitle.classList.add("fixed");
           else elecTitle.classList.remove("fixed");
 
           if (progress > 0.8) elecJoin.classList.add("fixed");
@@ -5121,15 +7604,15 @@ img {
           const rect = aviationSection.getBoundingClientRect();
           const vh = window.innerHeight;
 
-          const isVisible = rect.top < vh && rect.bottom > 0;
+          // const isVisible = rect.top < vh && rect.bottom > 0;
 
-          if (isVisible) {
-            aviationVideo.style.opacity = "0.7";
-            aviationVideo.style.pointerEvents = "auto";
-          } else {
-            aviationVideo.style.opacity = "0";
-            aviationVideo.style.pointerEvents = "none";
-          }
+          // if (isVisible) {
+          //   aviationVideo.style.opacity = "0.7";
+          //   aviationVideo.style.pointerEvents = "auto";
+          // } else {
+          //   aviationVideo.style.opacity = "0";
+          //   aviationVideo.style.pointerEvents = "none";
+          // }
 
           const progress = Math.min(1, Math.max(0, (vh - rect.top) / vh));
 
@@ -5141,7 +7624,7 @@ img {
             aviationTitle.classList.remove("hidden");
             aviationJoin.classList.remove("hidden");
 
-            if (progress > 0.1) aviationTitle.classList.add("fixed");
+            if (progress > 0.75) aviationTitle.classList.add("fixed");
             else aviationTitle.classList.remove("fixed");
 
             if (progress > 0.8) aviationJoin.classList.add("fixed");
@@ -5162,15 +7645,15 @@ img {
               const rect = aerospaceSection.getBoundingClientRect();
               const vh = window.innerHeight;
 
-              const isVisible = rect.top < vh && rect.bottom > 0;
+              // const isVisible = rect.top < vh && rect.bottom > 0;
 
-              if (isVisible) {
-                aerospaceVideo.style.opacity = "0.7";
-                aerospaceVideo.style.pointerEvents = "auto";
-              } else {
-                aerospaceVideo.style.opacity = "0";
-                aerospaceVideo.style.pointerEvents = "none";
-              }
+              // if (isVisible) {
+              //   aerospaceVideo.style.opacity = "0.7";
+              //   aerospaceVideo.style.pointerEvents = "auto";
+              // } else {
+              //   aerospaceVideo.style.opacity = "0";
+              //   aerospaceVideo.style.pointerEvents = "none";
+              // }
 
               const progress = Math.min(1, Math.max(0, (vh - rect.top) / vh));
 
@@ -5182,7 +7665,7 @@ img {
                 aerospaceTitle.classList.remove("hidden");
                 aerospaceJoin.classList.remove("hidden");
 
-                if (progress > 0.1) aerospaceTitle.classList.add("fixed");
+                if (progress > 0.75) aerospaceTitle.classList.add("fixed");
                 else aerospaceTitle.classList.remove("fixed");
 
                 if (progress > 0.8) aerospaceJoin.classList.add("fixed");
@@ -5244,6 +7727,10 @@ img {
                   const modalClose = document.querySelector('.card-modal-close');
 
                   // Add click event to all card articles
+                 // ... existing variables ...
+                  const modalBtn = document.getElementById('modalBtn'); // Add this selector
+
+                  // Add click event to all card articles
                   document.querySelectorAll('.card__article').forEach(card => {
                     card.addEventListener('click', function (e) {
                       // Don't open modal if clicking on clip button or info area
@@ -5251,43 +7738,56 @@ img {
                         return;
                       }
 
-                      // Get card data
-                     // Get card data
+                      // 1. Get card data
                       const img = this.querySelector('.card__img').src;
                       const name = this.querySelector('.card__name').textContent;
                       const profession = this.querySelector('.card__profession').textContent;
                       const descElement = this.querySelector('.info__description');
-                      const description = descElement.getAttribute('data-full-text') || descElement.textContent; // Use full text
+                      const description = descElement.getAttribute('data-full-text') || descElement.textContent;
 
-                      // Get hue color from card classes
-                      let hue = '200'; // default
+                      // NEW: Get the href from the "Follow Me" button on the card
+                      const followLinkElement = this.querySelector('.info__button');
+                      const followUrl = followLinkElement ? followLinkElement.href : '#';
+
+                      // 2. Get hue color from card classes (Existing Logic)
+                      let hue = '200'; // default (Blue)
                       if (this.classList.contains('card-yellow')) hue = '200';
-                      if (this.classList.contains('card-green')) hue = '0';
+                      // if (this.classList.contains('card-green')) hue = '0'; // Adjusted for your CSS
                       if (this.classList.contains('card-pink')) hue = '300';
+                      if (this.classList.contains('card-red')) hue = '340';
+                      if (this.classList.contains('card-other')) hue = '230';
+                      if (this.classList.contains('card-red_more')) hue = '0';
+                      if (this.classList.contains('card-green_more')) hue = '120';
+                      if (this.classList.contains('card-orange')) hue = '31';
+                      if (this.classList.contains('card-sky')) hue = '184';
+                      if (this.classList.contains('card-brown')) hue = '17';
 
-                      // Set modal content
+
+                      // 3. Set modal content
                       modalImage.src = img;
                       modalName.textContent = name;
                       modalProfession.textContent = profession;
                       modalDescription.textContent = description;
 
-                      // Clone social links
-                     // Clone social links (with error handling)
+                      // NEW: Set the button link
+                      modalBtn.href = followUrl;
+
+                      // 4. Handle Social Links (Existing Logic)
                       const socialLinksElement = this.querySelector('.info__social');
                       if (socialLinksElement) {
                         const socialLinks = socialLinksElement.cloneNode(true);
                         modalSocial.innerHTML = '';
                         modalSocial.appendChild(socialLinks);
                       } else {
-                        modalSocial.innerHTML = ''; // Clear if no social links
+                        modalSocial.innerHTML = '';
                       }
 
-                      // Set color scheme
+                      // 5. Set color scheme
                       document.documentElement.style.setProperty('--modal-hue', hue);
 
-                      // Show modal
+                      // 6. Show modal
                       cardModal.style.display = 'block';
-                      document.body.style.overflow = 'hidden'; // Prevent background scrolling
+                      document.body.style.overflow = 'hidden';
                     });
                   });
 
@@ -5313,10 +7813,451 @@ img {
                     }
                   });
 
-                  
+
+
+                  // =========================================
+                    //        NEON CURSOR EFFECT
+                    // =========================================
+
+                    // Create cursor elements
+                    const cursorDot = document.createElement('div');
+                    const cursorOutline = document.createElement('div');
+                    cursorDot.classList.add('cursor-dot');
+                    cursorOutline.classList.add('cursor-outline');
+                    document.body.appendChild(cursorDot);
+                    document.body.appendChild(cursorOutline);
+
+                    // Track cursor position
+                    let mouseX = 0;
+                    let mouseY = 0;
+                    let outlineX = 0;
+                    let outlineY = 0;
+
+                    document.addEventListener('mousemove', (e) => {
+                      mouseX = e.clientX;
+                      mouseY = e.clientY;
+
+                      // Dot follows immediately
+                      cursorDot.style.left = mouseX + 'px';
+                      cursorDot.style.top = mouseY + 'px';
+                    });
+
+                    // Smooth outline animation
+                   function animateOutline() {
+                      outlineX += (mouseX - outlineX) * 0.15;
+                      outlineY += (mouseY - outlineY) * 0.15;
+
+                      // CSS transform now handles the centering
+                      cursorOutline.style.left = outlineX + 'px';
+                      cursorOutline.style.top = outlineY + 'px';
+
+                      requestAnimationFrame(animateOutline);
+                    }
+                    animateOutline();
+
+                    // Add hover effect on interactive elements
+                    document.addEventListener('mouseover', (e) => {
+                      if (e.target.matches('a, button, .clickable, .card__article, .info__button')) {
+                        cursorOutline.classList.add('hover');
+                      }
+                    });
+
+                    document.addEventListener('mouseout', (e) => {
+                      if (e.target.matches('a, button, .clickable, .card__article, .info__button')) {
+                        cursorOutline.classList.remove('hover');
+                      }
+                    });
+
+
+
+
+
+
+                    /* =========================================
+     AI CHAT ASSISTANT LOGIC
+     ========================================= */
+                      document.addEventListener('DOMContentLoaded', () => {
+                          const chatTrigger = document.getElementById('chatTrigger');
+                          const aiChatBox = document.getElementById('aiChatBox');
+                          const closeChatBtn = document.getElementById('closeChatBtn');
+                          const chatInput = document.getElementById('chatInput');
+                          const sendBtn = document.getElementById('sendMessageBtn');
+                          const chatMessages = document.getElementById('chatMessages');
+
+                          // 👇 NEW SELECTORS 👇
+                          const aiIntroOverlay = document.getElementById('aiIntroOverlay');
+                          const closeIntroBtn = document.getElementById('closeIntroBtn');
+
+                          // 1. Toggle Chat Visibility & Show Intro
+                          function toggleChat() {
+                            aiChatBox.classList.toggle('active');
+
+                            if (aiChatBox.classList.contains('active')) {
+                              // Show the intro overlay EVERY TIME the chat is opened
+                              if (aiIntroOverlay) {
+                                aiIntroOverlay.classList.add('active');
+                              }
+                              // Focus input (optional, keeps keyboard ready behind overlay)
+                              setTimeout(() => chatInput.focus(), 300);
+                            }
+                          }
+
+                          // 👇 NEW FUNCTION: Close the Intro Overlay 👇
+                          if (closeIntroBtn) {
+                            closeIntroBtn.addEventListener('click', () => {
+                              aiIntroOverlay.classList.remove('active');
+                            });
+                          }
+
+                          chatTrigger.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            toggleChat();
+                          });
+
+                          closeChatBtn.addEventListener('click', toggleChat);
+
+                        // 2. Knowledge Base (Simple "AI" Simulation)
+                        // You can expand this list with more keywords!
+                        const knowledgeBase = [
+                          // --- GENERAL CONVERSATION ---
+                          {
+                            keywords: ['hello', 'hi', 'hey', 'start', 'greetings'],
+                            response: "Greetings! I am the AESS AI system. I can introduce you to our Team, explain our Research, guide you through our Branches (Electronics, Aeronautics, Aerospace), or help you Join us."
+                          },
+                          {
+                            keywords: ['who are you', 'what is this', 'bot', 'ai'],
+                            response: "I am the AESS AI Assistant, designed to help you navigate the Aerospace & Electronic Systems Society at JUST. Ask me about a specific member (e.g., 'Who is Hisham?') or a topic (e.g., 'Rockets')."
+                          },
+
+                          // --- TEAM DATA (DETAILED) ---
+
+                          // 1. ADVISOR
+                          {
+                            keywords: ['mu\'adh', 'muadh', 'advisor', 'doctor', 'dr'],
+                            response: "<strong>Dr. Mu'adh</strong> is the esteemed Advisor of the IEEE AESS JUST Student Chapter, guiding the team's strategic direction and academic excellence."
+                          },
+
+                          // 2. CHAIRMAN / FOUNDER
+                          {
+                            keywords: ['hisham', 'khreis', 'chair', 'chairman', 'founder', 'leader'],
+                            response: "<strong>Hisham Khreis</strong> is the Founder & Chairman. He is a 3rd Year Electrical Engineering student focused on Aerospace and Strategic Leadership. He is also Co-Leader of TEDx PHU 2026, a PR Officer for AESS Jordan, and a Public Speaking Trainer. Previously, he led the NASA Space Apps Irbid 2025."
+                          },
+
+                          // 3. VICE CHAIR
+                          {
+                            keywords: ['ayah', 'ayesh', 'vice', 'vice-chair', 'vice chair'],
+                            response: "<strong>Ayah Ayesh</strong> is our Vice-Chair. She is a Biomedical Engineering student passionate by the intersection of science and social impact. She has collaborated with AIESEC, IEEE, TEDx, and the Red Crescent to promote scientific education."
+                          },
+
+                          // 4. HR & SCIENTIFIC TEAMS
+                          {
+                            keywords: ['bashar', 'alzoubi', 'hr', 'human resources', 'scientific'],
+                            response: "<strong>Bashar Alzoubi</strong> is the Head of Human Resources & Scientific Teams. He is a Mechanical Engineering student with experience in the JUST_1 Rocket Project, Al-Rhim SAT, and Robofight. He also led Team Raymark to 2nd place in the NASA Space Apps Challenge."
+                          },
+
+                          // 5. TREASURER
+                          {
+                            keywords: ['osaid', 'haimour', 'treasurer', 'finance', 'money'],
+                            response: "<strong>Osaid Haimour</strong> is our Treasurer. He ensures the society's financial sustainability. Beyond finances, he leads the Science & Experiments Team at MENA (Space-analog research) and was an organizer for NASA Space Apps Amman."
+                          },
+
+                          // 6. SECRETARY
+                          {
+                            keywords: ['retaj', 'jehad', 'secretary', 'admin', 'v-tools'],
+                            response: "<strong>Retaj Jehad</strong> is our Secretary. She is an Aeronautical Engineering student managing V-tools and internal communication. Technically, she works on the Stability and Control Team for the JUST_1 Rocket Project and has organized NASA Space Apps Irbid for two years."
+                          },
+
+                          // 7. ELECTRONICS LEAD
+                          {
+                            keywords: ['momen', 'jarrah', 'electronics', 'circuits', 'drone', 'robotics'],
+                            response: "<strong>Momen Jarrah</strong> is the Head of the Electronics Systems Team. He is an Electrical Engineer specializing in Communications. He has hands-on experience in Drone Systems, Robotics, and Space Technology, focusing on bridging theory with practical implementation."
+                          },
+
+                          // 8. EVENTS LEAD
+                          {
+                            keywords: ['mohammad', 'alaa', 'events', 'organizer', 'tedx'],
+                            response: "<strong>Mohammad Alaa</strong> is the Leader of the Events Team. He is a Computer Science student at Philadelphia University (PHU). He is currently the Licensee and Lead Organizer of TEDxPHU and previously chaired an IEEE Student Branch."
+                          },
+
+                          // 9. MARKETING LEAD
+                          {
+                            keywords: ['razan', 'mohanad', 'marketing', 'media', 'social'],
+                            response: "<strong>Razan Mohanad</strong> is the Marketing and Media Leader. She manages the society's public image and outreach strategies."
+                          },
+
+                          // 10. AERONAUTIC LEAD (Ahmad)
+                          {
+                            keywords: ['ahmad', 'aldarabseh', 'aeronautic', 'aero'],
+                            response: "<strong>Ahmad Aldarabseh</strong> is a Leader of the Aeronautic Team, overseeing projects related to flight dynamics and aircraft systems."
+                          },
+
+                          // 11. AERONAUTIC LEAD (Narmeen)
+                          {
+                            keywords: ['narmeen', 'alrefae', 'astronomy', 'telescope', 'rocket simulation'],
+                            response: "<strong>Narmeen Alrefae'e</strong> is a Leader of the Aeronautic Team. She is an Aeronautical Engineering student with a deep passion for Astronomy and Astrophotography. She previously served as the Simulation Section Leader in the JUST_1 Rocket Project."
+                          },
+
+                          // --- SECTIONS & GENERAL INFO ---
+                          {
+                            keywords: ['research', 'projects', 'paper'],
+                            response: "Our members are conducting cutting-edge research, Comming soon!!"
+                          },
+                          {
+                            keywords: ['branches', 'fields', 'topics'],
+                            response: "AESS JUST operates in three main branches: 1. Aerospace (Rockets, Satellites). 2. Aeronautics (Drones, Flight Dynamics). 3. Electronics (Avionics, PCBs, Arduino)."
+                          },
+                          {
+                            keywords: ['join', 'register', 'member', 'how to join'],
+                            response: "We are always looking for passionate talent! Keep an eye on our 'Events' section for recruitment drives, or click the Explore More buttons in the branch sections to learn about requirements."
+                          },
+                          {
+                            keywords: ['news', 'media', 'update'],
+                            response: "Check out our Media Section! We recently wrapped up 'From Campus to Cockpit' and are currently looking for volunteers. Use the carousel on the main page to see more."
+                          }
+                        ];
+
+                        // 3. Handle User Input
+                        function handleUserMessage() {
+                          const text = chatInput.value.trim();
+                          if (text === "") return;
+
+                          // Add User Message
+                          addMessage(text, 'user-message');
+                          chatInput.value = '';
+
+                          // Show Typing Indicator (Fake delay)
+                          const loadingId = addMessage('Processing...', 'bot-message', true);
+
+                          setTimeout(() => {
+                            // Remove loading message
+                            const loadingMsg = document.getElementById(loadingId);
+                            if (loadingMsg) loadingMsg.remove();
+
+                            // Find Response
+                            const response = findResponse(text);
+                            addMessage(response, 'bot-message');
+                          }, 800); // 800ms delay for realism
+                        }
+
+                        function findResponse(input) {
+                          const lowerInput = input.toLowerCase();
+
+                          // 1. Check Knowledge Base
+                          for (const entry of knowledgeBase) {
+                            for (const keyword of entry.keywords) {
+                              if (lowerInput.includes(keyword)) {
+                                return entry.response;
+                              }
+                            }
+                          }
+
+                          // 2. Space Facts (Fallback for specific space words)
+                          if (lowerInput.includes('space') || lowerInput.includes('mars') || lowerInput.includes('moon')) {
+                            return "Space is vast! Did you know AESS focuses on the systems that allow us to explore it? Ask about our **Aerospace Branch**.";
+                          }
+
+                          // 3. Default Fallback
+                          return "I'm still learning. Try asking about **Hisham**, **Electronics**, **Research**, or **Events**.";
+                        }
+
+                        function addMessage(text, className, isLoading = false) {
+                          const msgDiv = document.createElement('div');
+                          msgDiv.classList.add('message', className);
+                          msgDiv.innerHTML = text; // allow HTML tags
+
+                          if (isLoading) {
+                            const id = 'msg-' + Date.now();
+                            msgDiv.id = id;
+                            msgDiv.style.opacity = '0.7';
+                            msgDiv.style.fontStyle = 'italic';
+                            chatMessages.appendChild(msgDiv);
+                            scrollToBottom();
+                            return id;
+                          }
+
+                          chatMessages.appendChild(msgDiv);
+                          scrollToBottom();
+                          return null;
+                        }
+
+                        function scrollToBottom() {
+                          chatMessages.scrollTop = chatMessages.scrollHeight;
+                        }
+
+                        // Event Listeners for sending
+                        sendBtn.addEventListener('click', handleUserMessage);
+                        chatInput.addEventListener('keypress', (e) => {
+                          if (e.key === 'Enter') handleUserMessage();
+                        });
+                      });
+
+
+
+                      // =========================================
+                        // TEAM SECTION ANIMATION
+                        // =========================================
+
+                        // 1. Select the Team Container
+                        const teamSection = document.querySelector('.container_team');
+                        const teamCards = document.querySelectorAll('.card__article');
+
+                        // 2. Create the Observer
+                        const teamObserver = new IntersectionObserver((entries) => {
+                          entries.forEach(entry => {
+                            // If the section is in view
+                            if (entry.isIntersecting) {
+                              // Add the visible class to all cards inside
+                              teamCards.forEach(card => {
+                                card.classList.add('team-visible');
+                              });
+
+                              // Optional: Stop observing once animation triggers (so it runs only once)
+                              teamObserver.unobserve(entry.target);
+                            }
+                          });
+                        }, {
+                          threshold: 0.15 // Trigger when 15% of the section is visible
+                        });
+
+                        // 3. Start Observing
+                        if (teamSection) {
+                          teamObserver.observe(teamSection);
+                        }
+
+              // =========================================
+                // SMOOTH VIDEO LOOPING (FADE OUT/IN)
+                // =========================================
+                document.addEventListener('DOMContentLoaded', () => {
+                  const allVideos = document.querySelectorAll('video');
+
+                  allVideos.forEach(video => {
+                    // 1. Ensure HTML loop is disabled so JS can handle the restart
+                    video.loop = false;
+
+                    // 2. Monitor playback time
+                    video.addEventListener('timeupdate', () => {
+                      // If the video is within 1 second of ending...
+                      // (Ensure duration is valid to avoid errors on load)
+                      if (video.duration && video.currentTime > video.duration - 1) {
+                        video.classList.add('fade-out');
+                      }
+                    });
+
+                    // 3. When video actually ends
+                    video.addEventListener('ended', () => {
+                      video.currentTime = 0; // Reset to start
+                      video.play();          // Restart video
+
+                      // Small delay to ensure the first frame is ready before fading in
+                      setTimeout(() => {
+                        video.classList.remove('fade-out');
+                      }, 100);
+                    });
+                  });
+                });
+
+                /* =========================================
+     MOBILE MENU LOGIC
+     ========================================= */
+                  // document.addEventListener('DOMContentLoaded', () => {
+                  //   const hamburgerBtn = document.querySelector('.small_bar');
+                  //   const mobileNav = document.getElementById('mobileNav');
+                  //   const closeNavBtn = document.getElementById('closeMobileNav');
+                  //   const navLinks = document.querySelectorAll('.mobile-nav-links a');
+
+                  //   // Function to Open Menu
+                  //   function openMenu() {
+                  //     mobileNav.classList.add('active');
+                  //     document.body.style.overflow = 'hidden'; // Stop background scrolling
+                  //   }
+
+                  //   // Function to Close Menu
+                  //   function closeMenu() {
+                  //     mobileNav.classList.remove('active');
+                  //     document.body.style.overflow = 'auto'; // Restore scrolling
+                  //   }
+
+                  //   // Event Listeners
+                  //   if (hamburgerBtn) {
+                  //     hamburgerBtn.addEventListener('click', (e) => {
+                  //       e.preventDefault(); // Prevent jump
+                  //       openMenu();
+                  //     });
+                  //   }
+
+                  //   if (closeNavBtn) {
+                  //     closeNavBtn.addEventListener('click', closeMenu);
+                  //   }
+
+                  //   // Close menu when a link is clicked (so user can see the section)
+                  //   navLinks.forEach(link => {
+                  //     link.addEventListener('click', closeMenu);
+                  //   });
+                  // });
+
+
+                  document.addEventListener('DOMContentLoaded', () => {
+                      // 1. Select the new Space Image by ID
+                      const hamburgerBtn = document.getElementById('mobileMenuBtn');
+
+                      const mobileNav = document.getElementById('mobileNav');
+                      const closeNavBtn = document.getElementById('closeMobileNav');
+                      const navLinks = document.querySelectorAll('.mobile-nav-links a');
+
+                      // Function to Open Menu
+                      function openMenu() {
+                        if (mobileNav) {
+                          mobileNav.classList.add('active');
+                          document.body.style.overflow = 'hidden'; // Stop background scrolling
+                        }
+                      }
+
+                      // Function to Close Menu
+                      function closeMenu() {
+                        if (mobileNav) {
+                          mobileNav.classList.remove('active');
+                          document.body.style.overflow = 'auto'; // Restore scrolling
+                        }
+                      }
+
+                      // Event Listeners
+                      if (hamburgerBtn) {
+                        hamburgerBtn.addEventListener('click', (e) => {
+                          e.preventDefault();
+                          openMenu();
+                        });
+                      }
+
+                      if (closeNavBtn) {
+                        closeNavBtn.addEventListener('click', closeMenu);
+                      }
+
+                      // Close menu when a link is clicked
+                      navLinks.forEach(link => {
+                        link.addEventListener('click', closeMenu);
+                      });
+                    });
   </script>
 
+  <script>
+    // --- Interactive Scroll Logic ---
 
+    // We use IntersectionObserver to detect when the section is in view
+    const glassmorphicLeaderboardObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Add class 'glassmorphic-leaderboard-section-active' when section enters viewport
+          entry.target.classList.add('glassmorphic-leaderboard-section-active');
+        }
+      });
+    }, {
+      threshold: 0.3 // Trigger when 30% of the section is visible
+    });
+
+    // Target the section
+    const glassmorphicLeaderboardSection = document.getElementById('glassmorphic-leaderboard-main-section');
+    glassmorphicLeaderboardObserver.observe(glassmorphicLeaderboardSection);
+  </script>
 
 </body>
 
