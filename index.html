@@ -25,13 +25,6 @@
            1. INTRO & TRANSITION STYLES
            ========================================= */
 
-
-           html, body {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden !important; /* Forces horizontal clipping */
-  position: relative; /* Helps contain absolute elements */
-}
     /* Container for the 3D Scene (Black Background) */
     #intro-overlay {
       position: fixed;
@@ -4304,6 +4297,13 @@ body.intro-complete header nav > * {
 
 @media screen and (max-width: 768px) {
 
+
+  html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden !important; /* Forces horizontal clipping */
+  position: relative; /* Helps contain absolute elements */
+}
   /* --- 1. GLOBAL & TYPOGRAPHY --- */
   :root {
     --biggest-font-size: 1.8rem;
@@ -4778,6 +4778,8 @@ body.intro-complete header nav > * {
   .border-container {
     display: none; /* Simplify intro on mobile */
   }
+
+
 }
 
 
@@ -4822,7 +4824,7 @@ body.intro-complete header nav > * {
     /* width: 85%; */
     font-size: 1rem;
     /* padding: 12px 20px; */
-    top: 65%; /* Adjust position for mobile screens */
+    /* top: 65%; Adjust position for mobile screens */
   }
 
   /* Hide complex border animations that might lag on mobile */
