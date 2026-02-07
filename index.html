@@ -3553,7 +3553,8 @@ video.fade-out {
   width: 350px;
   height: 500px;
   margin-right: 5rem;
-  background: rgba(0, 0, 30, 0.85); /* Dark Blue Transparent */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 30, 0.95); /* Dark Blue Transparent */
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(0, 234, 255, 0.3);
@@ -3605,10 +3606,17 @@ video.fade-out {
   animation: pulseDot 2s infinite;
 }
 
+
+
 @keyframes pulseDot {
-  0% { opacity: 0.5; }
+  0% { opacity: 0.8; }
   50% { opacity: 1; box-shadow: 0 0 15px #00eaff; }
-  100% { opacity: 0.5; }
+  100% { opacity: 0.8; }
+}
+.dot{
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+   background-color: #00eaff;
 }
 
 .close-chat {
@@ -4763,8 +4771,8 @@ body.intro-complete header nav > * {
   /* --- 14. INTRO OVERLAY --- */
   #introButton {
     font-size: 18px;
-    padding: 12px 30px;
-    width: 80%;
+    /* padding: 12px 30px; */
+    /* width: 80%; */
   }
   
   .border-container {
@@ -4811,9 +4819,9 @@ body.intro-complete header nav > * {
 }
   /* --- 2. INTRO OVERLAY --- */
   #introButton {
-    width: 85%;
+    /* width: 85%; */
     font-size: 1rem;
-    padding: 12px 20px;
+    /* padding: 12px 20px; */
     top: 65%; /* Adjust position for mobile screens */
   }
 

@@ -406,31 +406,177 @@
         .small_bar .bar::after {
             top: 4.5px;
         }
+
+
+        @media screen and (max-width: 768px) {
+    /* --- Header & Navigation --- */
+    header {
+        max-height: none; /* Remove height restriction to allow stacking */
+        padding-bottom: 10px;
+    }
+
+    header nav {
+        flex-direction: column; /* Stack logo and links vertically */
+        height: auto;
+        max-height: none;
+        padding: 20px 15px;
+        margin: 1rem 5%; /* Reduce side margins */
+        border-radius: 30px; /* Adjust shape for stacked content */
+        gap: 15px;
+    }
+
+    .logo {
+        padding-left: 0;
+        max-height: 60px; /* Resize logo for mobile */
+    }
+
+    header ul {
+        flex-wrap: wrap; /* Allow links to wrap to next line */
+        justify-content: center;
+        width: 100%;
+        gap: 10px;
+        padding: 0;
+    }
+
+    header ul a {
+        padding: 5px 10px; /* Reduce padding between links */
+        font-size: 0.85rem; /* Slightly smaller text size */
+    }
+
+    .small_bar {
+        display: none; /* Hide the decorative bar on mobile to save space */
+    }
+
+    /* --- General Layout --- */
+    .glass-section {
+        margin: 20px 5%; /* Reduce side margins */
+        padding: 25px 20px;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+        text-align: center;
+    }
+
+    #media p {
+        text-align: center;
+        font-size: 0.95rem;
+    }
+
+    .btn {
+        width: 100%; /* Make buttons full width for easier tapping */
+        text-align: center;
+    }
+
+    /* --- Latest Work Grid --- */
+    .card-grid {
+        grid-template-columns: 1fr; /* Single column layout */
+        gap: 25px;
+    }
+
+    .card:hover {
+        transform: none; /* Disable lift effect on touch devices */
+    }
+
+    /* --- Modal Window --- */
+    .modal-content {
+        flex-direction: column; /* Stack image on top of text */
+        width: 95%;
+        margin: 15% auto;
+        padding: 20px 15px;
+        max-height: 85vh; /* Prevent modal from exceeding screen height */
+        overflow-y: auto; /* Enable scrolling inside modal */
+    }
+
+    .image-slider {
+        width: 100%;
+        margin-bottom: 15px;
+        max-height: 250px;
+    }
+
+    #modal-main-image {
+        max-height: 250px;
+        object-fit: contain;
+    }
+
+    .modal-details {
+        width: 100%;
+        text-align: left;
+    }
+
+    #modal-title {
+        font-size: 1.4rem;
+        text-align: center;
+    }
+
+    .close-btn {
+        top: 5px;
+        right: 15px;
+        font-size: 35px;
+        z-index: 100;
+        background: rgba(0,0,0,0.5); /* Background to make X visible over images */
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Adjust slider arrows for touch */
+    .arrow {
+        padding: 12px;
+        font-size: 18px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </style>
 </head>
 
 <body>
 
-    <header>
-        <nav>
-            <a href="#">
-                <img src="AESS_IMG/aess.png" alt="AESS Logo" class="logo">
-            </a>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#researchers">Research</a></li>
-                <li><a href="#electronics">Branches</a></li>
-                <li><a href="#media">Media</a></li>
-                <li><a href="#social-media">Social</a></li>
-                <li class="small_bar">
-                    <a href="#">
-                        <div class="bar"></div>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </header>
+<header>
+    <nav>
+        <a href="index.html">
+            <img src="AESS_IMG/aess.png" alt="AESS Logo" class="logo">
+        </a>
+
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#container_team">Team</a></li>
+            <li><a href="#glassmorphic-leaderboard-section-wrapper">Member</a></li>
+            <li><a href="#electronics">Branches</a></li>
+            <li><a href="#social-media">Contact</a></li>
+        </ul>
+    </nav>
+</header>
 
     <main>
         <section id="media" class="glass-section">
@@ -476,29 +622,32 @@
 
 
 
-    <footer style="background:#0a0a0a; color:#fff; padding:20px 0; text-align:center; font-family:Arial, sans-serif;">
-
+    <footer
+        style="background:#0a0a0a; color:#fff; padding:20px 0; text-align:center; font-family:Arial, sans-serif; position: relative; z-index: 10;">
+    
         <p style="margin: 0 0 10px 0; font-size:14px;">
-            &copy; 2025 AESS JUST. All Rights Reserved. | Built for AESS Society.
+            &copy; 2026 AESS JUST. All Rights Reserved. | Built for AESS Society.
         </p>
-
+    
         <div style="margin-top:10px;">
-            <a href="https://chat.whatsapp.com/GzfWUsp3DER2PsUczb4qFX?mode=hqrt1" target="_blank"
-                style="color:#fff; margin:0 10px; text-decoration:none;">
-                WhatsApp
+            Made by Zakaria Alnsour. Contact me:
+        </div>
+        <div style="margin-top:10px;">
+            <!-- Social Media Links -->
+            <a href="" target="_blank" style="color:#fff; margin:0 10px; text-decoration:none;">
+                Gmail
             </a>
             |
-            <a href="https://www.instagram.com/ieee_aess_just/" target="_blank"
-                style="color:#fff; margin:0 10px; text-decoration:none;">
-                Instagram
+            <a href="" target="_blank" style="color:#fff; margin:0 10px; text-decoration:none;">
+                Twitter (X)
             </a>
             |
-            <a href="https://www.linkedin.com/company/ieee-aess-just/posts/?feedView=all" target="_blank"
+            <a href="https://www.linkedin.com/in/zakaria-a-alnsour-a31602343/" target="_blank"
                 style="color:#fff; margin:0 10px; text-decoration:none;">
                 LinkedIn
             </a>
         </div>
-
+    
     </footer>
 
 
