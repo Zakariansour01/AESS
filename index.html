@@ -25,6 +25,13 @@
            1. INTRO & TRANSITION STYLES
            ========================================= */
 
+
+           html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden !important; /* Forces horizontal clipping */
+  position: relative; /* Helps contain absolute elements */
+}
     /* Container for the 3D Scene (Black Background) */
     #intro-overlay {
       position: fixed;
@@ -1898,13 +1905,24 @@ body.intro-complete header {
 
 
 .container {
-            position: fixed;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* <--- ADD THIS to clip the flying lines */
+}
+
+/* Find or add this block */
+.electronics-section,
+.aviation-section,
+.aerospace-section {
+  position: relative;
+  /* ... existing styles ... */
+  overflow: hidden; /* <--- CRITICAL: Keeps the video inside the box */
+  width: 100%; /* Ensures it respects screen width */
+}
 
         /* --- Content Styling --- */
       
@@ -2590,13 +2608,17 @@ img {
 }
 
 /*=============== CARD ===============*/
+/* Find this section around line 1269 */
 .card {
   position: relative;
   overflow: hidden; /* Keeps video inside the section bounds */
   z-index: 1;
   background: transparent; /* Remove default background if any */
+  
+  /* 👇 ADD THESE TWO LINES TO FIX THE GAP 👇 */
+  margin-top: -2px;   /* Pulls the section up slightly to cover any sub-pixel line */
+  padding-top: 1px;   /* Prevents the inner title margin from pushing the section down */
 }
-
 /* 2. Position the video container */
 .team-video-background {
   position: absolute;
@@ -4427,7 +4449,9 @@ body.intro-complete header nav > * {
 
 
 
-
+.about-stats{
+  display: none;
+}
   /* Vertical Lines Animation Adjustment */
   #vertical-lines-container {
      gap: 100px; /* Bring lines closer */
@@ -4457,7 +4481,7 @@ body.intro-complete header nav > * {
   
 
   .whats-aess-main-card {
-    margin-top: 22rem;
+    margin-top: 5rem;
     padding: 2rem;
     /* padding: 10rem; */
     /* margin-bottom: rem; */
@@ -4780,6 +4804,11 @@ body.intro-complete header nav > * {
     display: none !important;
   }
 
+
+  
+.about-stats{
+  display: none;
+}
   /* --- 2. INTRO OVERLAY --- */
   #introButton {
     width: 85%;
