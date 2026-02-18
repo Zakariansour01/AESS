@@ -349,38 +349,6 @@ body.intro-complete header {
     }
 
 
-    /* Video Background */
-    .video-background {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      overflow: hidden;
-    }
-
-    .video-background video {
-      min-width: 100%;
-      min-height: 100%;
-      width: auto;
-      height: auto;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      object-fit: cover;
-    }
-
-    .video-background::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-    }
 
     /* Hero Section */
 .hero-section {
@@ -1165,18 +1133,14 @@ body.intro-complete header {
 }
 
 .electronics-video {
-  position: -webkit-sticky; /* For Safari */
-  position: sticky;         /* Sticky makes it scroll with the section */
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100vh;
-  object-fit: cover;
-  opacity: 0.7;             /* Visible by default (no fading) */
-  z-index: 1;
-  pointer-events: none;     /* Allows clicking through to content */
+  height: 100%;
+  border: none;
+  pointer-events: none; /* prevents user from clicking on it */
 }
-
 .electronics-content {
   position: relative;
   z-index: 10;
@@ -2427,18 +2391,19 @@ body.intro-complete header {
   overflow: hidden;
   opacity: 0;
   transition: opacity 1s ease;
-  pointer-events: none; /* 👈 ADD THIS LINE HERE */
+  pointer-events: none;
 }
-.hero-video-bg video {
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
+
+.hero-video-bg iframe {
+  width: 100vw;
+  height: 56.25vw; /* 16:9 ratio */
+  min-height: 100vh;
+  min-width: 177.77vh; /* 16:9 ratio */
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  object-fit: cover;
+  border: none;
 }
 
 .hero-video-bg::after {
@@ -2448,21 +2413,51 @@ body.intro-complete header {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Dark overlay for better text readability */
+  background: rgba(0, 0, 0, 0.5);
 }
 
-/* Show video after intro completes */
 /* Show video after intro completes */
 body.intro-complete .hero-video-bg {
   opacity: 1;
-  transition: opacity 2s ease 0.5s; /* Delay video fade-in */
+  transition: opacity 2s ease 0.5s;
 }
 
-/* Only hide video when scrolled PAST hero section */
 body.scroll-active .hero-video-bg {
   transition: opacity 0.5s ease;
 }
 
+/* Video Background */
+.video-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.video-background iframe {
+  width: 100vw;
+  height: 56.25vw; /* 16:9 ratio */
+  min-height: 100vh;
+  min-width: 177.77vh; /* 16:9 ratio */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: none;
+}
+
+.video-background::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+}
 
 
 
@@ -2619,8 +2614,9 @@ img {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 0; /* Sits behind the cards */
-  pointer-events: none; /* Allows clicking through to cards */
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
 }
 
 /* 4. Add a dark overlay so white text remains readable */
@@ -2631,23 +2627,28 @@ img {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6); /* Adjust 0.6 to make it darker/lighter */
+  background: rgba(0, 0, 0, 0.6);
   z-index: 1;
 }
+
 /* 5. Ensure existing content sits ABOVE the video */
 .card .HEAD-all,
 .card__container {
   position: relative;
-  z-index: 2; /* Higher than the video z-index */
+  z-index: 2;
 }
 
-
-.team-video-background video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Ensures video covers the area without stretching */
+.team-video-background iframe {
+  width: 56.25vh;   /* 9:16 ratio for vertical short */
+  height: 177.78vw;
+  min-width: 100%;
+  min-height: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: none;
 }
-
 .card__bg, 
 .card__blur {
   position: absolute;
@@ -5255,9 +5256,10 @@ body.intro-complete header nav > * {
 
 <!-- Video Background for Hero Section -->
 <div class="video-background hero-video-bg">
-  <video autoplay muted loop playsinline>
-    <source src="AESS_IMG/HOME_2.mp4" type="video/mp4">
-  </video>
+  <iframe
+    src="https://www.youtube.com/embed/ZjjBl33ApPo?autoplay=1&mute=1&loop=1&playlist=ZjjBl33ApPo&controls=0&showinfo=0&rel=0&modestbranding=1"
+    frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+  </iframe>
 </div>
 
 
@@ -5465,9 +5467,10 @@ body.intro-complete header nav > * {
   <section class="card">
   
     <div class="team-video-background">
-      <video autoplay muted loop playsinline>
-        <source src="AESS_IMG/Team_2.mp4" type="video/mp4">
-      </video>
+      <iframe
+        src="https://www.youtube.com/embed/AVzj8NMqMyA?autoplay=1&mute=1&loop=1&playlist=AVzj8NMqMyA&controls=0&showinfo=0&rel=0&modestbranding=1"
+        frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+      </iframe>
     </div>
     <div class="HEAD-all">
       <h2>AESS Current Team</h2>
@@ -6389,10 +6392,10 @@ body.intro-complete header nav > * {
 <section id="electronics" class="electronics-section">
 
   <!-- FIXED BACKGROUND VIDEO -->
-  <video class="electronics-video" autoplay muted loop playsinline>
-    <source src="Videos/Elec.mp4" type="video/mp4">
-  </video>
-
+<iframe class="electronics-video"
+  src="https://www.youtube.com/embed/2sETaSu8y_w?autoplay=1&mute=1&loop=1&playlist=2sETaSu8y_w&controls=0&showinfo=0&rel=0&modestbranding=1"
+  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+</iframe>
   <!-- CONTENT GRID -->
   <div class="electronics-content">
 
@@ -6473,9 +6476,10 @@ body.intro-complete header nav > * {
 
 <section id="aviation" class="aviation-section">
   <!-- FIXED BACKGROUND VIDEO -->
-  <video class="aviation-video" autoplay muted loop playsinline>
-    <source src="Videos/plane.mp4" type="video/mp4">
-  </video>
+  <iframe class="electronics-video"
+    src="https://www.youtube.com/embed/gYBRL48y94w?autoplay=1&mute=1&loop=1&playlist=gYBRL48y94w&controls=0&showinfo=0&rel=0&modestbranding=1"
+    frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+  </iframe>
 
   <!-- CONTENT GRID -->
   <div class="aviation-content">
@@ -6560,9 +6564,10 @@ body.intro-complete header nav > * {
 
   <section id="aerospace" class="aerospace-section">
     <!-- FIXED BACKGROUND VIDEO -->
-    <video class="aerospace-video" autoplay muted loop playsinline>
-      <source src="Videos/space.mp4" type="video/mp4">
-    </video>
+      <iframe class="electronics-video"
+        src="https://www.youtube.com/embed/3QSlFGloijY?autoplay=1&mute=1&loop=1&playlist=3QSlFGloijY&controls=0&showinfo=0&rel=0&modestbranding=1"
+        frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+      </iframe>
   
     <!-- CONTENT GRID -->
     <div class="aerospace-content">
