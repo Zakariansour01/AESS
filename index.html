@@ -5453,16 +5453,16 @@ body.intro-complete header nav > * {
 
         <div class="about-stats">
           <div class="stat-item">
-            <div class="stat-number" data-target="7043">0+</div>
-            <div class="stat-label">Active Members Gloabally</div>
+            <div class="stat-number" data-target="1">#0</div>
+            <div class="stat-label">The largest in Jordan</div>
           </div>
           <div class="stat-item">
-            <div class="stat-number" data-target="30">0+</div>
-            <div class="stat-label">Conferences Gloabally</div>
+            <div class="stat-number" data-target="2">#0</div>
+            <div class="stat-label">Second in Europe, the Middle East, and North Africa</div>
           </div>
           <div class="stat-item">
-            <div class="stat-number" data-target="17">0+</div>
-            <div class="stat-label">Awards Won Gloabally</div>
+            <div class="stat-number" data-target="7">#0</div>
+            <div class="stat-label">Seventh in the world</div>
           </div>
         </div>
       </div>
@@ -7874,6 +7874,25 @@ body.intro-complete header nav > * {
                         link.addEventListener('click', closeMenu);
                       });
                     });
+
+                    function animateCounter(element, target) {
+                        const duration = 1500; // ms
+                        const start = performance.now();
+
+                        function update(now) {
+                          const elapsed = now - start;
+                          const progress = Math.min(elapsed / duration, 1);
+                          // Ease out
+                          const eased = 1 - Math.pow(1 - progress, 3);
+                          const current = Math.round(eased * target);
+                          element.textContent = '#' + current;
+                          if (progress < 1) {
+                            requestAnimationFrame(update);
+                          }
+                        }
+
+                        requestAnimationFrame(update);
+                      }
   </script>
 
   <script>
