@@ -8,14 +8,14 @@
   <link rel="icon" type="image/png" href="Images/NEG.png">
   <title>AESS - Advanced Systems</title>
 
-  <script type="importmap">
+  <!-- <script type="importmap">
     {
       "imports": {
         "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
         "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
       }
     }
-    </script>
+    </script> -->
 
 <style>
   @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap");
@@ -5138,7 +5138,15 @@ body.intro-complete header nav > * {
   }
 }
 
-
+#intro-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1; /* Keeps it behind the button and borders */
+}
 
 
 
@@ -5156,8 +5164,10 @@ body.intro-complete header nav > * {
 
   <canvas id="gridCanvas"></canvas>
 
-  <div id="intro-overlay">
-    <div class="container">
+<div id="intro-overlay">
+  <video id="intro-video" src="AESS_IMG/intro.mp4" autoplay muted playsinline></video>
+
+  <div class="container">
       <div class="border-container">
         <div class="border-line border-top"></div>
         <div class="border-line border-top_2"></div>
@@ -6341,7 +6351,7 @@ body.intro-complete header nav > * {
           <span class="researcher-column-label">Adaptive Drone Navigation</span>
           <div class="researcher-card">
             <span class="researcher-card-close">×</span>
-            <img src="AESS_IMG/Research/Adaptive Drone Navigation.jpg" alt="Researcher 1" class="researcher-card-image">
+            <img src="" alt="Researcher 1" class="researcher-card-image">
             <h3 class="researcher-card-title">Adaptive Drone Navigation in GPS-Denied Environments</h3>
             <p class="researcher-card-description">
               This research develops an adaptive navigation system for UAVs that operate in areas with weak or unavailable GPS
@@ -6356,7 +6366,7 @@ body.intro-complete header nav > * {
           <span class="researcher-column-label">AI-Enhanced Radar</span>
           <div class="researcher-card">
             <span class="researcher-card-close">×</span>
-            <img src="AESS_IMG/Research/AI-Enhanced Radar.png" alt="Researcher 1" class="researcher-card-image">
+            <img src="" alt="Researcher 1" class="researcher-card-image">
             <h3 class="researcher-card-title">AI-Enhanced Radar Signal Classification for Low-Visibility Conditions</h3>
             <p class="researcher-card-description">
               The study proposes a lightweight neural network capable of classifying radar signals accurately during heavy fog, dust,
@@ -6371,7 +6381,7 @@ body.intro-complete header nav > * {
           <span class="researcher-column-label">CubeSat Thermal Control</span>
           <div class="researcher-card">
             <span class="researcher-card-close">×</span>
-            <img src="AESS_IMG/Research/cubesate.jpg" alt="Researcher 1" class="researcher-card-image">
+            <img src="" alt="Researcher 1" class="researcher-card-image">
             <h3 class="researcher-card-title">CubeSat Thermal Control Optimization Using Hybrid Simulation Models</h3>
             <p class="researcher-card-description">
           This project presents a hybrid thermal simulation combining computational models and real sensor data from lab CubeSat
@@ -6889,487 +6899,64 @@ body.intro-complete header nav > * {
   </script>
 
   <script type="module">
-    import * as THREE from 'three';
-    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-
-
-
-
-  // ============================================
-  // PLANET SYSTEM
-  // ============================================
-
-  // Planet Configuration
-  const PLANET_CONFIG = {
-    textureFolder: 'AESS_IMG/Planets/',
-    textureFiles: [
-      'planet1.jpg', 'planet2.jpg', 'planet3.jpg', 'planet4.jpg',
-      'planet5.jpg', 'planet6.jpg'
-      // Add more filenames as needed
-    ],
-    spawnInterval: { min: 5000, max: 10000 }, // milliseconds
-    speed: { min: 1, max: 1.5 },
-    size: { min: 15, max: 30 },
-   startZ: -600,   // Start far away (top of screen)
-    endZ: 1000,      // End close (bottom of screen)
-    spreadX: { min: -500, max: 50 },
-    spreadY: { min: -500, max: -1000 },
-    maxPlanets: 5
-  };
-
-  const textureLoader = new THREE.TextureLoader();
-  const planets = [];
-
-  // Create Planet Class
-  class Planet {
-    constructor() {
-      this.speed = Math.random() * (PLANET_CONFIG.speed.max - PLANET_CONFIG.speed.min) + PLANET_CONFIG.speed.min;
-      this.size = Math.random() * (PLANET_CONFIG.size.max - PLANET_CONFIG.size.min) + PLANET_CONFIG.size.min;
-
-      // Random texture
-      const randomTexture = PLANET_CONFIG.textureFiles[
-        Math.floor(Math.random() * PLANET_CONFIG.textureFiles.length)
-      ];
-      const texturePath = PLANET_CONFIG.textureFolder + randomTexture;
-
-      // Create sphere geometry
-      const geometry = new THREE.SphereGeometry(this.size, 32, 32);
-      const texture = textureLoader.load(texturePath);
-      const material = new THREE.MeshStandardMaterial({
-        map: texture,
-        roughness: 0.8,
-        metalness: 0.2
-      });
-
-      this.mesh = new THREE.Mesh(geometry, material);
-
-      // Random starting position
-      this.mesh.position.x = Math.random() * (PLANET_CONFIG.spreadX.max - PLANET_CONFIG.spreadX.min) + PLANET_CONFIG.spreadX.min;
-      this.mesh.position.y = Math.random() * (PLANET_CONFIG.spreadY.max - PLANET_CONFIG.spreadY.min) + PLANET_CONFIG.spreadY.min;
-      this.mesh.position.z = PLANET_CONFIG.startZ;
-
-      // Random rotation for variety
-      this.rotationSpeed = {
-        x: (Math.random() - 0.5) * 0.01,
-        y: (Math.random() - 0.5) * 0.01
-      };
-
-      scene.add(this.mesh);
-    }
-
-    update() {
-        // Move planet forward
-      this.mesh.position.z += this.speed;  // Changed from -= to +=
-
-      // Rotate planet
-      this.mesh.rotation.x += this.rotationSpeed.x;
-      this.mesh.rotation.y += this.rotationSpeed.y;
-
-      // Check if planet is out of view
-      if (this.mesh.position.z > PLANET_CONFIG.endZ) {  // Changed from < to >
-        return false; // Signal for removal
-      }
-      return true; // Still active
-    }
-
-    destroy() {
-      scene.remove(this.mesh);
-      this.mesh.geometry.dispose();
-      this.mesh.material.dispose();
-    }
-  }
-
-  // Planet Spawner
-  let lastPlanetSpawn = 0;
-  let nextSpawnDelay = 0;
-
-  function getRandomSpawnDelay() {
-    return Math.random() * (PLANET_CONFIG.spawnInterval.max - PLANET_CONFIG.spawnInterval.min) + PLANET_CONFIG.spawnInterval.min;
-  }
-
-  function updatePlanets(currentTime) {
-    // Spawn new planets
-    if (currentTime - lastPlanetSpawn > nextSpawnDelay && planets.length < PLANET_CONFIG.maxPlanets) {
-      planets.push(new Planet());
-      lastPlanetSpawn = currentTime;
-      nextSpawnDelay = getRandomSpawnDelay();
-    }
-
-    // Update existing planets
-    for (let i = planets.length - 1; i >= 0; i--) {
-      const stillActive = planets[i].update();
-      if (!stillActive) {
-        planets[i].destroy();
-        planets.splice(i, 1);
-      }
-    }
-  }
-
-  // Initialize first spawn delay
-  nextSpawnDelay = getRandomSpawnDelay();
-
-
-
-
-
-
-  // DOM Elements
-    const introOverlay = document.getElementById('intro-overlay');
-    const introButton = document.getElementById('introButton');
-    const borderEffect = document.getElementById('transition-border'); // Select border div
-    const verticalLinesContainer = document.getElementById('vertical-lines-container'); // 👈 ADD THIS LINE
-    // Add this right after the line: const verticalLinesContainer = document.getElementById('vertical-lines-container')
-
+    // DOM Elements
+      const introOverlay = document.getElementById('intro-overlay');
+      const introButton = document.getElementById('introButton');
+      const borderEffect = document.getElementById('transition-border');
+      const verticalLinesContainer = document.getElementById('vertical-lines-container');
       const bottomLine = document.getElementById('bottom-to-button-line');
 
-      // Show the line when borders finish animating
+      // 1. Show the bottom line connecting to the button after 2.65 seconds
       setTimeout(() => {
         if (bottomLine) {
           bottomLine.classList.add('show-line');
         }
-      }, 2650); // Show after border animation (2s border + 0.8s delay)
+      }, 2650);
 
-    // Scene Setup
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 180, 0);
-    camera.lookAt(0, 0, 0);
-
-   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
-
-    
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x000000, 1);
-    introOverlay.appendChild(renderer.domElement);
-
-    // Lights
-   // Realistic Lighting Setup
-    // 1. Reduced ambient light for more contrast
-    scene.add(new THREE.AmbientLight(0x404060, 0.3));
-
-    // 2. Main directional light (sun-like)
-    const mainLight = new THREE.DirectionalLight(0xffffff, 3);
-    mainLight.position.set(100, 15, 60);
-    mainLight.castShadow = true;
-    scene.add(mainLight);
-      //  // 2. Main directional light (sun-like)
-      //   const mainLight_2 = new THREE.DirectionalLight(0xf70000, 1.5);
-      //   mainLight_2.position.set(10, 15, 10);
-      //   mainLight_2.castShadow = true;
-      //   scene.add(mainLight_2);
-
-    // 3. Rim light (backlight for depth)
-    const rimLight = new THREE.DirectionalLight(0x5c5c5c, 1.5);
-    rimLight.position.set(-10, 5, -10);
-    scene.add(rimLight);
-
-    // // 4. Fill light (softer, from below)
-    // const fillLight = new THREE.DirectionalLight(0xf70000, 1);
-    // fillLight.position.set(0, -10, 5);
-    // scene.add(fillLight);
-
-    // // 5. Point lights for star glow effect
-    // const pointLight1 = new THREE.PointLight(0xf70000, 1, 100);
-    // pointLight1.position.set(20, 10, -30);
-    // scene.add(pointLight1);
-
-    const pointLight2 = new THREE.PointLight(0xff6600, 0.8, 80);
-    pointLight2.position.set(-20, -10, -20);
-    scene.add(pointLight2);
-
-    // Animation Variables
-    let rocket = null;
-    let animationProgress = 0;
-    const animationDuration = 2;
-    const startZ = 100;
-    const midZ = -40;
-    const endZ = -250; // Fly far away
-    let animationPhase = 0; // 0=Intro, 1=Wait, 2=Exit, 4=Done
-
-
-    // Add after line: let animationPhase = 0;
-      let linesAnimationComplete = false;
-      const linesContainer = document.getElementById('vertical-lines-container');
-      const lineLeft = document.getElementById('line-left');
-      const lineRight = document.getElementById('line-right');
-
-      // Start lines animation timer
-      // setTimeout(() => {
-      //   linesAnimationComplete = true;
-      //   if (linesContainer) {
-      //     linesContainer.classList.add('fade-out-lines');
-      //     setTimeout(() => {
-      //       if (linesContainer) linesContainer.style.display = 'none';
-      //     }, 500);
-      //   }
-      //   // Show button after lines disappear
-      //   if (animationPhase === 1) {
-      //     introButton.classList.add('show-btn');
-      //   }
-      // }, 10000); // 10 seconds
-
-      // Update the button show logic in animate function
-      // Find this section and replace it:
-      if (animationProgress >= 1) {
-        animationPhase = 1;
-        // Only show button after lines animation completes
-        if (linesAnimationComplete) {
+      // 2. Show the "ENTER AESS" button after 3 seconds of the video
+      setTimeout(() => {
+        if (introButton) {
           introButton.classList.add('show-btn');
         }
-      }
+      }, 3000);
 
-    function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+      // 3. Button Click to Exit Intro
+      introButton.addEventListener('click', () => {
+        // Hide bottom line
+        if (bottomLine) bottomLine.classList.add('hide-line');
 
-    // Create Stars
-    let spheres = new THREE.Group();
-    scene.add(spheres);
-    function createSphere(radius) {
-      const geometry = new THREE.SphereGeometry(radius, 8, 8);
-      const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
-      return new THREE.Mesh(geometry, material);
-    }
-    function addSpheres(count, minX, maxX, minZ, maxZ) {
-      for (let i = 0; i < count; i++) {
-        const radius = Math.random() * 1;
-        const sphere = createSphere(radius);
-        sphere.position.x = Math.random() * (maxX - minX) + minX;
-        sphere.position.y = Math.random() * -2000 - 10;
-        sphere.position.z = Math.random() * (maxZ - minZ) + minZ;
-        spheres.add(sphere);
-      }
-    }
-    addSpheres(500, -500, 500, -500, 500);
+        // Hide Button
+        introButton.classList.add('hide-btn');
+        introButton.classList.remove('show-btn');
 
-    // Load 3D Model
-    const loader = new GLTFLoader();
-    loader.load(
-      "aess_3d/scene.gltf",
-      (gltf) => {
-        rocket = gltf.scene;
-        rocket.scale.set(0.05, 0.05, 0.05);
-        rocket.position.set(0, 0, startZ);
-        rocket.rotation.y = Math.PI / 2;
-        scene.add(rocket);
-      },
-      undefined,
-      (err) => console.error("Error loading rocket:", err)
-    );
-
-    let lastTime = Date.now();
-
-    // Button Click to Exit Intro
-    introButton.addEventListener('click', () => {
-        if (animationPhase === 1) {
-          // 1. Resume animation (Rocket Flies)
-           if (bottomLine) bottomLine.classList.add('hide-line');
-          animationPhase = 2;
-          animationProgress = 0;
-          // Ensure hero video starts playing
-          const heroVideo = document.querySelector('.hero-video-bg video');
-          if (heroVideo) {
-            heroVideo.play().catch(e => console.log('Video play prevented:', e));
-          }
-          // 2. Hide Button
-          introButton.classList.add('hide-btn');
-          introButton.classList.remove('show-btn');
-
-          // 3. Hide Border Container (NEW)
-          const borderContainer = document.querySelector('.container');
-          if (borderContainer) {
-            borderContainer.classList.add('hide-container');
-          }
-
-          // 4. Trigger the border effect
-          if (borderEffect) borderEffect.classList.add('activate-border');
-
-          // Trigger the vertical lines growth animation
-          if (verticalLinesContainer) {
-            verticalLinesContainer.classList.add('start-animation');
-            setTimeout(() => {
-              verticalLinesContainer.classList.add('fade-out-lines');
-            }, 1500);
-          }
-        }
-      });
-
-    function animate() {
-        if (animationPhase === 4) return; // Stop loop when done
-
-        requestAnimationFrame(animate);
-        const currentTime = Date.now();
-        const deltaTime = (currentTime - lastTime) / 1000;
-        lastTime = currentTime;
-        // Update planets
-      updatePlanets(currentTime);
-
-        if (rocket) {
-          // ===== CONFIGURABLE FLUCTUATION PARAMETERS =====
-          const fluctuationSpeed = 1;        // Speed multiplier (1-5)
-          const fluctuationAngleX = 0.1;     // X-axis tilt (0.05-0.3 radians)
-          const fluctuationAngleY = 0;    // Y-axis tilt (0.05-0.3 radians)
-          const fluctuationAngleZ = 0;    // Z-axis tilt (0.05-0.3 radians)
-          // ===============================================
-
-          if (animationPhase === 0) {
-            // Fly In
-            animationProgress += deltaTime / animationDuration;
-            animationProgress = Math.min(animationProgress, 1);
-            const val = easeOutCubic(animationProgress);
-            rocket.position.z = startZ + (midZ - startZ) * val;
-
-           if (animationProgress >= 1) {
-              animationPhase = 1;
-
-              // Add delay before showing button (3000ms = 3 seconds)
-              setTimeout(() => {
-                introButton.classList.add('show-btn');
-              }, 1000); // Change this number for different delay
-            }
-          } else if (animationPhase === 2) {
-            // Fly Out
-            animationProgress += deltaTime / animationDuration;
-            animationProgress = Math.min(animationProgress, 1);
-            const val = easeOutCubic(animationProgress);
-            rocket.position.z = midZ + (endZ - midZ) * val;
-
-            if (animationProgress >= 1) {
-              animationPhase = 4;
-              // Hide Overlay
-              introOverlay.classList.add('fade-out');
-              // Unlock Scrolling
-              document.body.classList.add('scroll-active');
-              document.body.classList.add('intro-complete');
-            }
-          }
-
-          // ===== FLUCTUATION (RUNS IN ALL PHASES) =====
-          rocket.rotation.x = Math.sin(currentTime * 0.001 * fluctuationSpeed) * fluctuationAngleX;
-          rocket.rotation.z = Math.cos(currentTime * 0.001 * fluctuationSpeed * 0.7) * fluctuationAngleZ;
-          rocket.rotation.y = Math.PI / 2 + Math.sin(currentTime * 0.001 * fluctuationSpeed * 0.5) * fluctuationAngleY;
-          // ==============================================
-        }
-        renderer.render(scene, camera);
-      }
-      animate();
-
-    window.addEventListener("resize", () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-
-
-
-    // Animated Counter
-    // Animated Counter
-      function animateCounter(element, target, duration = 2000) {
-        let startTime = null;
-        const startValue = 0;
-
-        function animate(currentTime) {
-          if (!startTime) startTime = currentTime;
-          const elapsed = currentTime - startTime;
-          const progress = Math.min(elapsed / duration, 1);
-
-          // Easing function for smooth animation
-          const easeOutQuad = progress * (2 - progress);
-          const currentValue = Math.floor(startValue + (target - startValue) * easeOutQuad);
-
-          element.textContent = currentValue.toLocaleString() + '+';
-
-          if (progress < 1) {
-            requestAnimationFrame(animate);
-          } else {
-            element.textContent = target.toLocaleString() + '+';
-          }
+        // Hide Border Container
+        const borderContainer = document.querySelector('.container');
+        if (borderContainer) {
+          borderContainer.classList.add('hide-container');
         }
 
-        requestAnimationFrame(animate);
-      }
+        // Trigger the border effect
+        if (borderEffect) borderEffect.classList.add('activate-border');
 
-    // Observer
-  const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const statNumbers = entry.target.querySelectorAll('.stat-number');
-          statNumbers.forEach(stat => {
-            const targetValue = parseInt(stat.getAttribute('data-target'));
-            if (!isNaN(targetValue)) {
-              animateCounter(stat, targetValue);
-            }
-          });
-          observer.unobserve(entry.target);
+        // Trigger the vertical lines growth animation
+        if (verticalLinesContainer) {
+          verticalLinesContainer.classList.add('start-animation');
+          setTimeout(() => {
+            verticalLinesContainer.classList.add('fade-out-lines');
+          }, 1500);
         }
-      });
-    }, { threshold: 0.5 });
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const aboutStats = document.querySelector('.about-stats');
-      if (aboutStats) observer.observe(aboutStats);
-    });
-    // Truncate descriptions to 20 words
-      document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.info__description').forEach(desc => {
-          const fullText = desc.textContent.trim();
-          const words = fullText.split(' ');
+        // Wait a brief moment for the exit animations to play, then remove the overlay
+        setTimeout(() => {
+          introOverlay.classList.add('fade-out');
+          document.body.classList.add('scroll-active');
+          document.body.classList.add('intro-complete');
 
-          if (words.length > 100) {
-            const truncated = words.slice(0, 100).join(' ') + '...';
-            desc.textContent = truncated;
-            // Store full text as data attribute for modal
-            desc.setAttribute('data-full-text', fullText);
-          } else {
-            desc.setAttribute('data-full-text', fullText);
-          }
-        });
+          // Pause the intro video to save performance now that it's hidden
+          const introVideo = document.getElementById('intro-video');
+          if (introVideo) introVideo.pause();
+        }, 1200);
       });
-    // Nav Logic
-    const sections = document.querySelectorAll('section');
-    const navItems = document.querySelectorAll('.section-nav-item');
-
-    function updateActiveNavItem() {
-      let currentSection = 0;
-      sections.forEach((section, index) => {
-        const rect = section.getBoundingClientRect();
-        if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
-          currentSection = index;
-        }
-      });
-      navItems.forEach((item, index) => {
-        if (index < sections.length) {
-          item.classList.toggle('active', index === currentSection);
-        }
-      });
-    }
-    window.addEventListener('scroll', updateActiveNavItem);
-
-    navItems.forEach((item, index) => {
-      item.addEventListener('click', () => {
-        if (sections[index]) sections[index].scrollIntoView({ behavior: 'smooth' });
-      });
-    });
-
-    // Researcher Cards
-    const researcherColumns = document.querySelectorAll('.researcher-column');
-    researcherColumns.forEach(column => {
-      column.addEventListener('click', function (e) {
-        if (e.target.classList.contains('researcher-card-close')) return;
-        researcherColumns.forEach(col => { if (col !== column) col.classList.remove('active'); });
-        this.classList.toggle('active');
-      });
-      const closeBtn = column.querySelector('.researcher-card-close');
-      if (closeBtn) {
-        closeBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          column.classList.remove('active');
-        });
-      }
-    });
-
     // About Scroll Animation
     // About Scroll Animation
       const aboutSectionElement = document.querySelector('#about');
