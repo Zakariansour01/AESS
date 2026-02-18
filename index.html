@@ -2787,13 +2787,19 @@ img {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: hsla(0, 0%, 0%, .1);
-  backdrop-filter: blur(12px);
+  background-color: hsla(0, 0%, 0%, 0.2);
+  backdrop-filter: blur(30px);
   padding: 3rem 1.5rem 1.5rem;
   color: var(--white-color);
   clip-path: circle(8px at 88% 9%);
   transition: clip-path .5s ease-in-out;
+  overflow-y: auto;        /* ← ADD THIS */
 }
+
+.info {
+  
+}
+
 
 .info__name {
   font-size: var(--biggest-font-size);
@@ -2806,6 +2812,30 @@ img {
   line-height: 1.5;
   /* We removed the overflow and line-clamp properties */
 }
+
+/* Clip path animation */
+.info:hover,
+.card__clip:hover ~ .info {
+  clip-path: circle(100%);
+}
+
+/* ← ADD THIS NEW BLOCK BELOW ↓ */
+.info:hover .info__description,
+.card__clip:hover ~ .info .info__description {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+
+
+.card__article:hover .card__data {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease-in-out;
+}
+
+
+
 
 .info__button {
   display: inline-flex;
@@ -5591,18 +5621,6 @@ body.intro-complete header nav > * {
               </p>
         
             </div>
-        
-            <!-- <div class="info__social">
-                              <a href="https://www.facebook.com/" target="_blank" class="info__link">
-                                <i class="ri-facebook-circle-line"></i>
-                              </a>
-                              <a href="https://www.instagram.com/" target="_blank" class="info__link">
-                                <i class="ri-instagram-line"></i>
-                              </a>
-                              <a href="https://twitter.com/" target="_blank" class="info__link">
-                                <i class="ri-twitter-x-line"></i>
-                              </a>
-                            </div> -->
           </div>
         </article>
 
@@ -5646,25 +5664,19 @@ body.intro-complete header nav > * {
           <div class="info__data">
             <h2 class="info__name">Ayah</h2>
             <p class="info__description">
-              <span class="info__intro-line">Biomedical Engineering student passionate about innovation, technology, and
-                social
-                impact.</span>
-      
+              <span class="bio-title">About Me</span><br>
+              Biomedical Engineering student passionate about innovation, technology, and social impact.
+              With a solid background in leadership, public speaking, and community-driven initiatives,
+              I thrive at the intersection of science, creativity, and purpose.
               <br><br>
-      
-              With a solid background in leadership, public speaking, and community-driven initiatives, I thrive at the
-              intersection
-              of science, creativity, and purpose.
-      
+            
+              <span class="bio-title">Experience</span><br>
+              From founding youth programs to representing Jordan in national conferences, I've collaborated
+              with global and local organizations including AIESEC, IEEE, TEDx, and the Red Crescent,
+              contributing to events that promote scientific education and intercultural exchange.
               <br><br>
-      
-              From founding youth programs to representing Jordan in national conferences, I’ve collaborated with global and
-              local
-              organizations including AIESEC, IEEE, TEDx, and the Red Crescent, contributing to events that promote scientific
-              education and intercultural exchange.
-      
-              <br><br>
-      
+            
+              <span class="bio-title">Vision</span><br>
               I strive to empower others, spread knowledge, and build platforms that make a difference.
             </p>
       
@@ -5720,15 +5732,20 @@ body.intro-complete header nav > * {
           <div class="info__data">
             <h2 class="info__name">Bashar</h2>
             <p class="info__description">
-              <span class="info__name-title"> </span>
+              <span class="bio-title">About Me</span><br>
+              Mechanical Engineering student with a strong passion for scientific innovation and team leadership.
+              <br><br>
             
-              Mechanical Engineering student with a strong passion for scientific innovation and team leadership. I have hands-on
-              experience in engineering projects such as the JUST_1 Rocket Project, the Al-Rhim SAT satellite program, Robofight, and
-              the NASA Space Apps Challenge (2nd place).
-              
-              Currently serving as Head of Human Resources and Head of the Scientific Teams at AESS, I focus on building
-              high-performing teams, empowering members, and creating a collaborative environment that drives learning and meaningful
-              impact.
+              <span class="bio-title">Projects</span><br>
+              • JUST_1 Rocket Project<br>
+              • Al-Rhim SAT Satellite Program<br>
+              • Robofight<br>
+              • NASA Space Apps Challenge — 2nd Place
+              <br><br>
+            
+              <span class="bio-title">Current Roles</span><br>
+              • Head of Human Resources | IEEE AESS JUST<br>
+              • Head of Scientific Teams | IEEE AESS JUST
             </p>
 
           </div>
@@ -5773,26 +5790,25 @@ body.intro-complete header nav > * {
         <div class="info">
           <div class="info__data">
             <h2 class="info__name">Osaid</h2>
-          <p class="info__description">
-            <span class="info__intro-line"></span>
-          
-            <br><br>
-          
-            With a careful, analytical approach, I manage the society’s financial responsibilities with accuracy, and a focus on
-            long-term sustainability.
-          
-            <br><br>
-          
-            Outside of AESS, I am deeply involved in scientific and creative projects. I lead the Science & Experiments Team at
-            MENA, contributing to space-analog research and mission design. Volunteered as an organizer for NASA Space Apps Amman,
-            helping bring together innovators and students to tackle global challenges. Along working as a Sponsorship Team member
-            at TEDxYU, NextStep, and MENA.
-          
-            <br><br>
-          
-            My passion for aerospace, exploration, and pushing boundaries drives me in everything I do. I am committed to
-            continuous growth, meaningful impact, and contributing to the future of space exploration through every role I take
-            on.
+        <p class="info__description">
+          <span class="bio-title">About Me</span><br>
+          With a careful, analytical approach, I manage the society's financial responsibilities
+          with accuracy and a focus on long-term sustainability.
+          <br><br>
+        
+          <span class="bio-title">Current Experience</span><br>
+          • Science & Experiments Team Leader | MENA<br>
+          • Organizer | NASA Space Apps Amman<br>
+          • Sponsorship Team Member | TEDxYU<br>
+          • Sponsorship Team Member | NextStep<br>
+          • Sponsorship Team Member | MENA
+          <br><br>
+        
+          <span class="bio-title">Vision</span><br>
+          My passion for aerospace, exploration, and pushing boundaries drives me in everything I do.
+          I am committed to continuous growth, meaningful impact, and contributing to the future of
+          space exploration through every role I take on.
+        </p>
           </p>
          
           </div>
@@ -5896,23 +5912,20 @@ body.intro-complete header nav > * {
       <div class="info__data">
         <h2 class="info__name">Retaj</h2>
         <p class="info__description">
-          <span class="info__intro-line">Aeronautical engineering student with a lot of interest in aerospace engineering
-            fields.</span>
-        
+          <span class="bio-title">About Me</span><br>
+          Aeronautical Engineering student with a strong interest in aerospace engineering fields.
           <br><br>
         
-          I’ve been part of many projects some being technical such as the JUST one rocket project as I am part of the stability
-          and control team. I’ve also organized NASA space apps irbid for two years in a row.
-        
+          <span class="bio-title">Projects & Experience</span><br>
+          • Stability & Control Team | JUST_1 Rocket Project<br>
+          • Organizer | NASA Space Apps Irbid — 2 consecutive years<br>
+          • Media Team | IEEE AESS Yarmouk University<br>
+          • Active IEEE Member — 2 years
           <br><br>
         
-          I’ve been an active IEEE member for two years and I’ve been a part of the media team for the AESS at al Yarmouk
-          University.
-        
-          <br><br>
-        
-          I’ve also been part of many other teams through which I’ve learned communication and gained experience. As secretary,
-          I focus on dealing with the v-tools and communication with the teams members.
+          <span class="bio-title">Current Role</span><br>
+          As Secretary, I focus on managing V-Tools and maintaining communication with team members,
+          skills built through collaboration across many teams and initiatives.
         </p>
 
       </div>
@@ -5959,16 +5972,21 @@ body.intro-complete header nav > * {
     <div class="info">
       <div class="info__data">
         <h2 class="info__name">Momen</h2>
-        <p class="info__description">
-          <span class="info__intro-line">
-            I am Momen Yousef Jarrah, an Electrical Engineer specializing in Communications, with hands-on experience in
-            electronics, drone systems, and robotics. I have completed training in the fundamentals of space technology and have a
-            strong interest in intelligent systems and advanced engineering applications. I currently serve as the Electronics Team
-            Leader at IEEE AESS, where I focus on developing innovative engineering solutions that bridge theory and practical
-            implementation while fostering a culture of technical excellence.
-          </span>
-  
-        </p>
+      <p class="info__description">
+        <span class="bio-title">About Me</span><br>
+        Electrical Engineer specializing in Communications, with hands-on experience in electronics,
+        drone systems, and robotics. I have completed training in the fundamentals of space technology
+        and have a strong interest in intelligent systems and advanced engineering applications.
+        <br><br>
+      
+        <span class="bio-title">Current Role</span><br>
+        • Electronics Team Leader | IEEE AESS JUST
+        <br><br>
+      
+        <span class="bio-title">Focus</span><br>
+        Developing innovative engineering solutions that bridge theory and practical implementation,
+        while fostering a culture of technical excellence.
+      </p>
   
       </div>
   
@@ -6009,10 +6027,16 @@ body.intro-complete header nav > * {
           <div class="info__data">
             <h2 class="info__name">Mohammad</h2>
             <p class="info__description">
-              <span class="info__intro-line">
-                Mohammad Alaa Abdelhai is a Computer Science student at Philadelphia University (PHU). He previously served as Chair of
-                the IEEE Student Branch and is currently the licensee and lead organizer of TEDxPHU.
-              </span>
+              <span class="bio-title">About Me</span><br>
+              Computer Science student at Philadelphia University (PHU).
+              <br><br>
+            
+              <span class="bio-title">Current Experience</span><br>
+              • Licensee & Lead Organizer | TEDxPHU
+              <br><br>
+            
+              <span class="bio-title">Previous Experience</span><br>
+              • Chair | IEEE Student Branch — Philadelphia University
             </p>
           </div>
           <!-- <div class="info__social">
@@ -6099,17 +6123,18 @@ body.intro-complete header nav > * {
         <div class="info">
           <div class="info__data">
             <h2 class="info__name"> Ahmad</h2>
-            <p class="info__description">
-              <span class="info__intro-line">
-      
-                I'm Ahmad Al-Darabseh, a fourth-year mechanical engineering student with a passion for engineering design and its
-                application, particularly in the fields of aviation and advanced mechanical systems. I participated in the JUST-1
-                project, where I contributed to a multidisciplinary team, gaining practical experience in a realistic engineering
-                environment. Currently, I serve as the Flight Team Leader, a role that relies on team leadership, task planning, and
-                collaborative work to achieve high-level technical objectives, emphasizing creativity, engineering analysis, and
-                problem-solving.
-              </span>
-            </p>
+          <p class="info__description">
+            <span class="bio-title">About Me</span><br>
+            Computer Science student at Philadelphia University (PHU).
+            <br><br>
+          
+            <span class="bio-title">Current Experience</span><br>
+            • Licensee & Lead Organizer | TEDxPHU
+            <br><br>
+          
+            <span class="bio-title">Previous Experience</span><br>
+            • Chair | IEEE Student Branch — Philadelphia University
+          </p>
           </div>
         </div>
       </article>
@@ -6140,16 +6165,16 @@ body.intro-complete header nav > * {
           <div class="info__data">
             <h2 class="info__name">Narmeen</h2>
             <p class="info__description">
-              <span class="info__intro-line">
-              </span>
-
-
-              I am an Aeronautical Engineering student with a strong interest in astronomy, astrophotography, astrophysics, and
-              astronomical spectroscopy. I have hands-on experience in astrophotography and working with telescopes, driven by a deep
-              and enduring passion for the sky.
-              I previously served as the Simulation Section Leader in the JUST_1 Rocket Project, where I gained valuable experience in
-              leadership, technical coordination, and teamwork within a scientific project environment.
-
+              <span class="bio-title">About Me</span><br>
+              Aeronautical Engineering student with a strong interest in astronomy, astrophotography,
+              astrophysics, and astronomical spectroscopy. I have hands-on experience in astrophotography
+              and working with telescopes, driven by a deep and enduring passion for the sky.
+              <br><br>
+            
+              <span class="bio-title">Previous Experience</span><br>
+              • Simulation Section Leader | JUST_1 Rocket Project<br>
+              Gained valuable experience in leadership, technical coordination, and teamwork within
+              a scientific project environment.
             </p>
           </div>
         </div>
