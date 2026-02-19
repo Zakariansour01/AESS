@@ -26,23 +26,36 @@
            ========================================= */
 
     /* Container for the 3D Scene (Black Background) */
-    #intro-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #000;
-      z-index: 9999;
-      /* Highest priority */
-      transition: opacity 1.5s ease-out, visibility 1.5s;
-    }
+  #intro-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  z-index: 9999;
+  overflow: hidden;
+  transition: opacity 1.5s ease-out, visibility 1.5s;
+}
 
-    #intro-overlay.fade-out {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
+#intro-overlay.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+#intro-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 56.25vw;   /* 16:9 ratio */
+  min-height: 100vh;
+  min-width: 177.77vh; /* 16:9 ratio */
+  border: none;
+  z-index: -1;
+}
 
     :root {
             --glassmorphic-leaderboard-bg-dark: #0f172a49;
@@ -2796,9 +2809,6 @@ img {
   overflow-y: auto;        /* ← ADD THIS */
 }
 
-.info {
-  
-}
 
 
 .info__name {
@@ -5168,15 +5178,7 @@ body.intro-complete header nav > * {
   }
 }
 
-#intro-video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: -1; /* Keeps it behind the button and borders */
-}
+
 
 
 
@@ -5195,23 +5197,24 @@ body.intro-complete header nav > * {
   <canvas id="gridCanvas"></canvas>
 
 <div id="intro-overlay">
-  <video id="intro-video" src="AESS_IMG/INTRO.mp4" autoplay muted playsinline></video>
+  <iframe id="intro-video"
+    src="https://www.youtube.com/embed/cu4TtlAvHX8?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1"
+    frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+  </iframe>
 
   <div class="container">
-      <div class="border-container">
-        <div class="border-line border-top"></div>
-        <div class="border-line border-top_2"></div>
-        <div class="border-line border-bottom"></div>
-        <div class="border-line border-bottom_2"></div>
-        <div class="border-line border-left"></div>
-        <div class="border-line border-right"></div>
-      </div>
+    <div class="border-container">
+      <div class="border-line border-top"></div>
+      <div class="border-line border-top_2"></div>
+      <div class="border-line border-bottom"></div>
+      <div class="border-line border-bottom_2"></div>
+      <div class="border-line border-left"></div>
+      <div class="border-line border-right"></div>
     </div>
-    <button id="introButton">Enter AESS</button>
-    <!-- <div id="transition-border"></div> -->
-    <!-- Add this right after the closing </div> of #intro-overlay -->
-    <div id="bottom-to-button-line"></div>
   </div>
+  <button id="introButton">Enter AESS</button>
+  <div id="bottom-to-button-line"></div>
+</div>
 
   <div class="section-nav">
     <div class="section-nav-item" data-section="hero">
