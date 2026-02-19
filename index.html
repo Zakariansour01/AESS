@@ -44,17 +44,19 @@
   pointer-events: none;
 }
 
-#intro-video {
+#intro-video,
+#loop-video {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100vw;
-  height: 56.25vw;   /* 16:9 ratio */
+  height: 56.25vw;
   min-height: 100vh;
-  min-width: 177.77vh; /* 16:9 ratio */
+  min-width: 177.77vh;
   border: none;
   z-index: -1;
+  object-fit: cover; /* ← add this for the local video */
 }
 
     :root {
@@ -1885,15 +1887,14 @@ body.intro-complete header {
 }
 
 /* Find or add this block */
+/* Find this block and change 'hidden' to 'clip' */
 .electronics-section,
 .aviation-section,
 .aerospace-section {
   position: relative;
-  /* ... existing styles ... */
-  overflow: hidden; /* <--- CRITICAL: Keeps the video inside the box */
-  width: 100%; /* Ensures it respects screen width */
+  overflow: clip; /* <--- CHANGED FROM hidden */
+  width: 100%;
 }
-
         /* --- Content Styling --- */
       
        
@@ -4126,6 +4127,22 @@ body.intro-complete header nav > * {
   }
 }
 
+  .electronics-video,
+.aviation-video,
+.aerospace-video {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh; /* Locks the video to the screen height */
+  opacity: 0.7;
+  z-index: 1;
+  pointer-events: none;
+  border: none;
+  /* Optional: Zooms in slightly to hide YouTube's black letterbox bars */
+  transform: scale(1.35); 
+}
 
 
 
@@ -5077,6 +5094,8 @@ body.intro-complete header nav > * {
     height: auto;
   }
 
+  
+
   /* Video Background */
   .electronics-video, .aviation-video, .aerospace-video {
     position: absolute; /* Not sticky on mobile */
@@ -5188,19 +5207,25 @@ body.intro-complete header nav > * {
 <body>
 
   
-  <div id="vertical-lines-container">
+  <!-- <div id="vertical-lines-container">
     <div class="vertical-line" id="line-left"></div>
     <div class="vertical-line" id="line-right"></div>
     
-  </div>
+  </div> -->
 
   <canvas id="gridCanvas"></canvas>
 
 <div id="intro-overlay">
+  <!-- INTRO video (plays once) -->
   <iframe id="intro-video"
-    src="https://www.youtube.com/embed/cu4TtlAvHX8?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1"
+    src="https://www.youtube.com/embed/Q4orwSr8pIY?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&enablejsapi=1"
     frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
   </iframe>
+
+  <!-- LOOP video (hidden at first, plays after intro ends) -->
+<!-- LOOP video (hidden at first, plays after intro ends) -->
+<video id="loop-video" src="AESS_IMG/loop.mp4" muted loop playsinline style="display:none;">
+</video>
 
   <div class="container">
     <div class="border-container">
@@ -6931,8 +6956,12 @@ body.intro-complete header nav > * {
       const introOverlay = document.getElementById('intro-overlay');
       const introButton = document.getElementById('introButton');
       const borderEffect = document.getElementById('transition-border');
-      const verticalLinesContainer = document.getElementById('vertical-lines-container');
+      // const verticalLinesContainer = document.getElementById('vertical-lines-container');
       const bottomLine = document.getElementById('bottom-to-button-line');
+
+      // 1. Show the bottom line connecting to the button after 2.65 seconds
+     // Duration of intro video in milliseconds — adjust to match cu4TtlAvHX8 length
+      const INTRO_DURATION_MS = 25000; // ← CHANGE THIS to your video's length in ms
 
       // 1. Show the bottom line connecting to the button after 2.65 seconds
       setTimeout(() => {
@@ -6941,12 +6970,32 @@ body.intro-complete header nav > * {
         }
       }, 2650);
 
-      // 2. Show the "ENTER AESS" button after 3 seconds of the video
+      // 2. Show the "ENTER AESS" button after 3 seconds
       setTimeout(() => {
         if (introButton) {
           introButton.classList.add('show-btn');
         }
       }, 3000);
+
+      // 3. After intro video ends → switch to loop video
+    // 3. After intro video ends → switch to loop video
+      setTimeout(() => {
+        const introVideo = document.getElementById('intro-video');
+        const loopVideo = document.getElementById('loop-video');
+        if (introVideo && loopVideo) {
+          // Remove the YouTube src to completely kill the background playback
+          introVideo.src = '';
+          introVideo.style.display = 'none';
+
+          loopVideo.style.display = 'block';
+          // Add a .catch() to prevent browser autoplay errors from silently failing
+          loopVideo.play().catch(err => console.error("Video play error:", err));
+        }
+      }, INTRO_DURATION_MS);
+
+
+
+
 
       // 3. Button Click to Exit Intro
       introButton.addEventListener('click', () => {
@@ -6967,12 +7016,12 @@ body.intro-complete header nav > * {
         if (borderEffect) borderEffect.classList.add('activate-border');
 
         // Trigger the vertical lines growth animation
-        if (verticalLinesContainer) {
-          verticalLinesContainer.classList.add('start-animation');
-          setTimeout(() => {
-            verticalLinesContainer.classList.add('fade-out-lines');
-          }, 1500);
-        }
+        // if (verticalLinesContainer) {
+        //   verticalLinesContainer.classList.add('start-animation');
+        //   setTimeout(() => {
+        //     verticalLinesContainer.classList.add('fade-out-lines');
+        //   }, 1500);
+        // }
 
         // Wait a brief moment for the exit animations to play, then remove the overlay
         setTimeout(() => {
